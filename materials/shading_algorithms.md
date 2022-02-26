@@ -1,39 +1,39 @@
-# Основные подходы к закраске
+# Basic shading approaches
 
-На базовом уровне, для закраски некоторого пикселя изображения достаточно знать интенсивность этого пикселя, выраженную через три компоненты: R, G и B каналы. Интенсивность пикселя высчитывается как интенсивность той части объекта, которая изображена на данном пикселе. Интенсивность объекта зависит от расположения источников освещения. Для вычисления интенсивности любой части объекта можно использовать несколько подходов:
+At a basic level, to shade some pixel of an image, it is enough to know the intensity of this pixel expressed through three components: R, G, and B channels. The pixel intensity is calculated as the intensity of that part of the object that is depicted on the given pixel. The intensity of the object depends on position of the light sources. Several approaches can be used to calculate the intensity of any part of an object:
 
-## Плоское затенение (Flat shading)
+## Flat shading
 
-Интенсивность вычисляется один раз для каждого полигона, и является его усредненным значнеим:
+The intensity is calculated once for each polygon, and is its average value:
 
-$` I=I_0 cos \phi `$, если $`0 \leq \phi \leq \pi \ 2`$, иначе $`I = 0`$. 
+$` I=I_0 cos \phi `$, if $`0 \leq \phi \leq \pi / 2`$, else $`I = 0`$.
 
-Здесь угол $`\phi`$ является углом между нормалью к поверхности и вектором направления к источнику света, а $`I_0`$ - базовое значение интенсивности источника света.
+Here, the angle $\phi`$ is the angle between the surface normal and the direction vector to the light source, and $`I_0`$ is the base value of the light source intensity.
 
-## Закраска методом Гуро
+## Gouraud shading
 
-Интенсивность интерполируется для любого пикселя составляющего двумерное отображение полигона. Объект получается более "гладким". Для этого требуется:
+The intensity is interpolated for any pixel that makes up the two-dimensional polygon representation. The object turns out more "smooth". This requires:
 
-- Вычисление нормали вершин полигона (вертексов), путем векторного сложения нормалей к поверхностям смежных граней вертекса. То есть для вычисления вертекса A, необходимо сложить векторы нормалей к граням 1, 2, 3 и 4. 
+- Calculation of vertex normals of a polygon, by vector addition of normals to surfaces of adjacent vertex faces. Thus, to calculate vertex *A*, we have to add the vectors of normals to faces *1*, *2*, *3*, and *4*.
 
-- Вычисление интенсивности вершин по формуле $`I=I_0 cos \phi`$, если $`0 \leq \phi \leq \pi \ 2`$, иначе $`I = 0`$.
+- Calculation of the vertices intensity by the formula $`I=I_0 cos \phi`$ if $`0 \leq \phi \leq \pi / 2`$, else $`I = 0`$.
 
-- Вычисление интенсивности всех внутренних пикселей полигона, путем двумерной линейной интерполяции интенсивности. Пусть $`O`$ некоторый произвольный пиксель внутри полигона, тогда проведем горизонтальную прямую линию через точку $`O`$ и обозначим точки пересения с ребрами грани как $`P`$ и $`Q`$. Тогда интенсивность $`O`$ можно линейно проинтерполировать на отрезке $`PQ`$, следующим образом:
+- Calculation of the intensity of all polygon inner pixels, by two-dimensional linear intensity interpolation. Let $`O`$ be some arbitrary pixel inside the polygon, then draw a horizontal straight line through the point $`O`$ and denote the points of intersection with edges of the face as $`P`$ and $`Q`$. Then the intensity $`O`$ can be linearly interpolated on the segment $`PQ`$, as follows:
 
 $`I_O = (1 - \frac{|PO|}{|PQ|})I_P + \frac{|PO|}{|PQ|}I_Q`$
 
-Интенсивности для точек $`P`$ и $`Q`$ аналогично интерполируются на соотвествующих ребрах с известными значениями интенсивностей для вершин.
+The intensities for points $`P`$ and $`Q`$ are similarly interpolated on the corresponding edges with known values of intensities for vertices.
 
-Метод может быть в значительной степени оптмимизирован, так как интенсивность в пределах одной горизонтальной линии для каждого пикселя может быть вычислена из предыдущей путем прибавления фиксированного значения, то есть обладает линейным ростом/падением. Точно так же изменение интенсивностей для точек на ребрах является линейным. Инкрементная реализация линейной интерполяции всегда предпочтительнее.
+The method can be largely optimized, because the intensity within one horizontal line for each pixel can be calculated from the previous one by adding a fixed value, i.e. it has a linear increase/decrease. Similarly, the change of intensities for points on edges is linear. It is always better to implement linear interpolation incrementally.
 
-## Закраска методом Фонга
+## Phong shading
 
-Закраска методом Фонга развивает идею закраски Гуро, но в данном случае интерполируется не значение интенсивности, а сам нормированный вектор нормали. Таким образом, метод подразумевает следующе шаги:
+Fong's shading method develops the idea of Gouraud's shading, but in this case it is not the intensity value, but the normalized normal vector itself that is interpolated. Thus, the method involves the following steps:
 
-- Вычисляются нормали вершин полигона (вертексов), путем векторного сложения нормалей к поверхностям смежных граней вертекса. Вектора нормируются.
+- Calculate the normals of polygon vertices (vertexes), by vector addition of normals to the surfaces of adjacent vertex faces. Vectors are normalized.
 
-- Линейно интерполируется вектор нормали (все три компонента) для каждого пикселия аналогичным образом интенсивности при закраске методрм Гуро.
+- The normal vector (all three components) is linearly interpolated for each pixel in the same way as the intensity in the Gouraud shading method.
 
-- Вычисляется интенсивность для нового вектора. 
+- Calculate the intensity for the new vector.
 
-Фонг вычисляется несколько дольше, так как требуется интерполяция трех значений компонент вектора, а не только одного значения интенсивности, но результат получается более точный. 
+Phong takes a little longer to calculate, since interpolation of three vector component values, instead of just one intensity value, is required, but the result is more accurate.

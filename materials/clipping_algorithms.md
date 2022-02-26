@@ -1,33 +1,34 @@
-# Основные подходы к удалению невидимых поверхностей
+# Basic approaches to removing hidden surfaces
 
-## Z-буфер
+## Z-buffer
 
-Алгоритм Z-буфера - простой и интуитивно понятный алгоритм удаления невидимых поверхностей. Он основан на двух особых структурах данных - буфер кадра и Z-буфер. Z-буфер представляет из себя матрицу пикселей экрана, каждый элемент которого содержит ближайшую к наблюдателю координату (в системе коориднат наблюдателя) глубины некоторой поверхности сцены (ось глубины в системе координат наблюдателя конвенционально считается ось Z). Буфер кадра - матрица пикселей с их интенсивностями. Вначале весь буфер заполнен максимальным значением глубины, затем для каждого полигона сцены находятся те пиксели, для которых координата Z оказалась меньшей чем буферезированное значаение соответствующих пикселей, и это значение заносится в Z-буфер, а соотвествующие значение интенсивности заноситься в буфер кадра.
+The Z-buffer is a simple and intuitive algorithm for removing hidden surfaces. It is based on two special data structures - a frame buffer and a Z-buffer. Z-buffer is a matrix of screen pixels, each element of which contains the closest to the observer coordinate (in the observer's coordinate system) of the depth of some scene surface (the depth axis in the observer's coordinate system is conventionally considered as the Z axis). The frame buffer is a matrix of pixels with their intensities.
+At first, the entire buffer is filled with the maximum depth value, then for each polygon of the scene, find those pixels for which the Z coordinate is smaller than the buffered value of the corresponding pixels; this value is put into the Z-buffer, and the corresponding intensity value is put into the frame buffer.
 
-Формальное описание алгоритма Z-буфера таково:
+Here is a formal description of the Z-buffer algorithm:
 
-- Заполнить буфер кадра фоновым значением интенсивности или цвета.
+- Fill the frame buffer with the background intensity or color value.
 
-- Заполнить Z-буфер максимальным значением z.
+- Fill the Z-buffer with the maximum `z` value.
 
-- Преобразовать каждый полигон в растровую форму в произвольном порядке (растеризация).
+- Convert each polygon to a rasterized form in any order (rasterization).
 
-- Для каждого пикселя в полигоне вычислить его глубину z.
+- For each pixel in the polygon, calculate its depth `z.`
 
-- Сравнить глубину z со значением в буфере z0, хранящимся в Z-буфере в этой же позиции.
+- Compare the depth `z` with the value in the `z0` buffer which is stored in the Z-buffer at the same position.
 
-- Если z > z0, то записать атрибут этого многоугольника (интенсивность, цвет и т. п.) в буфер кадра и заменить значение в буфере на. В противном случае никаких действий не производить.
+If `z > z0`, put the attribute of this polygon (intensity, color, etc.) into the frame buffer and replace the value in the buffer by `z`. Otherwise, do not perform any action.
 
 ## Ray casting
 
-Алгоритм Ray casting - алгоритм удаления невдимых поверхностей, основанный на выпускании лучей по всей области видимости наблюдателя. Полигоны проецируются на экран наблюдателя и растеризируются. Для каждого пикселя экрана испускается луч, и фиксируется первое пересечение с какими либо объектом. Этот объект является видимым для этого пикселя. Значение интенсивности для этого пикселя может быть вычисленно при растеризации объекта как в алгориитме с Z-буфером, или же может быть получено трассировкой луча далее с учетом его последующих отражений и приломлений к источнику света (тогда Ray casting превращается в Ray tracing). Ray tracing является несколько более сложным подходом, но дает более реалистичный результат.
+Ray casting algorithm is an algorithm for removing hidden surfaces, based on ray tracing throughout the observer's field of view. The polygons are projected onto the observer's screen and rasterized. A ray is cast for each pixel of the screen, detecting the first intersection with any object. This object is visible to that pixel. The intensity value for this pixel can be calculated when the object is rasterized as in the Z-buffer algorithm or can be obtained by tracing the ray further, taking into account its subsequent reflections and refractions to the light source (then Ray casting becomes Ray tracing). Ray tracing is a slightly more complicated approach, but gives a more realistic result.
 
-Формальное описание алгоритма Ray casting:
+Here is a formal description of the Ray casting algorithm:
 
-- Преобразовать каждый полигон в растровую форму в произвольном порядке (растеризация).
+- Convert each polygon to a rasterized form in any order (rasterization).
 
-- Выпустить пучок лучей для каждого пикселя экрана.
+- Cast one ray per pixel in the screen.
 
-- Для каждого луча найти пересечение с полигоном, находящееся наиболее близко к наблюдателю.
+- For each ray, find the intersection with the polygon that is closest to the observer.
 
-- Вычислить интенсивность и заполнить соотвествующий пиксель изображения.
+- Calculate the intensity and fill the corresponding pixel of the image.
