@@ -23,6 +23,8 @@ The russian version of the task can be found in the repository.
 
 ## Chapter I
 
+![3dviewer2.1](misc/images/3DViewer_v2.1.PNG)
+
 *-- Ah, yes. I also remember when we created the first computer-generated image that looked exactly like a real physical Volkswagen Beetle! The hardest part, however, was not making the computer model look realistic, no. Bui's algorithm handled that perfectly. The most complicated thing was to create the model itself.* \
 *We were lucky, Ivan's wife, Marsha, had a beautiful white '71 Beetle. And so the four of us faced the challenge: to fully measure every millimeter of this global culture icon of its time and transfer it to the computer. There are no modern scanners, no cameras. And do you know what we used?*
 
@@ -98,6 +100,7 @@ Develop a program to visualize the 3D model.
     - Button/buttons and input fields for rotating the model.
     - Button/buttons and input fields for scaling the model.
     - Information about the uploaded model - file name, number of vertices and edges.
+- The program must correctly processes and allows user to view models with details up to 100, 1000, 10,000, 100,000, 1,000,000  vertices without freezing (a freeze is an interface inactivity of more than 0.5 seconds)
 - The program must be implemented using the MVC pattern, and also:
     - there should be no business code in the view code
     - there should be no interface code in the controller and the model
