@@ -79,7 +79,7 @@ Besides intensity, the surface of each object can also have a whole set of visua
 
 Develop a program to visualize the 3D model.
 
-- The program must be developed in C++ language of C++17 standard using gcc compiler
+- The program must be developed in C++ language of C++17 standard
 - The program code must be located in the src folder
 - The program must be built with Makefile which contains standard set of targets for GNU-programs: all, install, uninstall, clean, dvi, dist, tests. Installation directory could be arbitrary, except the building one
 - The program should be developed according to the principles of object-oriented programming; the structured programming approach is not allowed
