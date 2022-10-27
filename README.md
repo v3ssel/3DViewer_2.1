@@ -1,8 +1,5 @@
 # 3DViewer v2.1
 
-> При старте работы над проектом просим вас постараться хронометрировать время работы над проектом.
-> По завершении работы над проектом просим вас ответить на два вопроса [в этом опросе](https://forms.gle/kXv8V6DqhE7aPbMfA)
-
 Implementation of 3DViewer v2.1
 
 The russian version of the task can be found in the repository.
@@ -137,3 +134,4 @@ Develop a program to visualize the 3D model.
 - Read the UV-map of the model from the obj-file
 - The program must allow saving a UV-map of the model over the selected texture into a separate BMP-file; the texture must show the specified color of the model's map
 
+💡 [Tap here](https://forms.yandex.ru/u/635a8dac068ff01bf420bfc9/) **to leave your feedback on the project**. Pedago Team really tries to make your educational experience better.
