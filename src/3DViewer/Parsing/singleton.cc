@@ -1,5 +1,6 @@
 #include "singleton.h"
 
+
 namespace s21 {
 std::vector<double>& Parser::GetVertex() { return this->vertex_; }
 std::vector<int>& Parser::GetIndices() { return this->indices_; }
@@ -13,7 +14,7 @@ void Parser::ParseVertex(const std::string path_to_file) {
     std::string current_string;
     while (std::getline(file, current_string)) {
       for (size_t d = 0; d < current_string.length(); d++) {
-        if (current_string[0] == 'v' && current_string[1] == ' ') {
+        if (current_string[0] == 'v') {
           if (current_string[d] == ' ' &&
               ((current_string[d + 1] >= '0' && current_string[d + 1] <= '9') ||
                current_string[d + 1] == '-')) {
@@ -25,11 +26,15 @@ void Parser::ParseVertex(const std::string path_to_file) {
               l++, d++;
             }
             d--;
-            vertex_.push_back(std::stod(number));
+            if (current_string[1] == ' ') {
+                vertex_.push_back(std::stod(number));
+            } else if (current_string[1] == 'n') {
+                normals_.push_back(std::stod(number));
+            } else if (current_string[1] == 't') {
+                uvs_.push_back(std::stod(number));
+            }
           }
-        } else {
-          break;
-        }
+        }  else { break; }
       }
     }
     file.close();

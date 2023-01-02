@@ -31,6 +31,7 @@ set(PROJECT_SOURCES
         Viewer/viewer.cc
         Viewer/viewer.ui
         main.cc
+        Viewer/Blocks.jpeg
         ${app_icon_macos}
 )
 

@@ -14,6 +14,8 @@
 #include "../Controller/controller.h"
 #include "../GIFCreation/gifImage/qgifimage.h"
 
+#include <QOpenGLTexture>
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class viewer;
@@ -80,5 +82,7 @@ class viewer : public QMainWindow {
   QVector<QImage> GIF_;
 
   Ui::viewer *ui;
+
+  QOpenGLTexture *m_texture;
 };
 #endif  // VIEWER_H

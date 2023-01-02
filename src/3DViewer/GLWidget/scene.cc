@@ -5,6 +5,11 @@
 scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
   settings = new QSettings(QDir::homePath() + "/3DViewerConfig/settings.conf",
                            QSettings::IniFormat);
+
+  paintTimer = new QTimer(this); // создаю таймер
+  connect(paintTimer, SIGNAL(timeout()), this, SLOT(repaint()));
+  paintTimer->start();
+
   zoom_scale_ = -10;
   moving_ = false, dragging_ = false;
   start_x_ = 0, start_y_ = 0;
@@ -70,9 +75,56 @@ void scene::LoadSettings_() {
   settings->endGroup();
 }
 
-void scene::initializeGL() { glEnable(GL_DEPTH_TEST); }
+void scene::initializeGL() {
+    glEnable(GL_DEPTH_TEST);
 
-void scene::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
+    glGenTextures(1, texture);
+
+    // Загрузка картинки
+    QImage texture1;
+    texture1.load("/opt/goinfre/madamkyl/test 2/bricks.jpg");
+    qDebug() << texture1.isNull();
+    texture1.convertTo(QImage::Format_RGBA8888); // формат текстуры OpenGL
+    glBindTexture(GL_TEXTURE_2D, texture[0]); // привязываю текстуру GL_Texture_2d к участку памяти texture[index]
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // параметры фильтрации
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, GLsizei(texture1.width()), GLsizei(texture1.height()), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture1.bits());
+
+
+    glEnable(GL_TEXTURE_2D);
+    glClearColor(1,1,1,1);
+    glClearDepth(1.0);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+
+    GLfloat light_ambient[] = { 0, 0, 0, 0.0 };
+    GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat light_position[] = { 0.0, -4.0, 2.0, 1.0 };
+
+    /* устанавливаем параметры источника света */
+    glLightfv (GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv (GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv (GL_LIGHT0, GL_POSITION, light_position);
+
+    /* включаем освещение и источник света */
+    glEnable (GL_LIGHTING);
+    glEnable (GL_LIGHT0);
+
+    //model[0] = draw
+}
+
+void scene::resizeGL(int w, int h) {
+    glViewport(0, 0, w, h);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glFrustum(-1, 1, -1, 1, 1, 1000000);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
 
 void scene::paintGL() {
   glMatrixMode(GL_PROJECTION);
@@ -97,6 +149,10 @@ void scene::paintGL() {
   glRotatef(y_rot_, 0, 1, 0);
 
   StartDraw_();
+
+//  glBindTexture(GL_TEXTURE_2D, texture[0]);
+//  glCallList(model[0]);
+//  angle += 0.3f;
 }
 
 void scene::mousePressEvent(QMouseEvent* mouse) {
@@ -160,6 +216,10 @@ void scene::wheelEvent(QWheelEvent* event) {
 }
 
 void scene::StartDraw_() {
+//  glBindTexture(GL_TEXTURE_2D, );
+//  GLuint num = glGenLists(1);
+//  glNewList(num,GL_COMPILE);
+
   glVertexPointer(3, GL_DOUBLE, 0,
                   s21::Controller::GetInstance().GetVertex().data());
   glEnableClientState(GL_VERTEX_ARRAY);
@@ -189,4 +249,6 @@ void scene::StartDraw_() {
   glDisable(GL_LINE_STIPPLE);
   glDisable(GL_POINT_SMOOTH);
   glDisableClientState(GL_VERTEX_ARRAY);
+
+//  glEndList();
 }

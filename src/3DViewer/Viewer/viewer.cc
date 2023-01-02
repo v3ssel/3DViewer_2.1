@@ -34,6 +34,8 @@ void viewer::on_actionOpen_triggered() {
     s21::Controller::GetInstance().GetIndices().clear();
     s21::Controller::GetInstance().ParseVertex(fname.toStdString());
     s21::Controller::GetInstance().ParseIndices(fname.toStdString());
+
+    m_texture = new QOpenGLTexture (QImage(":/Blocks.jpeg"));
   }
 }
 

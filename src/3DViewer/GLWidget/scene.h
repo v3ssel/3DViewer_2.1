@@ -9,6 +9,9 @@
 #include <QOpenGLFunctions>
 #include <QSettings>
 
+#include <QWidget>
+#include <QTimer>
+
 class scene : public QOpenGLWidget {
   Q_OBJECT
 
@@ -27,6 +30,11 @@ class scene : public QOpenGLWidget {
 
   unsigned line_width, vertex_size;
   bool circle_square, dashed_solid, is_none;
+
+  QTimer *paintTimer; //тайминг
+  GLuint texture[1]; //текстуры
+  GLuint model[1]; // вывод нужной модели
+  GLfloat angle = 0; // угол вращения
 
  protected:
   void initializeGL() override;
