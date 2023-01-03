@@ -29,6 +29,658 @@
       <property name="autoFillBackground">
        <bool>false</bool>
       </property>
+      <widget class="QDockWidget" name="dockWidget_texture">
+       <property name="geometry">
+        <rect>
+         <x>940</x>
+         <y>980</y>
+         <width>501</width>
+         <height>71</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Menlo</family>
+         <pointsize>18</pointsize>
+         <italic>false</italic>
+         <bold>true</bold>
+         <strikeout>false</strikeout>
+         <stylestrategy>PreferAntialias</stylestrategy>
+         <kerning>true</kerning>
+        </font>
+       </property>
+       <property name="cursor">
+        <cursorShape>ArrowCursor</cursorShape>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QDockWidget::title {
+     text-align: central;
+     background-color: rgb(63, 63, 63);
+ color: dark;
+}
+
+QDockWidget {
+    titlebar-normal-icon: none;
+}
+
+QDockWidget::float-button {
+    icon-size: 0px;
+}</string>
+       </property>
+       <property name="floating">
+        <bool>false</bool>
+       </property>
+       <property name="features">
+        <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+       </property>
+       <property name="windowTitle">
+        <string>Texture</string>
+       </property>
+       <widget class="QWidget" name="dockWidgetContents_8">
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>21</x>
+           <y>10</y>
+           <width>461</width>
+           <height>32</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QPushButton" name="pushButton">
+            <property name="text">
+             <string>Apply Texture</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="text">
+             <string>Unload texture</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>860</y>
+         <width>921</width>
+         <height>221</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QDockWidget" name="dockWidget_light">
+          <property name="font">
+           <font>
+            <family>Menlo</family>
+            <pointsize>18</pointsize>
+            <italic>false</italic>
+            <bold>true</bold>
+            <strikeout>false</strikeout>
+            <stylestrategy>PreferAntialias</stylestrategy>
+            <kerning>true</kerning>
+           </font>
+          </property>
+          <property name="cursor">
+           <cursorShape>ArrowCursor</cursorShape>
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QDockWidget::title {
+     text-align: central;
+     background-color: rgb(63, 63, 63);
+ color: dark;
+}
+
+QDockWidget {
+    titlebar-normal-icon: none;
+}
+
+QDockWidget::float-button {
+    icon-size: 0px;
+}</string>
+          </property>
+          <property name="floating">
+           <bool>false</bool>
+          </property>
+          <property name="features">
+           <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+          </property>
+          <property name="windowTitle">
+           <string>light</string>
+          </property>
+          <widget class="QWidget" name="dockWidgetContents_5">
+           <widget class="QGroupBox" name="groupBox_9">
+            <property name="geometry">
+             <rect>
+              <x>12</x>
+              <y>12</y>
+              <width>441</width>
+              <height>161</height>
+             </rect>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QGroupBox {border: 0px;}</string>
+            </property>
+            <property name="title">
+             <string/>
+            </property>
+            <widget class="QWidget" name="layoutWidget">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>10</y>
+               <width>421</width>
+               <height>138</height>
+              </rect>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="1">
+               <layout class="QGridLayout" name="gridLayout_2">
+                <item row="0" column="0">
+                 <widget class="QLineEdit" name="lineEdit_text_move_3">
+                  <property name="font">
+                   <font>
+                    <family>Charter</family>
+                    <pointsize>22</pointsize>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>ArrowCursor</cursorShape>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QLineEdit{
+	border: 0px solid;
+	background-color: rgba(0, 0, 0, 0);
+}</string>
+                  </property>
+                  <property name="text">
+                   <string> Intensity</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                  <property name="cursorMoveStyle">
+                   <enum>Qt::VisualMoveStyle</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0">
+                 <widget class="QFrame" name="frame_5">
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_17">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_15">
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_text_x_move_3">
+                       <property name="font">
+                        <font>
+                         <family>Charter</family>
+                         <pointsize>22</pointsize>
+                        </font>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>ArrowCursor</cursorShape>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QLineEdit{
+	border: 0px solid;
+	background-color: rgba(0, 0, 0, 0);
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>R</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                       <property name="readOnly">
+                        <bool>true</bool>
+                       </property>
+                       <property name="cursorMoveStyle">
+                        <enum>Qt::VisualMoveStyle</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_text_y_move_3">
+                       <property name="font">
+                        <font>
+                         <family>Charter</family>
+                         <pointsize>22</pointsize>
+                        </font>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>ArrowCursor</cursorShape>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QLineEdit{
+	border: 0px solid;
+	background-color: rgba(0, 0, 0, 0);
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>G</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                       <property name="readOnly">
+                        <bool>true</bool>
+                       </property>
+                       <property name="cursorMoveStyle">
+                        <enum>Qt::VisualMoveStyle</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_text_z_move_3">
+                       <property name="font">
+                        <font>
+                         <family>Charter</family>
+                         <pointsize>22</pointsize>
+                        </font>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>ArrowCursor</cursorShape>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QLineEdit{
+	border: 0px solid;
+	background-color: rgba(0, 0, 0, 0);
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>B</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                       <property name="readOnly">
+                        <bool>true</bool>
+                       </property>
+                       <property name="cursorMoveStyle">
+                        <enum>Qt::VisualMoveStyle</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_16">
+                     <item>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBox_r_light_intens">
+                       <property name="decimals">
+                        <number>2</number>
+                       </property>
+                       <property name="minimum">
+                        <double>-1500.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>1500.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBox_g_light_intens">
+                       <property name="decimals">
+                        <number>2</number>
+                       </property>
+                       <property name="minimum">
+                        <double>-1500.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>1500.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBox_z_light_intens">
+                       <property name="decimals">
+                        <number>2</number>
+                       </property>
+                       <property name="minimum">
+                        <double>-1500.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>1500.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gridLayout">
+                <item row="1" column="0">
+                 <widget class="QFrame" name="frame_4">
+                  <property name="frameShape">
+                   <enum>QFrame::StyledPanel</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Raised</enum>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_16">
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_13">
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_text_x_move_2">
+                       <property name="font">
+                        <font>
+                         <family>Charter</family>
+                         <pointsize>22</pointsize>
+                        </font>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>ArrowCursor</cursorShape>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QLineEdit{
+	border: 0px solid;
+	background-color: rgba(0, 0, 0, 0);
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>X</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                       <property name="readOnly">
+                        <bool>true</bool>
+                       </property>
+                       <property name="cursorMoveStyle">
+                        <enum>Qt::VisualMoveStyle</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_text_y_move_2">
+                       <property name="font">
+                        <font>
+                         <family>Charter</family>
+                         <pointsize>22</pointsize>
+                        </font>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>ArrowCursor</cursorShape>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QLineEdit{
+	border: 0px solid;
+	background-color: rgba(0, 0, 0, 0);
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>Y</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                       <property name="readOnly">
+                        <bool>true</bool>
+                       </property>
+                       <property name="cursorMoveStyle">
+                        <enum>Qt::VisualMoveStyle</enum>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QLineEdit" name="lineEdit_text_z_move_2">
+                       <property name="font">
+                        <font>
+                         <family>Charter</family>
+                         <pointsize>22</pointsize>
+                        </font>
+                       </property>
+                       <property name="cursor">
+                        <cursorShape>ArrowCursor</cursorShape>
+                       </property>
+                       <property name="styleSheet">
+                        <string notr="true">QLineEdit{
+	border: 0px solid;
+	background-color: rgba(0, 0, 0, 0);
+}</string>
+                       </property>
+                       <property name="text">
+                        <string>Z</string>
+                       </property>
+                       <property name="alignment">
+                        <set>Qt::AlignCenter</set>
+                       </property>
+                       <property name="readOnly">
+                        <bool>true</bool>
+                       </property>
+                       <property name="cursorMoveStyle">
+                        <enum>Qt::VisualMoveStyle</enum>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                   <item>
+                    <layout class="QHBoxLayout" name="horizontalLayout_14">
+                     <item>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBox_x_light_pos">
+                       <property name="decimals">
+                        <number>2</number>
+                       </property>
+                       <property name="minimum">
+                        <double>-1500.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>1500.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBox_y_light_pos">
+                       <property name="decimals">
+                        <number>2</number>
+                       </property>
+                       <property name="minimum">
+                        <double>-1500.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>1500.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                     <item>
+                      <widget class="QDoubleSpinBox" name="doubleSpinBox_z_light_pos">
+                       <property name="decimals">
+                        <number>2</number>
+                       </property>
+                       <property name="minimum">
+                        <double>-1500.000000000000000</double>
+                       </property>
+                       <property name="maximum">
+                        <double>1500.000000000000000</double>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
+                   </item>
+                  </layout>
+                 </widget>
+                </item>
+                <item row="0" column="0">
+                 <widget class="QLineEdit" name="lineEdit_text_move_2">
+                  <property name="font">
+                   <font>
+                    <family>Charter</family>
+                    <pointsize>22</pointsize>
+                   </font>
+                  </property>
+                  <property name="cursor">
+                   <cursorShape>ArrowCursor</cursorShape>
+                  </property>
+                  <property name="styleSheet">
+                   <string notr="true">QLineEdit{
+	border: 0px solid;
+	background-color: rgba(0, 0, 0, 0);
+}</string>
+                  </property>
+                  <property name="text">
+                   <string>Position</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                  <property name="readOnly">
+                   <bool>true</bool>
+                  </property>
+                  <property name="cursorMoveStyle">
+                   <enum>Qt::VisualMoveStyle</enum>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDockWidget" name="dockWidget_obj_display">
+          <property name="font">
+           <font>
+            <family>Menlo</family>
+            <pointsize>18</pointsize>
+            <italic>false</italic>
+            <bold>true</bold>
+            <strikeout>false</strikeout>
+            <stylestrategy>PreferAntialias</stylestrategy>
+            <kerning>true</kerning>
+           </font>
+          </property>
+          <property name="cursor">
+           <cursorShape>ArrowCursor</cursorShape>
+          </property>
+          <property name="autoFillBackground">
+           <bool>true</bool>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">QDockWidget::title {
+     text-align: central;
+     background-color: rgb(63, 63, 63);
+ color: dark;
+}
+
+QDockWidget {
+    titlebar-normal-icon: none;
+}
+
+QDockWidget::float-button {
+    icon-size: 0px;
+}</string>
+          </property>
+          <property name="floating">
+           <bool>false</bool>
+          </property>
+          <property name="features">
+           <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+          </property>
+          <property name="windowTitle">
+           <string>type of object display</string>
+          </property>
+          <widget class="QWidget" name="dockWidgetContents_7">
+           <widget class="QWidget" name="">
+            <property name="geometry">
+             <rect>
+              <x>11</x>
+              <y>21</y>
+              <width>421</width>
+              <height>100</height>
+             </rect>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_9">
+             <item row="0" column="0">
+              <widget class="QPushButton" name="pushButton_flat_shading">
+               <property name="text">
+                <string>flat shading</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QPushButton" name="pushButton_smooth_shading">
+               <property name="text">
+                <string>smooth shading</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QPushButton" name="pushButton_wireframe">
+               <property name="text">
+                <string>wireframe model</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="">
+            <property name="geometry">
+             <rect>
+              <x>80</x>
+              <y>130</y>
+              <width>281</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <widget class="QCheckBox" name="checkBox_Gouraud">
+               <property name="text">
+                <string>Gouraud</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkBox_Phong">
+               <property name="text">
+                <string>Phong</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -39,7 +691,7 @@
      <x>0</x>
      <y>0</y>
      <width>1920</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
