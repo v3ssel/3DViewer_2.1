@@ -5,11 +5,22 @@ std::vector<double>& Controller::GetVertex() {
   return s21::Parser::GetInstance().GetVertex();
 }
 
+std::vector<double>& Controller::GetNormals() {
+  return s21::Parser::GetInstance().GetNormals();
+}
+
+//std::vector<double>& GetNormals();
+//std::vector<double>& GetUvs();
+
 std::vector<int>& Controller::GetIndices() {
   return s21::Parser::GetInstance().GetIndices();
 }
 
 void Controller::ParseVertex(std::string path_to_file) {
+  return s21::Parser::GetInstance().ParseVertex(path_to_file);
+}
+
+void Controller::ParseNormals(std::string path_to_file) {
   return s21::Parser::GetInstance().ParseVertex(path_to_file);
 }
 

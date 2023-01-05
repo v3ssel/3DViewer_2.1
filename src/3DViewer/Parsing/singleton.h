@@ -24,6 +24,8 @@ class Parser {
 
   std::vector<double>& GetVertex();
   std::vector<int>& GetIndices();
+  std::vector<double>& GetNormals();
+  std::vector<double>& GetUvs();
 
   struct face // грань
   {

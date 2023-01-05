@@ -4,6 +4,8 @@
 namespace s21 {
 std::vector<double>& Parser::GetVertex() { return this->vertex_; }
 std::vector<int>& Parser::GetIndices() { return this->indices_; }
+std::vector<double>& Parser::GetNormals() { return this->normals_; }
+std::vector<double>& Parser::GetUvs() { return this->uvs_; }
 
 void Parser::ParseVertex(const std::string path_to_file) {
   std::ifstream file(path_to_file);

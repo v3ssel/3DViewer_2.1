@@ -145,14 +145,15 @@ void scene::paintGL() {
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 
+  glTranslatef(0,0,-2.5);
+  //glRotatef(angle,0.0f,1.0f,0.0f);
   glRotatef(x_rot_, 1, 0, 0);
   glRotatef(y_rot_, 0, 1, 0);
+  //glBindTexture(GL_TEXTURE_2D, texture[0]);
+  //glCallList(model[0]);
+  angle += 0.3f;
 
   StartDraw_();
-
-//  glBindTexture(GL_TEXTURE_2D, texture[0]);
-//  glCallList(model[0]);
-//  angle += 0.3f;
 }
 
 void scene::mousePressEvent(QMouseEvent* mouse) {
@@ -221,11 +222,12 @@ void scene::StartDraw_() {
 //  glNewList(num,GL_COMPILE);
 
   glVertexPointer(3, GL_DOUBLE, 0,
-                  s21::Controller::GetInstance().GetVertex().data());
-  glEnableClientState(GL_VERTEX_ARRAY);
+                  s21::Controller::GetInstance().GetVertex().data()); // массив данных вершин
+  glEnableClientState(GL_VERTEX_ARRAY); // позволяют включать и отключать массивы соответственно
 
   glColor3d(red_vertex / 255.0f, green_vertex / 255.0f, blue_vertex / 255.0f);
   glPointSize(vertex_size);
+  glBindTexture(GL_TEXTURE_2D, texture[0]); //--------
   if (!circle_square) glEnable(GL_POINT_SMOOTH);
   if (!is_none)
     glDrawArrays(GL_POINTS, 1,
