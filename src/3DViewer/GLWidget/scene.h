@@ -5,14 +5,20 @@
 
 #include <QtOpenGLWidgets/qopenglwidget.h>
 
-#include <QMouseEvent>
 #include <QOpenGLFunctions>
+//#include <QOpenGLVertexArrayObject>
+//#include <QOpenGLShader>
+//#include <QOpenGLBuffer>
+//#include <QOpenGLTexture>
+//#include <QMatrix4x4>
+
+#include <QMouseEvent>
 #include <QSettings>
 
 #include <QWidget>
 #include <QTimer>
 
-class scene : public QOpenGLWidget {
+class scene : public QOpenGLWidget/*, protected QOpenGLFunctions*/ {
   Q_OBJECT
 
  public:
@@ -22,7 +28,7 @@ class scene : public QOpenGLWidget {
   QString filename;
   QSettings *settings;
 
-  bool projection;
+  bool projection, paint;
 
   float red_bg, green_bg, blue_bg, alpha_bg;
   float red_vertex, green_vertex, blue_vertex;
@@ -36,9 +42,9 @@ class scene : public QOpenGLWidget {
   GLuint model[1]; // вывод нужной модели
   GLfloat angle = 0; // угол вращения
 
+  void resizeGL(int w, int h) override;
  protected:
   void initializeGL() override;
-  void resizeGL(int w, int h) override;
   void paintGL() override;
 
   void mousePressEvent(QMouseEvent *) override;

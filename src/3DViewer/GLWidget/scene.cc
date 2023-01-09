@@ -11,7 +11,7 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
   paintTimer->start();
 
   zoom_scale_ = -10;
-  moving_ = false, dragging_ = false;
+  moving_ = false, dragging_ = false, paint = false;
   start_x_ = 0, start_y_ = 0;
   x_rot_ = 1, y_rot_ = 1;
   x_trans_ = 0, y_trans_ = 0;
@@ -76,57 +76,16 @@ void scene::LoadSettings_() {
 }
 
 void scene::initializeGL() {
+//    initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
-
-    glGenTextures(1, texture);
-
-    // Загрузка картинки
-    QImage texture1;
-    texture1.load("/opt/goinfre/madamkyl/test 2/bricks.jpg");
-    qDebug() << texture1.isNull();
-    texture1.convertTo(QImage::Format_RGBA8888); // формат текстуры OpenGL
-    glBindTexture(GL_TEXTURE_2D, texture[0]); // привязываю текстуру GL_Texture_2d к участку памяти texture[index]
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR); // параметры фильтрации
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, GLsizei(texture1.width()), GLsizei(texture1.height()), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture1.bits());
-
-
-    glEnable(GL_TEXTURE_2D);
-    glClearColor(1,1,1,1);
-    glClearDepth(1.0);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-
-    GLfloat light_ambient[] = { 0, 0, 0, 0.0 };
-    GLfloat light_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat light_position[] = { 0.0, -4.0, 2.0, 1.0 };
-
-    /* устанавливаем параметры источника света */
-    glLightfv (GL_LIGHT0, GL_AMBIENT, light_ambient);
-    glLightfv (GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv (GL_LIGHT0, GL_POSITION, light_position);
-
-    /* включаем освещение и источник света */
-    glEnable (GL_LIGHTING);
-    glEnable (GL_LIGHT0);
-
-    //model[0] = draw
 }
 
 void scene::resizeGL(int w, int h) {
     glViewport(0, 0, w, h);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustum(-1, 1, -1, 1, 1, 1000000);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
 }
 
 void scene::paintGL() {
+  paint = true;
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   if (projection) {
@@ -227,7 +186,7 @@ void scene::StartDraw_() {
 
   glColor3d(red_vertex / 255.0f, green_vertex / 255.0f, blue_vertex / 255.0f);
   glPointSize(vertex_size);
-  glBindTexture(GL_TEXTURE_2D, texture[0]); //--------
+//  glBindTexture(GL_TEXTURE_2D, texture[0]); //--------
   if (!circle_square) glEnable(GL_POINT_SMOOTH);
   if (!is_none)
     glDrawArrays(GL_POINTS, 1,

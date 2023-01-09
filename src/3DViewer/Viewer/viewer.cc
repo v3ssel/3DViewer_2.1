@@ -66,7 +66,12 @@ void viewer::on_actionInfo_triggered() {
 }
 
 void viewer::keyPressEvent(QKeyEvent *event) {
-  ui->widget->keyPressEvent(event);
+    ui->widget->keyPressEvent(event);
+}
+
+void viewer::resizeEvent(QResizeEvent *event) {
+    if (ui && ui->widget && ui->widget->paint)
+        ui->widget->resizeGL(event->size().width(), event->size().height());
 }
 
 void viewer::on_pushButton_bg_clicked() {
