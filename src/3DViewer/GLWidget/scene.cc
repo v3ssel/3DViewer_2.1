@@ -7,8 +7,6 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
                            QSettings::IniFormat);
 
   cameraTarget = QVector3D(0.0f, 0.0f, 0.0f);
-
-  isize = 0, vsize = 0;
   zoom_scale_ = -10;
   moving_ = false, dragging_ = false;
   start_x_ = 0, start_y_ = 0;
@@ -75,79 +73,39 @@ void scene::LoadSettings_() {
 }
 
 void scene::InitModel(GLfloat *vertices, GLuint *indices) {
+    vao.bind();
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    vsize = 8, isize = 36;
+
+    vbo.bind();
+    vbo.allocate(vertices, sizeof(vertices[0]) * 288);
+
+    program.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * sizeof(float));
+    program.setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(float), 2, 8 * sizeof(float));
+    program.setAttributeBuffer(2, GL_FLOAT, 5 * sizeof(float), 3, 8 * sizeof(float));
+
+    ebo.bind();
+    ebo.allocate(indices, sizeof(indices[0]) * 36);
+    program.bind();
+
+    vbo.bind();
+    vao_light.bind();
+    light.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * sizeof(float));
+    program.bind();
 }
-
-static GLfloat vertices[] = {
-    1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
-    -1.000000, 1.000000, -1.000000,  0.333089, 0.500000,   0.0000, 1.0000, 0.0000,
-    -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
-
-    1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
-    -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
-    1.000000, 1.000000, 1.000000,    0.000245, 0.999266,   0.0000, 1.0000, 0.0000,
-
-
-    1.000000, -1.000000, 1.000000,   0.666911, 0.499511,   0.0000, 0.0000, 1.0000,
-    1.000000, 1.000000, 1.000000,    0.666911, 0.000245,   0.0000, 0.0000, 1.0000,
-    -1.000000, 1.000000, 1.000000,   0.999755, 0.000245,   0.0000, 0.0000, 1.0000,
-
-    1.000000, -1.000000, 1.000000,   0.666911, 0.499511,   0.0000, 0.0000, 1.0000,
-    -1.000000, 1.000000, 1.000000,   0.999755, 0.000245,   0.0000, 0.0000, 1.0000,
-    -1.000000, -1.000000, 1.000000,  0.999756, 0.499511,   0.0000, 0.0000, 1.0000,
-
-
-    -1.000000, -1.000000, 1.000000,  0.666422, 0.500000,   -1.0000, 0.0000, 0.0000,
-    -1.000000, 1.000000, 1.000000,   0.666422, 0.999266,   -1.0000, 0.0000, 0.0000,
-    -1.000000, 1.000000, -1.000000,  0.333578, 0.999266,   -1.0000, 0.0000, 0.0000,
-
-    -1.000000, -1.000000, 1.000000,  0.666422, 0.500000,   -1.0000, 0.0000, 0.0000,
-    -1.000000, 1.000000, -1.000000,  0.333578, 0.999266,   -1.0000, 0.0000, 0.0000,
-    -1.000000, -1.000000, -1.000000, 0.333578, 0.500000,   -1.0000, 0.0000, 0.0000,
-
-
-    -1.000000, -1.000000, -1.000000, 0.000245, 0.000245,   0.0000, -1.0000, 0.0000,
-    1.000000, -1.000000, -1.000000,  0.333089, 0.000245,   0.0000, -1.0000, 0.0000,
-    1.000000, -1.000000, 1.000000,   0.333089, 0.499511,   0.0000, -1.0000, 0.0000,
-
-    -1.000000, -1.000000, -1.000000, 0.000245, 0.000245,   0.0000, -1.0000, 0.0000,
-    1.000000, -1.000000, 1.000000,   0.333089, 0.499511,   0.0000, -1.0000, 0.0000,
-    -1.000000, -1.000000, 1.000000,  0.000245, 0.499511,   0.0000, -1.0000, 0.0000,
-
-
-    1.000000, -1.000000, -1.000000,  0.666911, 0.999266,   1.0000, 0.0000, 0.0000,
-    1.000000, 1.000000, -1.000000,   0.666911, 0.500000,   1.0000, 0.0000, 0.0000,
-    1.000000, 1.000000, 1.000000,    0.999755, 0.500000,   1.0000, 0.0000, 0.0000,
-
-    1.000000, -1.000000, -1.000000,  0.666911, 0.999266,   1.0000, 0.0000, 0.0000,
-    1.000000, 1.000000, 1.000000,    0.999755, 0.500000,   1.0000, 0.0000, 0.0000,
-    1.000000, -1.000000, 1.000000,   0.999756, 0.999266,   1.0000, 0.0000, 0.0000,
-
-
-    -1.000000, -1.000000, -1.000000, 0.666422, 0.000245,   0.0000, 0.0000, -1.0000,
-    -1.000000, 1.000000, -1.000000,  0.666422, 0.499511,   0.0000, 0.0000, -1.0000,
-    1.000000, 1.000000, -1.000000,   0.333578, 0.499511,   0.0000, 0.0000, -1.0000,
-
-    -1.000000, -1.000000, -1.000000, 0.666422, 0.000245,   0.0000, 0.0000, -1.0000,
-    1.000000, 1.000000, -1.000000,   0.333578, 0.499511,   0.0000, 0.0000, -1.0000,
-    1.000000, -1.000000, -1.000000,  0.333578, 0.000245,   0.0000, 0.0000, -1.0000
-};
-
-static GLuint indices[] = {
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
-};
 
 void scene::initializeGL() {
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
 
-//    makeCurrent();
     program.create();
     program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/vert.glsl");
     program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/frag.glsl");
     program.link();
 
-    texture = new QOpenGLTexture(QImage("/Users/stevenso/shaderslight/cube.png"));
+    texture = new QOpenGLTexture(QImage("/Users/stevenso/CPP5_3DViewer_v2.1-0/src/3DViewer/GLWidget/Blocks.jpeg"));
     texture->setMinificationFilter(QOpenGLTexture::Nearest);
     texture->setMagnificationFilter(QOpenGLTexture::Linear);
     texture->setWrapMode(QOpenGLTexture::Repeat);
@@ -168,31 +126,7 @@ void scene::initializeGL() {
     ebo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
     vao.bind();
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    vbo.bind();
-    vbo.allocate(vertices, sizeof(vertices));
-
-    program.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * sizeof(float));
-    program.enableAttributeArray(0);
-
-    program.setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(float), 2, 8 * sizeof(float));
-    program.enableAttributeArray(1);
-
-    program.setAttributeBuffer(2, GL_FLOAT, 5 * sizeof(float), 3, 8 * sizeof(float));
-    program.enableAttributeArray(2);
-
-    ebo.bind();
-    ebo.allocate(indices, sizeof(indices));
-    program.bind();
-
     vao_light.create();
-    vbo.bind();
-    vao_light.bind();
-    light.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * sizeof(float));
-    light.enableAttributeArray(0);
-
 }
 
 void scene::resizeGL(int w, int h) {
@@ -203,7 +137,7 @@ void scene::paintGL() {
     glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-//    calculateCamera();
+    calculateCamera();
     program.bind();
 
     program.setUniformValueArray(program.uniformLocation("view"), &view, 1);
@@ -214,11 +148,6 @@ void scene::paintGL() {
     program.setUniformValueArray(program.uniformLocation("lightColor"), &lcol, 1);
 
     QVector3D lpos(1.0f, 1.0f, 1.0f);
-//    static float x = 0.0f, y = -1.0f;
-//    lpos[0] = 1.0f + sin(x) * 2.0f;
-//    lpos[2] = sin(y) * 2.0f + 1.0f;
-//    x+=0.1, y+=0.1;
-
     program.setUniformValueArray(program.uniformLocation("lightPos"), &lpos, 1);
     program.setUniformValueArray(program.uniformLocation("viewPos"), &cameraPos, 1);
 
@@ -227,13 +156,7 @@ void scene::paintGL() {
 //    projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
     projection.perspective(45.0f, (float)width() / height(), 0.1f, 100.0f);
 //    projection.frustum(-2, 2, -2, 2, 2, 1000);
-//    view.lookAt(cameraPos, cameraTarget, cameraUp);
-    float r = 3.0 * cos(y_rot_ * M_PI / 180);
-    view.lookAt(QVector3D(r * sin(x_rot_ * M_PI / 180), 3.0f * sin(y_rot_ * M_PI / 180), r * cos(x_rot_ * M_PI / 180)) + QVector3D(0.0f, 0.0f, 0.0f),
-                QVector3D(0.0f, 0.0f, 0.0f),
-                QVector3D(-sin(x_rot_ * M_PI / 180) * sin(x_rot_ * M_PI / 180),
-                          cos(y_rot_ * M_PI / 180),
-                          -cos(x_rot_ * M_PI / 180) * sin(x_rot_ * M_PI / 180)));
+    view.lookAt(cameraPos, cameraTarget, cameraUp);
 
     program.setUniformValueArray(program.uniformLocation("projection"), &projection, 1);
     QVector4D col = QVector4D(0.3f, 0.0f, 0.0f, 1.0f);
@@ -245,10 +168,15 @@ void scene::paintGL() {
     texture->bind();
 
     vao.bind();
-    glDrawArrays(GL_POINTS, 0, 8);
+    program.enableAttributeArray(0);
+    program.enableAttributeArray(1);
+    program.enableAttributeArray(2);
+    glDrawArrays(GL_POINTS, 0, vsize);
     glPointSize(15);
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr);
-
+    glDrawElements(GL_TRIANGLES, isize, GL_UNSIGNED_INT, nullptr);
+    program.disableAttributeArray(0);
+    program.disableAttributeArray(1);
+    program.disableAttributeArray(2);
 
     light.bind();
 
@@ -262,9 +190,9 @@ void scene::paintGL() {
     light.setUniformValueArray(light.uniformLocation("model"), &lamp, 1);
 
     vao_light.bind();
+    light.enableAttributeArray(0);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-//    program.disableAttributeArray(0);
-//    program.disableAttributeArray(1);
+    light.disableAttributeArray(0);
 
     vao.release();
     vao_light.release();
@@ -324,6 +252,17 @@ void scene::StartDraw_() {
 //  glDisable(GL_LINE_STIPPLE);
 //  glDisable(GL_POINT_SMOOTH);
 //  glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void scene::calculateCamera() {
+    float r = 3.0f * cos(y_rot_ * M_PI / 180);
+    cameraPos   = QVector3D(cameraTarget.x() + r * sin(x_rot_ * M_PI / 180),
+                            cameraTarget.y() + 3.0f * sin(y_rot_ * M_PI / 180),
+                            cameraTarget.z() + r * cos(x_rot_ * M_PI / 180)) + cameraTarget;
+
+    cameraUp    = QVector3D(-sin(x_rot_ * M_PI / 180) * sin(y_rot_ * M_PI / 180),
+                            cos(y_rot_ * M_PI / 180),
+                            -cos(x_rot_ * M_PI / 180) * sin(y_rot_ * M_PI / 180));
 }
 
 void scene::mousePressEvent(QMouseEvent* mouse) {
@@ -403,5 +342,5 @@ void scene::wheelEvent(QWheelEvent* event) {
     } else {
         model.scale(QVector3D(0.9f, 0.9f, 0.9f));
     }
-  update();
+    update();
 }

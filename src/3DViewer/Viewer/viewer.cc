@@ -4,7 +4,7 @@
 
 viewer::viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::viewer) {
   ui->setupUi(this);
-  this->setWindowTitle("3D Viewer 2.0");
+  this->setWindowTitle("3D Viewer 2.1");
   ui->horizontalSlider_lineWidth->setValue(ui->widget->line_width);
   ui->lcdNumber_lineWidth->display((int)ui->widget->line_width);
   ui->horizontalSlider_versize->setValue(ui->widget->vertex_size);
@@ -36,8 +36,7 @@ void viewer::on_actionOpen_triggered() {
 //    s21::Controller::GetInstance().ParseIndices(fname.toStdString());
 
 //    m_texture = new QOpenGLTexture (QImage(":/Blocks.jpeg"));
-
-    static GLfloat vertices[] = {
+    GLfloat vertices[] = {
         1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
         -1.000000, 1.000000, -1.000000,  0.333089, 0.500000,   0.0000, 1.0000, 0.0000,
         -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
@@ -92,11 +91,11 @@ void viewer::on_actionOpen_triggered() {
         1.000000, -1.000000, -1.000000,  0.333578, 0.000245,   0.0000, 0.0000, -1.0000
     };
 
-    static GLuint indices[] = {
+    GLuint indices[] = {
         0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
     };
 
-//    ui->widget->vertices = vertices; ui->widget->indices = indices;
+    ui->widget->InitModel(vertices, indices);
   }
 }
 

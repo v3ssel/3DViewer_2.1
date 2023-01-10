@@ -25,6 +25,8 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   scene(QWidget *parent = nullptr);
   void keyPressEvent(QKeyEvent *) override;
   void InitModel(GLfloat *vertices, GLuint *indices);
+  void calculateCamera();
+  QTimer *timer;
 
   QOpenGLShaderProgram program, light;
   QOpenGLVertexArrayObject vao, vao_light;
@@ -47,7 +49,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   unsigned line_width, vertex_size;
   bool circle_square, dashed_solid, is_none;
 
-  GLuint vsize = 0, isize = 0;
+  GLuint vsize = 0, isize = 0;  // tmp
 
  protected:
   void initializeGL() override;
