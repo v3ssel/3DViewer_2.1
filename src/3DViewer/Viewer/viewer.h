@@ -32,7 +32,6 @@ class viewer : public QMainWindow {
 
  protected:
   void keyPressEvent(QKeyEvent *event) override;
-  void resizeEvent(QResizeEvent* event) override;
 
  private slots:
   void on_actionOpen_triggered();

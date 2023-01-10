@@ -6,11 +6,11 @@
 #include <QtOpenGLWidgets/qopenglwidget.h>
 
 #include <QOpenGLFunctions>
-//#include <QOpenGLVertexArrayObject>
-//#include <QOpenGLShader>
-//#include <QOpenGLBuffer>
-//#include <QOpenGLTexture>
-//#include <QMatrix4x4>
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLShader>
+#include <QOpenGLBuffer>
+#include <QOpenGLTexture>
+#include <QMatrix4x4>
 
 #include <QMouseEvent>
 #include <QSettings>
@@ -18,17 +18,27 @@
 #include <QWidget>
 #include <QTimer>
 
-class scene : public QOpenGLWidget/*, protected QOpenGLFunctions*/ {
+class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   Q_OBJECT
 
  public:
   scene(QWidget *parent = nullptr);
   void keyPressEvent(QKeyEvent *) override;
+  void InitModel(GLfloat *vertices, GLuint *indices);
+
+  QOpenGLShaderProgram program, light;
+  QOpenGLVertexArrayObject vao, vao_light;
+  QOpenGLBuffer vbo;
+  QOpenGLBuffer ebo;
+
+  QOpenGLTexture *texture;
+
+  QMatrix4x4 view, projection, model, lamp;
 
   QString filename;
   QSettings *settings;
 
-  bool projection, paint;
+//  bool projection;
 
   float red_bg, green_bg, blue_bg, alpha_bg;
   float red_vertex, green_vertex, blue_vertex;
@@ -37,14 +47,11 @@ class scene : public QOpenGLWidget/*, protected QOpenGLFunctions*/ {
   unsigned line_width, vertex_size;
   bool circle_square, dashed_solid, is_none;
 
-  QTimer *paintTimer; //тайминг
-  GLuint texture[1]; //текстуры
-  GLuint model[1]; // вывод нужной модели
-  GLfloat angle = 0; // угол вращения
+  GLuint vsize = 0, isize = 0;
 
-  void resizeGL(int w, int h) override;
  protected:
   void initializeGL() override;
+  void resizeGL(int w, int h) override;
   void paintGL() override;
 
   void mousePressEvent(QMouseEvent *) override;
@@ -52,6 +59,8 @@ class scene : public QOpenGLWidget/*, protected QOpenGLFunctions*/ {
   void wheelEvent(QWheelEvent *) override;
 
  private:
+  QVector3D cameraTarget, cameraPos, cameraUp;
+
   float x_rot_, y_rot_, zoom_scale_, x_trans_, y_trans_, start_y_, start_x_;
   bool moving_, dragging_;
 

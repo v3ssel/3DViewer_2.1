@@ -30,12 +30,73 @@ void viewer::on_actionOpen_triggered() {
     ui->widget->filename = fname;
     ui->widget->update();
 
-    s21::Controller::GetInstance().GetVertex().clear();
-    s21::Controller::GetInstance().GetIndices().clear();
-    s21::Controller::GetInstance().ParseVertex(fname.toStdString());
-    s21::Controller::GetInstance().ParseIndices(fname.toStdString());
+//    s21::Controller::GetInstance().GetVertex().clear();
+//    s21::Controller::GetInstance().GetIndices().clear();
+//    s21::Controller::GetInstance().ParseVertex(fname.toStdString());
+//    s21::Controller::GetInstance().ParseIndices(fname.toStdString());
 
-    m_texture = new QOpenGLTexture (QImage(":/Blocks.jpeg"));
+//    m_texture = new QOpenGLTexture (QImage(":/Blocks.jpeg"));
+
+    static GLfloat vertices[] = {
+        1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
+        -1.000000, 1.000000, -1.000000,  0.333089, 0.500000,   0.0000, 1.0000, 0.0000,
+        -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
+
+        1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
+        -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
+        1.000000, 1.000000, 1.000000,    0.000245, 0.999266,   0.0000, 1.0000, 0.0000,
+
+
+        1.000000, -1.000000, 1.000000,   0.666911, 0.499511,   0.0000, 0.0000, 1.0000,
+        1.000000, 1.000000, 1.000000,    0.666911, 0.000245,   0.0000, 0.0000, 1.0000,
+        -1.000000, 1.000000, 1.000000,   0.999755, 0.000245,   0.0000, 0.0000, 1.0000,
+
+        1.000000, -1.000000, 1.000000,   0.666911, 0.499511,   0.0000, 0.0000, 1.0000,
+        -1.000000, 1.000000, 1.000000,   0.999755, 0.000245,   0.0000, 0.0000, 1.0000,
+        -1.000000, -1.000000, 1.000000,  0.999756, 0.499511,   0.0000, 0.0000, 1.0000,
+
+
+        -1.000000, -1.000000, 1.000000,  0.666422, 0.500000,   -1.0000, 0.0000, 0.0000,
+        -1.000000, 1.000000, 1.000000,   0.666422, 0.999266,   -1.0000, 0.0000, 0.0000,
+        -1.000000, 1.000000, -1.000000,  0.333578, 0.999266,   -1.0000, 0.0000, 0.0000,
+
+        -1.000000, -1.000000, 1.000000,  0.666422, 0.500000,   -1.0000, 0.0000, 0.0000,
+        -1.000000, 1.000000, -1.000000,  0.333578, 0.999266,   -1.0000, 0.0000, 0.0000,
+        -1.000000, -1.000000, -1.000000, 0.333578, 0.500000,   -1.0000, 0.0000, 0.0000,
+
+
+        -1.000000, -1.000000, -1.000000, 0.000245, 0.000245,   0.0000, -1.0000, 0.0000,
+        1.000000, -1.000000, -1.000000,  0.333089, 0.000245,   0.0000, -1.0000, 0.0000,
+        1.000000, -1.000000, 1.000000,   0.333089, 0.499511,   0.0000, -1.0000, 0.0000,
+
+        -1.000000, -1.000000, -1.000000, 0.000245, 0.000245,   0.0000, -1.0000, 0.0000,
+        1.000000, -1.000000, 1.000000,   0.333089, 0.499511,   0.0000, -1.0000, 0.0000,
+        -1.000000, -1.000000, 1.000000,  0.000245, 0.499511,   0.0000, -1.0000, 0.0000,
+
+
+        1.000000, -1.000000, -1.000000,  0.666911, 0.999266,   1.0000, 0.0000, 0.0000,
+        1.000000, 1.000000, -1.000000,   0.666911, 0.500000,   1.0000, 0.0000, 0.0000,
+        1.000000, 1.000000, 1.000000,    0.999755, 0.500000,   1.0000, 0.0000, 0.0000,
+
+        1.000000, -1.000000, -1.000000,  0.666911, 0.999266,   1.0000, 0.0000, 0.0000,
+        1.000000, 1.000000, 1.000000,    0.999755, 0.500000,   1.0000, 0.0000, 0.0000,
+        1.000000, -1.000000, 1.000000,   0.999756, 0.999266,   1.0000, 0.0000, 0.0000,
+
+
+        -1.000000, -1.000000, -1.000000, 0.666422, 0.000245,   0.0000, 0.0000, -1.0000,
+        -1.000000, 1.000000, -1.000000,  0.666422, 0.499511,   0.0000, 0.0000, -1.0000,
+        1.000000, 1.000000, -1.000000,   0.333578, 0.499511,   0.0000, 0.0000, -1.0000,
+
+        -1.000000, -1.000000, -1.000000, 0.666422, 0.000245,   0.0000, 0.0000, -1.0000,
+        1.000000, 1.000000, -1.000000,   0.333578, 0.499511,   0.0000, 0.0000, -1.0000,
+        1.000000, -1.000000, -1.000000,  0.333578, 0.000245,   0.0000, 0.0000, -1.0000
+    };
+
+    static GLuint indices[] = {
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
+    };
+
+//    ui->widget->vertices = vertices; ui->widget->indices = indices;
   }
 }
 
@@ -67,11 +128,6 @@ void viewer::on_actionInfo_triggered() {
 
 void viewer::keyPressEvent(QKeyEvent *event) {
     ui->widget->keyPressEvent(event);
-}
-
-void viewer::resizeEvent(QResizeEvent *event) {
-    if (ui && ui->widget && ui->widget->paint)
-        ui->widget->resizeGL(event->size().width(), event->size().height());
 }
 
 void viewer::on_pushButton_bg_clicked() {
@@ -213,15 +269,15 @@ void viewer::on_doubleSpinBox_z_rot_valueChanged(double arg1) {
 }
 
 void viewer::on_actionOrthographic_Perspective_triggered() {
-  if (ui->widget->projection) {
-    QKeyEvent *key = new QKeyEvent(QEvent::KeyPress, Qt::Key_O, Qt::NoModifier);
-    ui->widget->keyPressEvent(key);
-    delete key;
-  } else {
-    QKeyEvent *key = new QKeyEvent(QEvent::KeyPress, Qt::Key_P, Qt::NoModifier);
-    ui->widget->keyPressEvent(key);
-    delete key;
-  }
+//  if (ui->widget->projection) {
+//    QKeyEvent *key = new QKeyEvent(QEvent::KeyPress, Qt::Key_O, Qt::NoModifier);
+//    ui->widget->keyPressEvent(key);
+//    delete key;
+//  } else {
+//    QKeyEvent *key = new QKeyEvent(QEvent::KeyPress, Qt::Key_P, Qt::NoModifier);
+//    ui->widget->keyPressEvent(key);
+//    delete key;
+//  }
 }
 
 void viewer::on_actionHide_triggered() {
