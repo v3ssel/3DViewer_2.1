@@ -13,17 +13,11 @@ class Controller {
     return controller_;
   }
 
-  std::vector<double>& GetVertex();
-  std::vector<int>& GetIndices();
-  std::vector<double>& GetNormals();
-  std::vector<double>& GetUvs();
-
-  void ParseVertex(const std::string path_to_file);
-  void ParseNormals(const std::string path_to_file);
-  void ParseIndices(const std::string path_to_file);
-  void MoveXYZ(double x1, double y1, double z1);
-  void Scale(double c);
-  void RotateXYZ(char coordinate, double angle);
+  void ParseVertex_3D(const std::string path_to_file);
+  QVector<GLfloat>&  GetArray();
+//  QVector<QVector3D> vertex_;
+//  QVector<QVector3D> normals_;
+//  QVector<QVector2D> uvs_;
 
  private:
   Controller() {}

@@ -72,13 +72,15 @@ void scene::LoadSettings_() {
   settings->endGroup();
 }
 
-void scene::InitModel(GLfloat *vertices, GLuint *indices) {
+void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint> *indices) {
     vao.bind();
 
-    vsize = 8, isize = 36;
+    vsize = 800, isize = vertices.size() / 8;
+    QVector<GLuint> iii;
+    for (int i = 0; i < isize; i++) iii.push_back(i);
 
     vbo.bind();
-    vbo.allocate(vertices, sizeof(vertices[0]) * 288);
+    vbo.allocate(vertices.data(), sizeof(vertices[0]) * vertices.size());
 
     program.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * sizeof(float));
     program.setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(float), 2, 8 * sizeof(float));
@@ -88,7 +90,7 @@ void scene::InitModel(GLfloat *vertices, GLuint *indices) {
     program.enableAttributeArray(2);
 
     ebo.bind();
-    ebo.allocate(indices, sizeof(indices[0]) * 36);
+    ebo.allocate(iii.data(), sizeof(iii[0]) * iii.size());
 
     program.bind();
 

@@ -24,7 +24,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
  public:
   scene(QWidget *parent = nullptr);
   void keyPressEvent(QKeyEvent *) override;
-  void InitModel(GLfloat *vertices, GLuint *indices);
+  void InitModel(QVector<GLfloat>& vertices, QVector<GLuint>* indices);
   void calculateCamera();
   QTimer *timer;
 

@@ -28,6 +28,8 @@ void viewer::on_actionOpen_triggered() {
       this, "Choose File", QDir::homePath(), tr("OBJ (*.obj)"));
   if (fname != "") {
     ui->widget->filename = fname;
+    s21::Controller::GetInstance().ParseVertex_3D(fname.toStdString());
+    ui->widget->InitModel(s21::Controller::GetInstance().GetArray(), nullptr);
     ui->widget->update();
 
 //    s21::Controller::GetInstance().GetVertex().clear();
@@ -36,93 +38,91 @@ void viewer::on_actionOpen_triggered() {
 //    s21::Controller::GetInstance().ParseIndices(fname.toStdString());
 
 //    m_texture = new QOpenGLTexture (QImage(":/Blocks.jpeg"));
-    GLfloat vertices[] = {
-        1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
-        -1.000000, 1.000000, -1.000000,  0.333089, 0.500000,   0.0000, 1.0000, 0.0000,
-        -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
+//    GLfloat vertices[] = {
+//        1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
+//        -1.000000, 1.000000, -1.000000,  0.333089, 0.500000,   0.0000, 1.0000, 0.0000,
+//        -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
 
-        1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
-        -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
-        1.000000, 1.000000, 1.000000,    0.000245, 0.999266,   0.0000, 1.0000, 0.0000,
-
-
-        1.000000, -1.000000, 1.000000,   0.666911, 0.499511,   0.0000, 0.0000, 1.0000,
-        1.000000, 1.000000, 1.000000,    0.666911, 0.000245,   0.0000, 0.0000, 1.0000,
-        -1.000000, 1.000000, 1.000000,   0.999755, 0.000245,   0.0000, 0.0000, 1.0000,
-
-        1.000000, -1.000000, 1.000000,   0.666911, 0.499511,   0.0000, 0.0000, 1.0000,
-        -1.000000, 1.000000, 1.000000,   0.999755, 0.000245,   0.0000, 0.0000, 1.0000,
-        -1.000000, -1.000000, 1.000000,  0.999756, 0.499511,   0.0000, 0.0000, 1.0000,
+//        1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
+//        -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
+//        1.000000, 1.000000, 1.000000,    0.000245, 0.999266,   0.0000, 1.0000, 0.0000,
 
 
-        -1.000000, -1.000000, 1.000000,  0.666422, 0.500000,   -1.0000, 0.0000, 0.0000,
-        -1.000000, 1.000000, 1.000000,   0.666422, 0.999266,   -1.0000, 0.0000, 0.0000,
-        -1.000000, 1.000000, -1.000000,  0.333578, 0.999266,   -1.0000, 0.0000, 0.0000,
+//        1.000000, -1.000000, 1.000000,   0.666911, 0.499511,   0.0000, 0.0000, 1.0000,
+//        1.000000, 1.000000, 1.000000,    0.666911, 0.000245,   0.0000, 0.0000, 1.0000,
+//        -1.000000, 1.000000, 1.000000,   0.999755, 0.000245,   0.0000, 0.0000, 1.0000,
 
-        -1.000000, -1.000000, 1.000000,  0.666422, 0.500000,   -1.0000, 0.0000, 0.0000,
-        -1.000000, 1.000000, -1.000000,  0.333578, 0.999266,   -1.0000, 0.0000, 0.0000,
-        -1.000000, -1.000000, -1.000000, 0.333578, 0.500000,   -1.0000, 0.0000, 0.0000,
-
-
-        -1.000000, -1.000000, -1.000000, 0.000245, 0.000245,   0.0000, -1.0000, 0.0000,
-        1.000000, -1.000000, -1.000000,  0.333089, 0.000245,   0.0000, -1.0000, 0.0000,
-        1.000000, -1.000000, 1.000000,   0.333089, 0.499511,   0.0000, -1.0000, 0.0000,
-
-        -1.000000, -1.000000, -1.000000, 0.000245, 0.000245,   0.0000, -1.0000, 0.0000,
-        1.000000, -1.000000, 1.000000,   0.333089, 0.499511,   0.0000, -1.0000, 0.0000,
-        -1.000000, -1.000000, 1.000000,  0.000245, 0.499511,   0.0000, -1.0000, 0.0000,
+//        1.000000, -1.000000, 1.000000,   0.666911, 0.499511,   0.0000, 0.0000, 1.0000,
+//        -1.000000, 1.000000, 1.000000,   0.999755, 0.000245,   0.0000, 0.0000, 1.0000,
+//        -1.000000, -1.000000, 1.000000,  0.999756, 0.499511,   0.0000, 0.0000, 1.0000,
 
 
-        1.000000, -1.000000, -1.000000,  0.666911, 0.999266,   1.0000, 0.0000, 0.0000,
-        1.000000, 1.000000, -1.000000,   0.666911, 0.500000,   1.0000, 0.0000, 0.0000,
-        1.000000, 1.000000, 1.000000,    0.999755, 0.500000,   1.0000, 0.0000, 0.0000,
+//        -1.000000, -1.000000, 1.000000,  0.666422, 0.500000,   -1.0000, 0.0000, 0.0000,
+//        -1.000000, 1.000000, 1.000000,   0.666422, 0.999266,   -1.0000, 0.0000, 0.0000,
+//        -1.000000, 1.000000, -1.000000,  0.333578, 0.999266,   -1.0000, 0.0000, 0.0000,
 
-        1.000000, -1.000000, -1.000000,  0.666911, 0.999266,   1.0000, 0.0000, 0.0000,
-        1.000000, 1.000000, 1.000000,    0.999755, 0.500000,   1.0000, 0.0000, 0.0000,
-        1.000000, -1.000000, 1.000000,   0.999756, 0.999266,   1.0000, 0.0000, 0.0000,
+//        -1.000000, -1.000000, 1.000000,  0.666422, 0.500000,   -1.0000, 0.0000, 0.0000,
+//        -1.000000, 1.000000, -1.000000,  0.333578, 0.999266,   -1.0000, 0.0000, 0.0000,
+//        -1.000000, -1.000000, -1.000000, 0.333578, 0.500000,   -1.0000, 0.0000, 0.0000,
 
 
-        -1.000000, -1.000000, -1.000000, 0.666422, 0.000245,   0.0000, 0.0000, -1.0000,
-        -1.000000, 1.000000, -1.000000,  0.666422, 0.499511,   0.0000, 0.0000, -1.0000,
-        1.000000, 1.000000, -1.000000,   0.333578, 0.499511,   0.0000, 0.0000, -1.0000,
+//        -1.000000, -1.000000, -1.000000, 0.000245, 0.000245,   0.0000, -1.0000, 0.0000,
+//        1.000000, -1.000000, -1.000000,  0.333089, 0.000245,   0.0000, -1.0000, 0.0000,
+//        1.000000, -1.000000, 1.000000,   0.333089, 0.499511,   0.0000, -1.0000, 0.0000,
 
-        -1.000000, -1.000000, -1.000000, 0.666422, 0.000245,   0.0000, 0.0000, -1.0000,
-        1.000000, 1.000000, -1.000000,   0.333578, 0.499511,   0.0000, 0.0000, -1.0000,
-        1.000000, -1.000000, -1.000000,  0.333578, 0.000245,   0.0000, 0.0000, -1.0000
-    };
+//        -1.000000, -1.000000, -1.000000, 0.000245, 0.000245,   0.0000, -1.0000, 0.0000,
+//        1.000000, -1.000000, 1.000000,   0.333089, 0.499511,   0.0000, -1.0000, 0.0000,
+//        -1.000000, -1.000000, 1.000000,  0.000245, 0.499511,   0.0000, -1.0000, 0.0000,
 
-    GLuint indices[] = {
-        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
-    };
 
-    ui->widget->InitModel(vertices, indices);
+//        1.000000, -1.000000, -1.000000,  0.666911, 0.999266,   1.0000, 0.0000, 0.0000,
+//        1.000000, 1.000000, -1.000000,   0.666911, 0.500000,   1.0000, 0.0000, 0.0000,
+//        1.000000, 1.000000, 1.000000,    0.999755, 0.500000,   1.0000, 0.0000, 0.0000,
+
+//        1.000000, -1.000000, -1.000000,  0.666911, 0.999266,   1.0000, 0.0000, 0.0000,
+//        1.000000, 1.000000, 1.000000,    0.999755, 0.500000,   1.0000, 0.0000, 0.0000,
+//        1.000000, -1.000000, 1.000000,   0.999756, 0.999266,   1.0000, 0.0000, 0.0000,
+
+
+//        -1.000000, -1.000000, -1.000000, 0.666422, 0.000245,   0.0000, 0.0000, -1.0000,
+//        -1.000000, 1.000000, -1.000000,  0.666422, 0.499511,   0.0000, 0.0000, -1.0000,
+//        1.000000, 1.000000, -1.000000,   0.333578, 0.499511,   0.0000, 0.0000, -1.0000,
+
+//        -1.000000, -1.000000, -1.000000, 0.666422, 0.000245,   0.0000, 0.0000, -1.0000,
+//        1.000000, 1.000000, -1.000000,   0.333578, 0.499511,   0.0000, 0.0000, -1.0000,
+//        1.000000, -1.000000, -1.000000,  0.333578, 0.000245,   0.0000, 0.0000, -1.0000
+//    };
+
+//    GLuint indices[] = {
+//        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
+//    };
   }
 }
 
 void viewer::on_actionClose_triggered() {
-  if (!s21::Controller::GetInstance().GetVertex().empty()) {
-    s21::Controller::GetInstance().GetVertex().clear();
-    s21::Controller::GetInstance().GetIndices().clear();
-    ui->widget->filename = "";
-    ui->widget->update();
-  }
+//  if (!s21::Controller::GetInstance().GetVertex().empty()) {
+//    s21::Controller::GetInstance().GetVertex().clear();
+//    s21::Controller::GetInstance().GetIndices().clear();
+//    ui->widget->filename = "";
+//    ui->widget->update();
+//  }
 }
 
 void viewer::on_actionInfo_triggered() {
-  QMessageBox::information(
-      this, "Information",
-      "Filename: " + ui->widget->filename + "\nVertices: " +
-          QString::number(
-              ui->widget->filename == ""
-                  ? 0
-                  : ((s21::Controller::GetInstance().GetVertex().size() - 3) /
-                     3)) +
-          "\nLines: " +
-          QString::number(
-              ui->widget->filename == ""
-                  ? 0
-                  : (s21::Controller::GetInstance().GetIndices().size() / 3 -
-                     4)));
+//  QMessageBox::information(
+//      this, "Information",
+//      "Filename: " + ui->widget->filename + "\nVertices: " +
+//          QString::number(
+//              ui->widget->filename == ""
+//                  ? 0
+//                  : ((s21::Controller::GetInstance().GetVertex().size() - 3) /
+//                     3)) +
+//          "\nLines: " +
+//          QString::number(
+//              ui->widget->filename == ""
+//                  ? 0
+//                  : (s21::Controller::GetInstance().GetIndices().size() / 3 -
+//                     4)));
 }
 
 void viewer::keyPressEvent(QKeyEvent *event) {
@@ -206,18 +206,18 @@ void viewer::on_pushButton_ver_none_clicked() {
 }
 
 void viewer::on_horizontalSlider_scale_sliderMoved(int position) {
-  if (ui->widget->filename != "") {
-    s21::Transform::GetInstance().Scale((double)position);
-  }
-  ui->lcdNumber_scale->display(position);
-  ui->widget->update();
+//  if (ui->widget->filename != "") {
+//    s21::Transform::GetInstance().Scale((double)position);
+//  }
+//  ui->lcdNumber_scale->display(position);
+//  ui->widget->update();
 }
 
 void viewer::on_doubleSpinBox_valueChanged(double arg1) {
-  if (ui->widget->filename != "") {
-    s21::Transform::GetInstance().Scale((double)arg1);
-  }
-  ui->widget->update();
+//  if (ui->widget->filename != "") {
+//    s21::Transform::GetInstance().Scale((double)arg1);
+//  }
+//  ui->widget->update();
 }
 
 void viewer::on_horizontalSlider_scale_sliderPressed() {
@@ -225,14 +225,14 @@ void viewer::on_horizontalSlider_scale_sliderPressed() {
 }
 
 void viewer::on_doubleSpinBox_x_move_valueChanged() {
-  if (ui->widget->filename != "") {
-    double x = ui->doubleSpinBox_x_move->value();
-    double y = ui->doubleSpinBox_y_move->value();
-    double z = ui->doubleSpinBox_z_move->value();
+//  if (ui->widget->filename != "") {
+//    double x = ui->doubleSpinBox_x_move->value();
+//    double y = ui->doubleSpinBox_y_move->value();
+//    double z = ui->doubleSpinBox_z_move->value();
 
-    s21::Transform::GetInstance().MoveXYZ(x, y, z);
-    ui->widget->update();
-  }
+//    s21::Transform::GetInstance().MoveXYZ(x, y, z);
+//    ui->widget->update();
+//  }
 }
 
 void viewer::on_doubleSpinBox_y_move_valueChanged() {
@@ -244,27 +244,27 @@ void viewer::on_doubleSpinBox_z_move_valueChanged() {
 }
 
 void viewer::on_doubleSpinBox_x_rot_valueChanged(double arg1) {
-  if (ui->widget->filename != "") {
-    s21::Transform::GetInstance().RotateXYZ('x',
-                                            ui->doubleSpinBox_x_rot->value());
-    ui->widget->update();
-  }
+//  if (ui->widget->filename != "") {
+//    s21::Transform::GetInstance().RotateXYZ('x',
+//                                            ui->doubleSpinBox_x_rot->value());
+//    ui->widget->update();
+//  }
 }
 
 void viewer::on_doubleSpinBox_y_rot_valueChanged(double arg1) {
-  if (ui->widget->filename != "") {
-    s21::Transform::GetInstance().RotateXYZ('y',
-                                            ui->doubleSpinBox_y_rot->value());
-    ui->widget->update();
-  }
+//  if (ui->widget->filename != "") {
+//    s21::Transform::GetInstance().RotateXYZ('y',
+//                                            ui->doubleSpinBox_y_rot->value());
+//    ui->widget->update();
+//  }
 }
 
 void viewer::on_doubleSpinBox_z_rot_valueChanged(double arg1) {
-  if (ui->widget->filename != "") {
-    s21::Transform::GetInstance().RotateXYZ('z',
-                                            ui->doubleSpinBox_z_rot->value());
-    ui->widget->update();
-  }
+//  if (ui->widget->filename != "") {
+//    s21::Transform::GetInstance().RotateXYZ('z',
+//                                            ui->doubleSpinBox_z_rot->value());
+//    ui->widget->update();
+//  }
 }
 
 void viewer::on_actionOrthographic_Perspective_triggered() {

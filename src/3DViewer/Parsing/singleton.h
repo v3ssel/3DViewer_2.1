@@ -1,85 +1,39 @@
-#ifndef SRC_CPART_PARSER_H
-#define SRC_CPART_PARSER_H
+#ifndef PARSE_H
+#define PARSE_H
 
-#include <cmath>
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <vector>
+#include <QFile>
 
+#include <QWidget>
+#include <QOpenGLVertexArrayObject>
 #include <QVector3D>
-#include <QtOpenGLWidgets/qopenglwidget.h> // для типа GLuint
 
-//  Singleton
+#include <QVector>
+
 namespace s21 {
-class Parser {
- public:
-  static Parser& GetInstance() {
-    static Parser instance;
-    return instance;
-  }
+class parse {
+public:
+    static parse& GetInstance() {
+        static parse instance;
+        return instance;
+    }
 
-  void ParseVertex(const std::string path_to_file);
-  void ParseIndices(const std::string path_to_file);
+    void ParseVertex_3D(const std::string path_to_file);
+    void ParseF(QStringList str);
+    void CountOfFacets(const std::string path_to_file);
 
-  std::vector<double>& GetVertex();
-  std::vector<int>& GetIndices();
-  std::vector<double>& GetNormals();
-  std::vector<double>& GetUvs();
+    QVector<GLfloat> facetsArray;
+    int allElemsIntoFacetsArr;
 
-  struct face // грань
-  {
-      struct vertex { // вершина
-          GLuint v_i; // индекс вершины
-          GLuint vt_i; // индекс текстурной вершины
-          GLuint vn_i; // индекс вершины нормали
-      };
+    QVector<QVector3D> vertex_;
+    QVector<QVector3D> normals_;
+    QVector<QVector2D> uvs_;
+private:
+    parse() {}
+    parse(const parse&);
+    void operator=(parse&);
 
-      vertex v[3]; // три вершины у треугольника - полигона
-
-      face(vertex v1,vertex v2,vertex v3) // полигон (грань)
-      {
-          v[0]=v1;
-          v[1]=v2;
-          v[2]=v3;
-      }
-  };
-
-//  std::vector<std::string> coord;
-//  std::vector<QVector3D> vertex;
-//  std::vector<QVector2D> uvs;
-//  std::vector<QVector3D> normals;
-//  std::vector<face> faces;
-
- private:
-  Parser() {}
-  Parser(const Parser&);
-  void operator=(Parser&);
-
-  std::vector<double> vertex_;
-  std::vector<int> indices_;
-
-  std::vector<double> normals_; // vn
-  std::vector<double> uvs_; // vt
-
+    uint CountOfFacets_;
 };
+}
 
-class Transform {
- public:
-  static Transform& GetInstance() {
-    static Transform instance;
-    return instance;
-  }
-
-  void MoveXYZ(double x1, double y1, double z1);
-  void Scale(double c);
-  void RotateXYZ(char coordinate, double angle);
-
- private:
-  Transform() {}
-  Transform(const Transform&);
-  void operator=(const Transform&);
-};
-}  // namespace s21
-
-#endif
+#endif // PARSE_H
