@@ -40,7 +40,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   QString filename;
   QSettings *settings;
 
-//  bool projection;
+  bool projection_type, wireframe;
 
   float red_bg, green_bg, blue_bg, alpha_bg;
   float red_vertex, green_vertex, blue_vertex;

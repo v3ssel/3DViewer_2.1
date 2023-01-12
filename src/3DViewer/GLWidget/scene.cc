@@ -8,7 +8,7 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
 
   cameraTarget = QVector3D(0.0f, 0.0f, 0.0f);
   zoom_scale_ = -10;
-  moving_ = false, dragging_ = false;
+  moving_ = false, dragging_ = false, wireframe = false, projection_type = true;
   start_x_ = 0, start_y_ = 0;
   x_rot_ = 1, y_rot_ = 1;
   x_trans_ = 0, y_trans_ = 0;
@@ -75,8 +75,6 @@ void scene::LoadSettings_() {
 void scene::InitModel(GLfloat *vertices, GLuint *indices) {
     vao.bind();
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
     vsize = 8, isize = 36;
 
     vbo.bind();
@@ -85,15 +83,28 @@ void scene::InitModel(GLfloat *vertices, GLuint *indices) {
     program.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * sizeof(float));
     program.setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(float), 2, 8 * sizeof(float));
     program.setAttributeBuffer(2, GL_FLOAT, 5 * sizeof(float), 3, 8 * sizeof(float));
+    program.enableAttributeArray(0);
+    program.enableAttributeArray(1);
+    program.enableAttributeArray(2);
 
     ebo.bind();
     ebo.allocate(indices, sizeof(indices[0]) * 36);
+
     program.bind();
 
-    vbo.bind();
+    vao.release();
+    ebo.release();
+    program.release();
+
     vao_light.bind();
+    vbo.bind();
     light.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * sizeof(float));
-    program.bind();
+    light.enableAttributeArray(0);
+    light.bind();
+
+    vao_light.release();
+    vbo.release();
+    light.release();
 }
 
 void scene::initializeGL() {
@@ -153,9 +164,9 @@ void scene::paintGL() {
 
     projection.setToIdentity();
     view.setToIdentity();
-//    projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
-    projection.perspective(45.0f, (float)width() / height(), 0.1f, 100.0f);
-//    projection.frustum(-2, 2, -2, 2, 2, 1000);
+
+    projection_type ? projection.perspective(45.0f, (float)width() / height(), 0.1f, 100.0f) : projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
+
     view.lookAt(cameraPos, cameraTarget, cameraUp);
 
     program.setUniformValueArray(program.uniformLocation("projection"), &projection, 1);
@@ -167,32 +178,25 @@ void scene::paintGL() {
 
     texture->bind();
 
+    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     vao.bind();
-    program.enableAttributeArray(0);
-    program.enableAttributeArray(1);
-    program.enableAttributeArray(2);
     glDrawArrays(GL_POINTS, 0, vsize);
     glPointSize(15);
     glDrawElements(GL_TRIANGLES, isize, GL_UNSIGNED_INT, nullptr);
-    program.disableAttributeArray(0);
-    program.disableAttributeArray(1);
-    program.disableAttributeArray(2);
 
     light.bind();
 
     light.setUniformValueArray(light.uniformLocation("projection"), &projection, 1);
     light.setUniformValueArray(light.uniformLocation("view"), &view, 1);
 
-    lamp = model;
     lamp.setToIdentity();
     lamp.translate(lpos);
     lamp.scale(0.1f);
     light.setUniformValueArray(light.uniformLocation("model"), &lamp, 1);
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     vao_light.bind();
-    light.enableAttributeArray(0);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    light.disableAttributeArray(0);
 
     vao.release();
     vao_light.release();
