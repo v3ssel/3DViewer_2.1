@@ -72,10 +72,10 @@ void scene::LoadSettings_() {
   settings->endGroup();
 }
 
-void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint> *indices) {
+void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint>* indices) {
     vao.bind();
 
-    vsize = 800, isize = vertices.size() / 8;
+    vsize = 10000, isize = vertices.size() / 8;
     QVector<GLuint> iii;
     for (int i = 0; i < isize; i++) iii.push_back(i);
 
@@ -118,11 +118,6 @@ void scene::initializeGL() {
     program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/frag.glsl");
     program.link();
 
-    texture = new QOpenGLTexture(QImage("/Users/stevenso/CPP5_3DViewer_v2.1-0/src/3DViewer/GLWidget/Blocks.jpeg"));
-    texture->setMinificationFilter(QOpenGLTexture::Nearest);
-    texture->setMagnificationFilter(QOpenGLTexture::Linear);
-    texture->setWrapMode(QOpenGLTexture::Repeat);
-
     light.create();
     light.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/l_vert.glsl");
     light.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/l_frag.glsl");
@@ -151,113 +146,72 @@ void scene::paintGL() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     calculateCamera();
+
     program.bind();
 
-    program.setUniformValueArray(program.uniformLocation("view"), &view, 1);
+    /*if (is_textured)*/
+      if (texture)  program.setUniformValue("is_textured", true);
+//    else
+        QVector3D ocol(1.0f, 0.9f, 0.31f);
+        program.setUniformValueArray("objectColor", &ocol, 1);
 
-//    QVector3D ocol(1.0f, 0.9f, 0.31f);
-//    program.setUniformValueArray(program.uniformLocation("objectColor"), &ocol, 1);
-    QVector3D lcol(1.0f, 1.0f, 1.0f);
-    program.setUniformValueArray(program.uniformLocation("lightColor"), &lcol, 1);
 
-    QVector3D lpos(1.0f, 1.0f, 1.0f);
-    program.setUniformValueArray(program.uniformLocation("lightPos"), &lpos, 1);
-    program.setUniformValueArray(program.uniformLocation("viewPos"), &cameraPos, 1);
+    /*if (have_normals)*/
+        program.setUniformValue("have_normals", true);
+        QVector3D lcol(1.0f, 1.0f, 1.0f);
+        program.setUniformValueArray("lightColor", &lcol, 1);
+        QVector3D lpos(1.0f, 1.0f, 1.0f);
+        program.setUniformValueArray("lightPos", &lpos, 1);
+        program.setUniformValueArray("viewPos", &cameraPos, 1);
 
+
+    program.setUniformValueArray("view", &view, 1);
     projection.setToIdentity();
     view.setToIdentity();
 
-    projection_type ? projection.perspective(45.0f, (float)width() / height(), 0.1f, 100.0f) : projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
+    projection_type ? projection.perspective(45.0f, (float)width() / height(), 0.1f, 100.0f)
+                    : projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
 
     view.lookAt(cameraPos, cameraTarget, cameraUp);
 
-    program.setUniformValueArray(program.uniformLocation("projection"), &projection, 1);
-    QVector4D col = QVector4D(0.3f, 0.0f, 0.0f, 1.0f);
-    program.setUniformValueArray(program.uniformLocation("lineColor"), &col, 1);
-    program.setUniformValueArray(program.uniformLocation("model"), &model, 1);
+    program.setUniformValueArray("projection", &projection, 1);
+    program.setUniformValueArray("model", &model, 1);
 
     vao.bind();
 
-    texture->bind();
+//    /*if (is_textured)*/ texture->bind();
+    if (texture) texture->bind();
 
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     vao.bind();
-    glDrawArrays(GL_POINTS, 0, vsize);
-    glPointSize(15);
+    glDrawArrays(GL_POINTS, 1, vsize);
+    glPointSize(vertex_size);
     glDrawElements(GL_TRIANGLES, isize, GL_UNSIGNED_INT, nullptr);
 
-    light.bind();
-
-    light.setUniformValueArray(light.uniformLocation("projection"), &projection, 1);
-    light.setUniformValueArray(light.uniformLocation("view"), &view, 1);
-
-    lamp.setToIdentity();
-    lamp.translate(lpos);
-    lamp.scale(0.1f);
-    light.setUniformValueArray(light.uniformLocation("model"), &lamp, 1);
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    vao_light.bind();
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-
     vao.release();
-    vao_light.release();
-//  glMatrixMode(GL_PROJECTION);
-//  glLoadIdentity();
-//  if (projection) {
-//    glFrustum(-1, 1, -1, 1, 1, 1000000);
-//  } else {
-//    glOrtho(-1, 1, -1, 1, -1, 1000000);
-//  }
+    program.release();
 
-//  if (projection)
-//    glTranslatef(x_trans_, y_trans_, zoom_scale_);
-//  else
-//    glScaled(zoom_scale_, zoom_scale_, zoom_scale_);
+    /*if (have_normals)*/
+        light.bind();
 
-//  glClearColor(red_bg / 255.0f, green_bg / 255.0f, blue_bg / 255.0f, alpha_bg);
-//  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//  glMatrixMode(GL_MODELVIEW);
-//  glLoadIdentity();
+        light.setUniformValueArray("projection", &projection, 1);
+        light.setUniformValueArray("view", &view, 1);
 
-//  glTranslatef(0,0,-2.5);
-//  glRotatef(x_rot_, 1, 0, 0);
-//  glRotatef(y_rot_, 0, 1, 0);
-//  angle += 0.3f;
+        lamp.setToIdentity();
+        lamp.translate(lpos);
+        lamp.scale(0.1f);
+        light.setUniformValueArray("model", &lamp, 1);
 
-//  StartDraw_();
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        vao_light.bind();
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        vao_light.release();
+        light.release();
 }
 
 void scene::StartDraw_() {
-//  glVertexPointer(3, GL_DOUBLE, 0,
-//                  s21::Controller::GetInstance().GetVertex().data()); // массив данных вершин
-//  glEnableClientState(GL_VERTEX_ARRAY); // позволяют включать и отключать массивы соответственно
 
-//  glColor3d(red_vertex / 255.0f, green_vertex / 255.0f, blue_vertex / 255.0f);
-//  glPointSize(vertex_size);
-//  if (!circle_square) glEnable(GL_POINT_SMOOTH);
-//  if (!is_none)
-//    glDrawArrays(GL_POINTS, 1,
-//                 ((s21::Controller::GetInstance().GetVertex().size()
-//                       ? s21::Controller::GetInstance().GetVertex().size() + 1
-//                       : 3) -
-//                  3) /
-//                     3);
-
-//  glColor3d(red_lines / 255.0f, green_lines / 255.0f, blue_lines / 255.0f);
-//  glLineWidth(line_width);
-//  if (dashed_solid) {
-//    glLineStipple(1, 0x00FF);
-//    glEnable(GL_LINE_STIPPLE);
-//  }
-
-//  glDrawElements(GL_LINES, s21::Controller::GetInstance().GetIndices().size(),
-//                 GL_UNSIGNED_INT,
-//                 s21::Controller::GetInstance().GetIndices().data());
-//  SaveSettings_();
-//  glDisable(GL_LINE_STIPPLE);
-//  glDisable(GL_POINT_SMOOTH);
-//  glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void scene::calculateCamera() {
@@ -292,8 +246,6 @@ void scene::mousePressEvent(QMouseEvent* mouse) {
 
 void scene::mouseMoveEvent(QMouseEvent* mouse) {
   if (moving_) {
-//    y_rot_ = y_rot_ + (mouse->pos().x() - start_x_);
-//    x_rot_ = x_rot_ + (mouse->pos().y() - start_y_);
       float tmpX = mouse->position().x();
       float tmpY = mouse->position().y();
 
@@ -332,11 +284,11 @@ void scene::keyPressEvent(QKeyEvent* event) {
       break;
     case Qt::Key_O:
       x_trans_ = 0, y_trans_ = 0, zoom_scale_ = 0.1;
-//      projection = false;
+      projection_type = false;
       break;
     case Qt::Key_P:
       x_trans_ = 0, y_trans_ = 0, zoom_scale_ = -10;
-//      projection = true;
+      projection_type = true;
       break;
   }
   update();

@@ -16,23 +16,31 @@ public:
         static parse instance;
         return instance;
     }
+    void CheckFlags(const std::string path_to_file);
 
     void ParseVertex_3D(const std::string path_to_file);
     void ParseF(QStringList str);
-    void CountOfFacets(const std::string path_to_file);
+
+    void pushArr(const char **tmp);
 
     QVector<GLfloat> facetsArray;
+    QVector<QVector3D> & getVertexArr() { return vertex_; }
+    QVector<QVector3D> & getNormalsArr() { return normals_; }
+    QVector<QVector2D> & getUVsArr() { return uvs_; }
+
     int allElemsIntoFacetsArr;
 
-    QVector<QVector3D> vertex_;
-    QVector<QVector3D> normals_;
-    QVector<QVector2D> uvs_;
+    bool vn_used = false;
+    bool vt_used = false;
+
 private:
     parse() {}
     parse(const parse&);
     void operator=(parse&);
 
-    uint CountOfFacets_;
+    QVector<QVector3D> vertex_;
+    QVector<QVector3D> normals_;
+    QVector<QVector2D> uvs_;
 };
 }
 

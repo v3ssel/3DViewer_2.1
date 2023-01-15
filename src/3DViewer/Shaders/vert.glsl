@@ -10,16 +10,17 @@ out  vec2 TexCoord;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform vec4 lineColor;
+//uniform vec3 lineColor;
 
-out vec4 vertexColor;
+//out vec3 vertexColor;
 
 void main() {
+//    vertexColor = lineColor;
+
     FragPos = vec3(model * vec4(aPos, 1.0));
     Normal = mat3(transpose(inverse(model))) * aNormal;
 
     TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
     gl_Position = projection * view * vec4(FragPos, 1.0);
 
-    vertexColor = lineColor;
 }

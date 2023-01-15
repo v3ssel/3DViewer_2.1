@@ -78,8 +78,8 @@
   <widget class="QDockWidget" name="dockWidget_main">
    <property name="minimumSize">
     <size>
-     <width>0</width>
-     <height>0</height>
+     <width>93</width>
+     <height>115</height>
     </size>
    </property>
    <property name="baseSize">
@@ -150,7 +150,7 @@ QDockWidget::float-button {
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>355</width>
+          <width>561</width>
           <height>1048</height>
          </rect>
         </property>
@@ -1003,8 +1003,8 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
   <widget class="QDockWidget" name="dockWidget_3">
    <property name="minimumSize">
     <size>
-     <width>0</width>
-     <height>0</height>
+     <width>93</width>
+     <height>115</height>
     </size>
    </property>
    <property name="autoFillBackground">
@@ -1050,7 +1050,7 @@ QDockWidget::float-button {
           <x>0</x>
           <y>0</y>
           <width>1896</width>
-          <height>239</height>
+          <height>238</height>
          </rect>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_32">
@@ -1499,7 +1499,7 @@ QDockWidget::float-button {
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_42">
               <item>
-               <widget class="QPushButton" name="pushButton_flat_shading_4">
+               <widget class="QPushButton" name="pushButton_flat_shading">
                 <property name="font">
                  <font>
                   <family>Charter</family>
@@ -1511,7 +1511,7 @@ QDockWidget::float-button {
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_smooth_shading_4">
+               <widget class="QPushButton" name="pushButton_smooth_shading">
                 <property name="font">
                  <font>
                   <family>Charter</family>
@@ -1523,7 +1523,7 @@ QDockWidget::float-button {
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_wireframe_4">
+               <widget class="QPushButton" name="pushButton_wireframe">
                 <property name="font">
                  <font>
                   <family>Charter</family>
@@ -1589,7 +1589,7 @@ QDockWidget::float-button {
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_45">
               <item>
-               <widget class="QPushButton" name="pushButton_10">
+               <widget class="QPushButton" name="pushButton_apply_texture">
                 <property name="font">
                  <font>
                   <family>Charter</family>
@@ -1601,7 +1601,7 @@ QDockWidget::float-button {
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_11">
+               <widget class="QPushButton" name="pushButton_unload_texture">
                 <property name="font">
                  <font>
                   <family>Charter</family>
@@ -1613,7 +1613,7 @@ QDockWidget::float-button {
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_12">
+               <widget class="QPushButton" name="pushButton_save_uvmap">
                 <property name="font">
                  <font>
                   <family>Charter</family>
@@ -1726,7 +1726,6 @@ QDockWidget::float-button {
    </property>
   </action>
   <zorder>dockWidget_main</zorder>
-  <zorder>dockWidget</zorder>
  </widget>
  <customwidgets>
   <customwidget>

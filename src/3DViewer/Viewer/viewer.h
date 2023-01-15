@@ -56,6 +56,7 @@ class viewer : public QMainWindow {
   void on_pushButton_ver_circle_clicked();
   void on_pushButton_ver_square_clicked();
   void on_pushButton_ver_none_clicked();
+  void on_pushButton_wireframe_clicked();
 
   void on_doubleSpinBox_x_move_valueChanged();
   void on_doubleSpinBox_y_move_valueChanged();
@@ -71,7 +72,12 @@ class viewer : public QMainWindow {
 
   void on_actionGIF_triggered();
 
- private:
+
+  void on_pushButton_apply_texture_clicked();
+
+  void on_pushButton_unload_texture_clicked();
+
+private:
   void SaveImage_(QString format);
   void Recording_();
   void SaveGIF_();
@@ -82,7 +88,5 @@ class viewer : public QMainWindow {
   QVector<QImage> GIF_;
 
   Ui::viewer *ui;
-
-  QOpenGLTexture *m_texture;
 };
 #endif  // VIEWER_H

@@ -37,8 +37,7 @@ void viewer::on_actionOpen_triggered() {
 //    s21::Controller::GetInstance().ParseVertex(fname.toStdString());
 //    s21::Controller::GetInstance().ParseIndices(fname.toStdString());
 
-//    m_texture = new QOpenGLTexture (QImage(":/Blocks.jpeg"));
-//    GLfloat vertices[] = {
+//    QVector<GLfloat> vertices = {
 //        1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
 //        -1.000000, 1.000000, -1.000000,  0.333089, 0.500000,   0.0000, 1.0000, 0.0000,
 //        -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
@@ -93,9 +92,10 @@ void viewer::on_actionOpen_triggered() {
 //        1.000000, -1.000000, -1.000000,  0.333578, 0.000245,   0.0000, 0.0000, -1.0000
 //    };
 
-//    GLuint indices[] = {
+//    QVector<GLuint> indices = {
 //        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
 //    };
+//    ui->widget->InitModel(vertices, nullptr);
   }
 }
 
@@ -268,15 +268,11 @@ void viewer::on_doubleSpinBox_z_rot_valueChanged(double arg1) {
 }
 
 void viewer::on_actionOrthographic_Perspective_triggered() {
-//  if (ui->widget->projection) {
-//    QKeyEvent *key = new QKeyEvent(QEvent::KeyPress, Qt::Key_O, Qt::NoModifier);
-//    ui->widget->keyPressEvent(key);
-//    delete key;
-//  } else {
-//    QKeyEvent *key = new QKeyEvent(QEvent::KeyPress, Qt::Key_P, Qt::NoModifier);
-//    ui->widget->keyPressEvent(key);
-//    delete key;
-//  }
+  QKeyEvent *key = new QKeyEvent(QEvent::KeyPress,
+                                 ui->widget->projection_type ? Qt::Key_O : Qt::Key_P,
+                                 Qt::NoModifier);
+  ui->widget->keyPressEvent(key);
+  delete key;
 }
 
 void viewer::on_actionHide_triggered() {
@@ -342,3 +338,38 @@ void viewer::SaveGIF_() {
                       QString::number(ui->widget->green_bg) + ", " +
                       QString::number(ui->widget->blue_bg) + ");}");
 }
+
+void viewer::on_pushButton_wireframe_clicked() {
+    if (!ui->widget->wireframe) ui->widget->wireframe = true;
+    if (!ui->widget->texture) delete ui->widget->texture;
+    ui->widget->update();
+}
+
+
+void viewer::on_pushButton_apply_texture_clicked() {
+//    if (is_textured) {
+//        QMessageBox::warning(this, "Error!", "OBJ file doesnt contain texture coordinates");
+//        return;
+//    }
+    ui->widget->wireframe = false;
+    QString fname = QFileDialog::getOpenFileName(
+        this, "Choose File", QDir::homePath(), tr("BMP (*.bmp)"));
+
+    if (fname != "") {
+        if (!ui->widget->texture)
+            delete ui->widget->texture;
+        ui->widget->texture = new QOpenGLTexture(QImage(fname));
+        ui->widget->texture->setMinificationFilter(QOpenGLTexture::Nearest);
+        ui->widget->texture->setMagnificationFilter(QOpenGLTexture::Linear);
+        ui->widget->texture->setWrapMode(QOpenGLTexture::Repeat);
+    }
+    ui->widget->update();
+}
+
+
+void viewer::on_pushButton_unload_texture_clicked() {
+    if (!ui->widget->texture)
+        delete ui->widget->texture;
+    ui->widget->update();
+}
+

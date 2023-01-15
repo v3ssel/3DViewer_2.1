@@ -30,10 +30,9 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
 
   QOpenGLShaderProgram program, light;
   QOpenGLVertexArrayObject vao, vao_light;
-  QOpenGLBuffer vbo;
-  QOpenGLBuffer ebo;
+  QOpenGLBuffer vbo, ebo;
 
-  QOpenGLTexture *texture;
+  QOpenGLTexture *texture = nullptr;
 
   QMatrix4x4 view, projection, model, lamp;
 
