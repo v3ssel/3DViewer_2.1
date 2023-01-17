@@ -8,7 +8,9 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
 
   cameraTarget = QVector3D(0.0f, 0.0f, 0.0f);
   zoom_scale_ = -10;
-  moving_ = false, dragging_ = false, wireframe = false, projection_type = true;
+  moving_ = false, dragging_ = false;
+  wireframe = false, flat_shading = false, projection_type = true;
+  light_x = 1.0f, light_y = 1.0f, light_z = 1.0f;
   start_x_ = 0, start_y_ = 0;
   x_rot_ = 1, y_rot_ = 1;
   x_trans_ = 0, y_trans_ = 0;
@@ -142,7 +144,7 @@ void scene::resizeGL(int w, int h) {
 }
 
 void scene::paintGL() {
-    glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+    glClearColor(red_bg, green_bg, blue_bg, alpha_bg);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     calculateCamera();
@@ -160,10 +162,11 @@ void scene::paintGL() {
         program.setUniformValue("have_normals", true);
         QVector3D lcol(1.0f, 1.0f, 1.0f);
         program.setUniformValueArray("lightColor", &lcol, 1);
-        QVector3D lpos(1.0f, 1.0f, 1.0f);
+        QVector3D lpos(light_x, light_y, light_z);
         program.setUniformValueArray("lightPos", &lpos, 1);
         program.setUniformValueArray("viewPos", &cameraPos, 1);
 
+    program.setUniformValue("flat_shading", flat_shading ? true : false);
 
     program.setUniformValueArray("view", &view, 1);
     projection.setToIdentity();

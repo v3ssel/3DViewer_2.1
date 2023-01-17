@@ -1,9 +1,10 @@
 #version 330 core
 out vec4 FragColor;
 
+flat in  vec3 NormalFlat;
+smooth in  vec3 NormalSmooth;
+smooth in  vec3 FragPos;
 in vec2 TexCoord;
-in vec3 Normal;
-in vec3 FragPos;
 
 uniform vec3 objectColor;
 uniform vec3 lightPos;
@@ -12,6 +13,7 @@ uniform vec3 lightColor;
 
 uniform bool is_textured;
 uniform bool have_normals;
+uniform bool flat_shading;
 
 uniform sampler2D texture1;
 
@@ -21,6 +23,13 @@ void main() {
         color = texture(texture1, TexCoord).rgb;
     else
         color = objectColor;
+
+    vec3 Normal;
+    if (flat_shading)
+        Normal = NormalFlat;
+    else
+        Normal = NormalSmooth;
+
 
     vec3 result = color;
     if (have_normals) {
@@ -44,5 +53,4 @@ void main() {
     }
 
     FragColor = vec4(result, 1.0);
-        //FragColor = vertexColor;
 }

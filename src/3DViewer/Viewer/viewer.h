@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QVector>
+#include <QPainter>
 #include <iostream>
 
 #include "../Controller/controller.h"
@@ -72,10 +73,16 @@ class viewer : public QMainWindow {
 
   void on_actionGIF_triggered();
 
-
   void on_pushButton_apply_texture_clicked();
-
   void on_pushButton_unload_texture_clicked();
+  void on_pushButton_save_uvmap_clicked();
+
+  void on_pushButton_flat_shading_clicked();
+  void on_pushButton_smooth_shading_clicked();
+
+  void on_doubleSpinBox_x_light_pos_valueChanged(double arg1);
+  void on_doubleSpinBox_y_light_pos_valueChanged(double arg1);
+  void on_doubleSpinBox_z_light_pos_valueChanged(double arg1);
 
 private:
   void SaveImage_(QString format);

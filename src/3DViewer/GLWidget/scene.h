@@ -26,7 +26,6 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   void keyPressEvent(QKeyEvent *) override;
   void InitModel(QVector<GLfloat>& vertices, QVector<GLuint>* indices);
   void calculateCamera();
-  QTimer *timer;
 
   QOpenGLShaderProgram program, light;
   QOpenGLVertexArrayObject vao, vao_light;
@@ -39,8 +38,11 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   QString filename;
   QSettings *settings;
 
-  bool projection_type, wireframe;
+  bool projection_type, wireframe, flat_shading;
 
+  bool has_texture, has_normals; // tmp?
+
+  float light_x, light_y, light_z;
   float red_bg, green_bg, blue_bg, alpha_bg;
   float red_vertex, green_vertex, blue_vertex;
   float red_lines, green_lines, blue_lines;

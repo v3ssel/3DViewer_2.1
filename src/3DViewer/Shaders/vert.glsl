@@ -3,24 +3,19 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
 layout (location = 2) in vec3 aNormal;
 
-out  vec3 FragPos;
-out  vec3 Normal;
+flat out  vec3 NormalFlat;
+smooth out  vec3 FragPos;
+smooth out  vec3 NormalSmooth;
 out  vec2 TexCoord;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-//uniform vec3 lineColor;
-
-//out vec3 vertexColor;
 
 void main() {
-//    vertexColor = lineColor;
-
     FragPos = vec3(model * vec4(aPos, 1.0));
-    Normal = mat3(transpose(inverse(model))) * aNormal;
-
+    NormalFlat = NormalSmooth = mat3(transpose(inverse(model))) * aNormal;
     TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
-    gl_Position = projection * view * vec4(FragPos, 1.0);
 
+    gl_Position = projection * view * vec4(FragPos, 1.0);
 }

@@ -345,12 +345,20 @@ void viewer::on_pushButton_wireframe_clicked() {
     ui->widget->update();
 }
 
+void viewer::on_pushButton_flat_shading_clicked() {
+    if (ui->widget->wireframe) ui->widget->wireframe = false;
+    ui->widget->flat_shading = true;
+    ui->widget->update();
+}
+
+
+void viewer::on_pushButton_smooth_shading_clicked() {
+    if (ui->widget->wireframe) ui->widget->wireframe = false;
+    ui->widget->flat_shading = false;
+    ui->widget->update();
+}
 
 void viewer::on_pushButton_apply_texture_clicked() {
-//    if (is_textured) {
-//        QMessageBox::warning(this, "Error!", "OBJ file doesnt contain texture coordinates");
-//        return;
-//    }
     ui->widget->wireframe = false;
     QString fname = QFileDialog::getOpenFileName(
         this, "Choose File", QDir::homePath(), tr("BMP (*.bmp)"));
@@ -366,10 +374,138 @@ void viewer::on_pushButton_apply_texture_clicked() {
     ui->widget->update();
 }
 
-
 void viewer::on_pushButton_unload_texture_clicked() {
     if (!ui->widget->texture)
         delete ui->widget->texture;
     ui->widget->update();
 }
+
+void viewer::on_doubleSpinBox_x_light_pos_valueChanged(double arg1) {
+    ui->widget->light_x = arg1;
+    ui->widget->update();
+}
+
+
+void viewer::on_doubleSpinBox_y_light_pos_valueChanged(double arg1) {
+    ui->widget->light_y = arg1;
+    ui->widget->update();
+}
+
+
+void viewer::on_doubleSpinBox_z_light_pos_valueChanged(double arg1) {
+    ui->widget->light_z = arg1;
+    ui->widget->update();
+}
+
+static const QVector<GLfloat> text = {
+//    0.000245, 0.500000,
+//    0.333089, 0.500000,
+//    0.333089, 0.999266,
+
+//    0.000245, 0.500000,
+//    0.333089, 0.999266,
+//    0.000245, 0.999266,
+
+
+//    0.666911, 0.499511,
+//    0.666911, 0.000245,
+//    0.999755, 0.000245,
+
+//    0.666911, 0.499511,
+//    0.999755, 0.000245,
+//    0.999756, 0.499511,
+
+
+//    0.666422, 0.500000,
+//    0.666422, 0.999266,
+//    0.333578, 0.999266,
+
+//    0.666422, 0.500000,
+//    0.333578, 0.999266,
+//    0.333578, 0.500000,
+
+
+//    0.000245, 0.000245,
+//    0.333089, 0.000245,
+//    0.333089, 0.499511,
+
+//    0.000245, 0.000245,
+//    0.333089, 0.499511,
+//    0.000245, 0.499511,
+
+
+//    0.666911, 0.999266,
+//    0.666911, 0.500000,
+//    0.999755, 0.500000,
+
+//    0.666911, 0.999266,
+//    0.999755, 0.500000,
+//    0.999756, 0.999266,
+
+
+//    0.666422, 0.000245,
+//    0.666422, 0.499511,
+//    0.333578, 0.499511,
+
+//    0.666422, 0.000245,
+//    0.333578, 0.499511,
+//    0.333578, 0.000245
+    0.000245, 0.500000,
+    0.333089, 0.500000,
+    0.333089, 0.999266,
+    0.000245, 0.999266,
+    0.666911, 0.499511,
+    0.666911, 0.000245,
+    0.999755, 0.000245,
+    0.999756, 0.499511,
+    0.666422, 0.500000,
+    0.666422, 0.999266,
+    0.333578, 0.999266,
+    0.333578, 0.500000,
+    0.000245, 0.000245,
+    0.333089, 0.000245,
+    0.333089, 0.499511,
+    0.000245, 0.499511,
+    0.666911, 0.999266,
+    0.666911, 0.500000,
+    0.999755, 0.500000,
+    0.999756, 0.999266,
+    0.666422, 0.000245,
+    0.666422, 0.499511,
+    0.333578, 0.499511,
+    0.333578, 0.000245
+
+};
+
+void viewer::on_pushButton_save_uvmap_clicked() {
+    QString fname = QFileDialog::getOpenFileName(
+        this, "Choose File", QDir::homePath(), tr("BMP (*.bmp)"));
+
+    QPixmap map(fname);
+    QPainter painter(&map);
+
+    QList<QLine> parser_x_y;
+    int count = 0;
+    for (int i = 0; text.size() > i; i+=2, ++count) {
+        if (i == 0) {
+            parser_x_y.push_back(QLine(i* map.width(), i * map.height(), text[i]* map.width(), text[i+1]* map.height()));
+        }
+        parser_x_y.push_back(QLine(parser_x_y[count].x2()* map.width(), parser_x_y[count].y2()* map.height(), text[i]* map.width(), text[i+1]* map.height()));
+
+    }
+
+    for (int i = 0; parser_x_y.size() > i; ++i) {
+        painter.drawLine(parser_x_y[i]);
+    }
+
+//    painter.drawLine( map.height(), map.width(), 0, 0);
+
+    QString str = QFileDialog::getSaveFileName(
+        this, tr("Save GIF"), QDir::homePath(), tr("BMP (*.bmp)"));
+    map.save(str);
+//    painter.save();
+//    QPixmap image(fname);
+//    image
+}
+
 

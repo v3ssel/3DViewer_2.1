@@ -1218,7 +1218,7 @@ QDockWidget::float-button {
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_34">
                    <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_x_light_pos_4">
+                    <widget class="QDoubleSpinBox" name="doubleSpinBox_x_light_pos">
                      <property name="decimals">
                       <number>2</number>
                      </property>
@@ -1227,11 +1227,14 @@ QDockWidget::float-button {
                      </property>
                      <property name="maximum">
                       <double>1500.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.010000000000000</double>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_y_light_pos_4">
+                    <widget class="QDoubleSpinBox" name="doubleSpinBox_y_light_pos">
                      <property name="decimals">
                       <number>2</number>
                      </property>
@@ -1240,11 +1243,14 @@ QDockWidget::float-button {
                      </property>
                      <property name="maximum">
                       <double>1500.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.010000000000000</double>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_z_light_pos_4">
+                    <widget class="QDoubleSpinBox" name="doubleSpinBox_z_light_pos">
                      <property name="decimals">
                       <number>2</number>
                      </property>
@@ -1253,6 +1259,9 @@ QDockWidget::float-button {
                      </property>
                      <property name="maximum">
                       <double>1500.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.010000000000000</double>
                      </property>
                     </widget>
                    </item>
@@ -1335,7 +1344,7 @@ QDockWidget::float-button {
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_35">
                    <item>
-                    <widget class="QLineEdit" name="lineEdit_text_x_move_10">
+                    <widget class="QLineEdit" name="lineEdit_text_x_move_2">
                      <property name="font">
                       <font>
                        <family>Charter</family>
@@ -1366,7 +1375,7 @@ QDockWidget::float-button {
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="lineEdit_text_y_move_10">
+                    <widget class="QLineEdit" name="lineEdit_text_y_move_2">
                      <property name="font">
                       <font>
                        <family>Charter</family>
@@ -1397,7 +1406,7 @@ QDockWidget::float-button {
                     </widget>
                    </item>
                    <item>
-                    <widget class="QLineEdit" name="lineEdit_text_z_move_10">
+                    <widget class="QLineEdit" name="lineEdit_text_z_move_2">
                      <property name="font">
                       <font>
                        <family>Charter</family>
@@ -1432,7 +1441,7 @@ QDockWidget::float-button {
                  <item>
                   <layout class="QHBoxLayout" name="horizontalLayout_36">
                    <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_r_light_intens_4">
+                    <widget class="QDoubleSpinBox" name="doubleSpinBox_r_light_intens">
                      <property name="decimals">
                       <number>2</number>
                      </property>
@@ -1441,11 +1450,14 @@ QDockWidget::float-button {
                      </property>
                      <property name="maximum">
                       <double>1500.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.010000000000000</double>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_g_light_intens_4">
+                    <widget class="QDoubleSpinBox" name="doubleSpinBox_g_light_intens">
                      <property name="decimals">
                       <number>2</number>
                      </property>
@@ -1454,11 +1466,14 @@ QDockWidget::float-button {
                      </property>
                      <property name="maximum">
                       <double>1500.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.010000000000000</double>
                      </property>
                     </widget>
                    </item>
                    <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_z_light_intens_4">
+                    <widget class="QDoubleSpinBox" name="doubleSpinBox_z_light_intens">
                      <property name="decimals">
                       <number>2</number>
                      </property>
@@ -1467,6 +1482,9 @@ QDockWidget::float-button {
                      </property>
                      <property name="maximum">
                       <double>1500.000000000000000</double>
+                     </property>
+                     <property name="singleStep">
+                      <double>0.010000000000000</double>
                      </property>
                     </widget>
                    </item>
