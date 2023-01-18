@@ -10,17 +10,25 @@ void parse::CheckFlags(const std::string path_to_file) {
         while (!file.atEnd()) {
              str = file.readLine();
              str = str.simplified();
-             if(str[0] == 'v') {
-                 if(str[1] == 'n') { vn_used = true; }
-                 else if (str[1] == 't') { vt_used = true; }
-             }
-             if(str[0] == 'f') {
-                 int flag_slash = 0;
-                 for(int i = 2; str[i] != ' '; ++i) {
-                     if(str[i] == '/') flag_slash += 1;
+             if(!str.isEmpty()) {
+                 if(str.at(0) == 'v') {
+                     if(str.at(1) == 'n') { vn_used = true; }
+                     else if (str[1] == 't') { vt_used = true; }
                  }
-                 if(str.contains("//")) { vt_used = false; }
-                 if(flag_slash == 1) { vn_used = false; }
+                 if(str[0] == 'f') {
+                     int flag_slash = 0;
+                     for(int i = 2; str[i] != ' '; ++i) {
+                         if(str[i] == '/') flag_slash += 1;
+                     }
+                     if(str.contains("//")) {
+                         vt_used = false;
+                         break;
+                     }
+                     if(flag_slash == 1) {
+                         vn_used = false;
+                         break;
+                     }
+                 }
              }
          }
     }
@@ -32,29 +40,35 @@ void parse::pushArr(const char **curr) {
 //    qDebug() << "tmp into push arr" << *curr;
     facetsArray.emplace_back(vertex_[vertIndex].x());
     facetsArray.emplace_back(vertex_[vertIndex].y());
-    facetsArray.emplace_back(vertex_[vertIndex].z());
-    allElemsIntoFacetsArr += 3;
-    while(**curr != '/') {
+    facetsArray.emplace_back(vertex_[vertIndex].z());    
+    while(**curr != '/' && **curr) {
         ++*curr;
     }
     ++*curr;
-    if(vt_used) {
-        int textureIndex = std::atoi(*curr) -1;
-        facetsArray.emplace_back(uvs_[textureIndex].x());
-        facetsArray.emplace_back(uvs_[textureIndex].y());
-        allElemsIntoFacetsArr += 2;
-        while(**curr != '/') {
+
+    int textureIndex = 0;
+    if(vt_used)
+         textureIndex = std::atoi(*curr);
+    qDebug() << "tttt" << textureIndex << "max" << uvs_.size();
+    if(textureIndex < 0) textureIndex += uvs_.size();
+    facetsArray.emplace_back(uvs_[textureIndex].x());
+    facetsArray.emplace_back(uvs_[textureIndex].y());
+    if(**curr) {
+        while(**curr != '/' ) {
             ++*curr;
         }
         ++*curr;
     }
-    if(vn_used) {
-        int normalIndex = std::atoi(*curr) -1;
-        facetsArray.emplace_back(normals_[normalIndex].x());
-        facetsArray.emplace_back(normals_[normalIndex].y());
-        facetsArray.emplace_back(normals_[normalIndex].z());
-        allElemsIntoFacetsArr += 3;
-    }
+
+    int normalIndex = 0;
+    if(vn_used)
+        normalIndex = std::atoi(*curr);
+    if(normalIndex < 0) normalIndex += normals_.size();
+    facetsArray.emplace_back(normals_[normalIndex].x());
+    facetsArray.emplace_back(normals_[normalIndex].y());
+    facetsArray.emplace_back(normals_[normalIndex].z());
+
+
 }
 
 void parse::ParseF(QStringList str_list) {
@@ -78,13 +92,22 @@ void parse::ParseF(QStringList str_list) {
     }
 }
 
+void parse::add_pseudo_str() {
+    if (vertex_.empty())
+          vertex_.push_back({0,0,0});
+    if (uvs_.empty())
+          uvs_.push_back({0,0});
+    if (normals_.empty())
+          normals_.push_back({0,0,0});
+}
+
 void parse::ParseVertex_3D(const std::string path_to_file) {
   CheckFlags(path_to_file);
   QFile file(QString::fromStdString(path_to_file));
   if (file.open(QFile::ReadOnly)) {
-    if (vertex_.empty())
-          vertex_.push_back({0,0,0}); // псевдострока
+    add_pseudo_str();     // псевдострока
     QString current_string;
+
     while (!file.atEnd()) {
       current_string = file.readLine();
       current_string = current_string.simplified();
@@ -95,5 +118,8 @@ void parse::ParseVertex_3D(const std::string path_to_file) {
       if (numbers[0] == "f") ParseF(numbers);
     }
   }
+
+   for (int i = 0; i < facetsArray.size() / 8; i++) indices.push_back(i);
+//      qDebug() << "flag vn_used" << vn_used;
 }
-}
+} // namespace

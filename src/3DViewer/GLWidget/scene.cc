@@ -74,12 +74,10 @@ void scene::LoadSettings_() {
   settings->endGroup();
 }
 
-void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint>* indices) {
+void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices) {
     vao.bind();
 
-    vsize = 10000, isize = vertices.size() / 8;
-    QVector<GLuint> iii;
-    for (int i = 0; i < isize; i++) iii.push_back(i);
+    vsize = 10000;
 
     vbo.bind();
     vbo.allocate(vertices.data(), sizeof(vertices[0]) * vertices.size());
@@ -92,7 +90,9 @@ void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint>* indices) {
     program.enableAttributeArray(2);
 
     ebo.bind();
-    ebo.allocate(iii.data(), sizeof(iii[0]) * iii.size());
+    qDebug() << indices.size();
+    qDebug() << indices.size();
+    ebo.allocate(indices.data(), sizeof(indices[0]) * indices.size());
 
     program.bind();
 
@@ -187,9 +187,9 @@ void scene::paintGL() {
 
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     vao.bind();
-    glDrawArrays(GL_POINTS, 1, vsize);
+    glDrawArrays(GL_POINTS, 1, (s21::parse::GetInstance().getVertexArr().size()+3)/3);
     glPointSize(vertex_size);
-    glDrawElements(GL_TRIANGLES, isize, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, s21::parse::GetInstance().getFacetsArr().size() / 8, GL_UNSIGNED_INT, nullptr);
 
     vao.release();
     program.release();

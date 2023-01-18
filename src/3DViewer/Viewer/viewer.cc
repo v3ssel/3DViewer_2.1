@@ -29,7 +29,7 @@ void viewer::on_actionOpen_triggered() {
   if (fname != "") {
     ui->widget->filename = fname;
     s21::Controller::GetInstance().ParseVertex_3D(fname.toStdString());
-    ui->widget->InitModel(s21::Controller::GetInstance().GetArray(), nullptr);
+    ui->widget->InitModel(s21::Controller::GetInstance().GetArray(), s21::parse::GetInstance().indices);
     ui->widget->update();
 
 //    s21::Controller::GetInstance().GetVertex().clear();

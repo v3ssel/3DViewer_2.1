@@ -17,6 +17,7 @@
 
 #include <QWidget>
 #include <QTimer>
+#include <QDebug>
 
 class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   Q_OBJECT
@@ -24,7 +25,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
  public:
   scene(QWidget *parent = nullptr);
   void keyPressEvent(QKeyEvent *) override;
-  void InitModel(QVector<GLfloat>& vertices, QVector<GLuint>* indices);
+  void InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices);
   void calculateCamera();
 
   QOpenGLShaderProgram program, light;
@@ -50,7 +51,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   unsigned line_width, vertex_size;
   bool circle_square, dashed_solid, is_none;
 
-  GLuint vsize = 0, isize = 0;  // tmp
+  GLuint vsize = 0;  // tmp
 
  protected:
   void initializeGL() override;
