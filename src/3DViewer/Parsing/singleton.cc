@@ -49,7 +49,6 @@ void parse::pushArr(const char **curr) {
     int textureIndex = 0;
     if(vt_used)
          textureIndex = std::atoi(*curr);
-    qDebug() << "tttt" << textureIndex << "max" << uvs_.size();
     if(textureIndex < 0) textureIndex += uvs_.size();
     facetsArray.emplace_back(uvs_[textureIndex].x());
     facetsArray.emplace_back(uvs_[textureIndex].y());
@@ -67,7 +66,6 @@ void parse::pushArr(const char **curr) {
     facetsArray.emplace_back(normals_[normalIndex].x());
     facetsArray.emplace_back(normals_[normalIndex].y());
     facetsArray.emplace_back(normals_[normalIndex].z());
-
 
 }
 
@@ -119,7 +117,9 @@ void parse::ParseVertex_3D(const std::string path_to_file) {
     }
   }
 
-   for (int i = 0; i < facetsArray.size() / 8; i++) indices.push_back(i);
-//      qDebug() << "flag vn_used" << vn_used;
+  for (int i = 0; i < facetsArray.size() / 8; i++) indices.push_back(i);
+
+//      qDebug() << "flag facetsArray" << facetsArray;
+//      qDebug() << "size facetsArray" << facetsArray.size();
 }
 } // namespace

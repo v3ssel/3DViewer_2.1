@@ -189,7 +189,7 @@ void scene::paintGL() {
     vao.bind();
     glDrawArrays(GL_POINTS, 1, (s21::parse::GetInstance().getVertexArr().size()+3)/3);
     glPointSize(vertex_size);
-    glDrawElements(GL_TRIANGLES, s21::parse::GetInstance().getFacetsArr().size() / 8, GL_UNSIGNED_INT, nullptr);
+    glDrawElements(wireframe ? GL_LINES : GL_TRIANGLES , s21::parse::GetInstance().getFacetsArr().size() / 8, GL_UNSIGNED_INT, nullptr);
 
     vao.release();
     program.release();
