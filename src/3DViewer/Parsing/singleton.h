@@ -20,28 +20,28 @@ public:
     void ParseF(QStringList str);
     void pushArr(const char **tmp);
     void CheckFlags(const std::string path_to_file);
-    void arrIndices();
+    void clear();
+
     QVector<QVector3D> & getVertexArr() { return vertex_; }
     QVector<QVector3D> & getNormalsArr() { return normals_; }
     QVector<QVector2D> & getUVsArr() { return uvs_; }
-    QVector<GLfloat> & getFacetsArr() { return facetsArray; }
-    GLuint & getIsize() { return isize; }
+    QVector<GLfloat>& getFacetsArr() { return facetsArray; }
+    QVector<GLuint>& getIndicesArr() { return indices; }
 
-    bool vn_used = false;
-    bool vt_used = false;
-    QVector<GLfloat> facetsArray;
-    QVector<GLuint> indices;
+    bool vn_used;
+    bool vt_used;
 private:
-    parse() {}
+    parse() { clear(); }
     parse(const parse&);
     void operator=(parse&);
 
     void add_pseudo_str();
 
+    QVector<GLfloat> facetsArray;
+    QVector<GLuint> indices;
     QVector<QVector3D> vertex_;
     QVector<QVector3D> normals_;
     QVector<QVector2D> uvs_;
-    GLuint isize = 0;
 };
 }
 

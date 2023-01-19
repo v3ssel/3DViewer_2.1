@@ -13,11 +13,15 @@ class Controller {
     return controller_;
   }
 
+  QVector<GLfloat>&  GetPolygonsArray();
+  QVector<GLuint>& GetIndices();
+
+  QVector<QVector3D>& GetVertices();
+  QVector<QVector3D>& GetNormals();
+  QVector<QVector2D>& GetUV();
+
+  void clearArrays();
   void ParseVertex_3D(const std::string path_to_file);
-  QVector<GLfloat>&  GetArray();
-//  QVector<QVector3D> vertex_;
-//  QVector<QVector3D> normals_;
-//  QVector<QVector2D> uvs_;
 
  private:
   Controller() {}

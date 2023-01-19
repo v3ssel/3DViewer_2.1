@@ -34,6 +34,16 @@ void parse::CheckFlags(const std::string path_to_file) {
     }
 }
 
+void parse::clear() {
+    facetsArray.clear();
+    indices.clear();
+    vertex_.clear();
+    normals_.clear();
+    uvs_.clear();
+    vn_used = false;
+    vt_used = false;
+}
+
 
 void parse::pushArr(const char **curr) {
     int vertIndex = std::stoi(*curr);

@@ -28,14 +28,10 @@ void viewer::on_actionOpen_triggered() {
       this, "Choose File", QDir::homePath(), tr("OBJ (*.obj)"));
   if (fname != "") {
     ui->widget->filename = fname;
+    s21::Controller::GetInstance().clearArrays();
     s21::Controller::GetInstance().ParseVertex_3D(fname.toStdString());
-    ui->widget->InitModel(s21::Controller::GetInstance().GetArray(), s21::parse::GetInstance().indices);
+    ui->widget->InitModel(s21::Controller::GetInstance().GetPolygonsArray(), s21::parse::GetInstance().getIndicesArr());
     ui->widget->update();
-
-//    s21::Controller::GetInstance().GetVertex().clear();
-//    s21::Controller::GetInstance().GetIndices().clear();
-//    s21::Controller::GetInstance().ParseVertex(fname.toStdString());
-//    s21::Controller::GetInstance().ParseIndices(fname.toStdString());
 
 //    QVector<GLfloat> vertices = {
 //        1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
