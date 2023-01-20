@@ -3,8 +3,8 @@
 
 namespace s21 {
 
-void parse::CheckFlags(const std::string path_to_file) {
-    QFile file(QString::fromStdString(path_to_file));
+void parse::CheckFlags(QString path_to_file) {
+    QFile file(path_to_file);
     if (file.open(QFile::ReadOnly)) {
         QString str;
         while (!file.atEnd()) {
@@ -46,11 +46,11 @@ void parse::clear() {
 
 
 void parse::pushArr(const char **curr) {
+//        qDebug() << "push now ---->" << *curr;
     int vertIndex = std::stoi(*curr);
-//    qDebug() << "tmp into push arr" << *curr;
     facetsArray.emplace_back(vertex_[vertIndex].x());
     facetsArray.emplace_back(vertex_[vertIndex].y());
-    facetsArray.emplace_back(vertex_[vertIndex].z());    
+    facetsArray.emplace_back(vertex_[vertIndex].z());
     while(**curr != '/' && **curr) {
         ++*curr;
     }
@@ -58,7 +58,7 @@ void parse::pushArr(const char **curr) {
 
     int textureIndex = 0;
     if(vt_used)
-         textureIndex = std::atoi(*curr);
+         textureIndex = std::stoi(*curr);
     if(textureIndex < 0) textureIndex += uvs_.size();
     facetsArray.emplace_back(uvs_[textureIndex].x());
     facetsArray.emplace_back(uvs_[textureIndex].y());
@@ -71,7 +71,7 @@ void parse::pushArr(const char **curr) {
 
     int normalIndex = 0;
     if(vn_used)
-        normalIndex = std::atoi(*curr);
+        normalIndex = std::stoi(*curr);
     if(normalIndex < 0) normalIndex += normals_.size();
     facetsArray.emplace_back(normals_[normalIndex].x());
     facetsArray.emplace_back(normals_[normalIndex].y());
@@ -81,21 +81,33 @@ void parse::pushArr(const char **curr) {
 
 void parse::ParseF(QStringList str_list) {
     int counter = 0;
-    const char *copy_curr;
     QString first_elem = str_list[1];
+    const char *copy_curr;
+    const char *first = first_elem.toStdString().c_str();
     for(const auto &i : str_list) {
         const char *curr = i.toStdString().c_str();
-        if(counter < 4) {
-            copy_curr = i.toStdString().c_str();
+////        qDebug() << "curr " << curr << ", first " << first;
+//        if(str_list.size() - 1 == 2 && std::isdigit(*curr)) {
+//            auto tmp = first;
+//            if(!std::strcmp(curr, first)) { pushArr(&tmp); }
+//            pushArr(&curr);
+//        } else
+       copy_curr = i.toStdString().c_str();
+       if(counter < 4) {
             if(std::isdigit(*curr)) {
                 pushArr(&curr);
             }
             ++counter;
         } else {
-            const char *first = first_elem.toStdString().c_str();
+            auto tmp = first;
+//            qDebug() << "curr" << curr;
+//            qDebug() << "copy_curr" << copy_curr;
+//            qDebug() << "first" << first;
             pushArr(&curr);
             pushArr(&copy_curr);
-            pushArr(&first);
+            pushArr(&tmp);
+
+            copy_curr = curr;
         }
     }
 }
@@ -109,9 +121,9 @@ void parse::add_pseudo_str() {
           normals_.push_back({0,0,0});
 }
 
-void parse::ParseVertex_3D(const std::string path_to_file) {
+void parse::ParseVertex_3D(QString path_to_file) {
   CheckFlags(path_to_file);
-  QFile file(QString::fromStdString(path_to_file));
+  QFile file(path_to_file);
   if (file.open(QFile::ReadOnly)) {
     add_pseudo_str();     // псевдострока
     QString current_string;
@@ -119,6 +131,7 @@ void parse::ParseVertex_3D(const std::string path_to_file) {
     while (!file.atEnd()) {
       current_string = file.readLine();
       current_string = current_string.simplified();
+//      qDebug() << "current_string" << current_string;
       QStringList numbers = current_string.split(" ");
       if (numbers[0] == "v") vertex_.push_back(QVector3D(numbers[1].toFloat(), numbers[2].toFloat(), numbers[3].toFloat()));
       if (numbers[0] == "vt") uvs_.push_back(QVector2D(numbers[1].toFloat(), numbers[2].toFloat()));

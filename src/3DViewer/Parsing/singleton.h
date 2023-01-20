@@ -16,10 +16,10 @@ public:
         static parse instance;
         return instance;
     }
-    void ParseVertex_3D(const std::string path_to_file);
+    void ParseVertex_3D(QString path_to_file);
     void ParseF(QStringList str);
     void pushArr(const char **tmp);
-    void CheckFlags(const std::string path_to_file);
+    void CheckFlags(QString path_to_file);
     void clear();
 
     QVector<QVector3D> & getVertexArr() { return vertex_; }

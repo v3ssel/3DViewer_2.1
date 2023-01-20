@@ -9,13 +9,16 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
   cameraTarget = QVector3D(0.0f, 0.0f, 0.0f);
   zoom_scale_ = -10;
   moving_ = false, dragging_ = false;
-  wireframe = false, flat_shading = false, projection_type = true;
-  light_x = 1.0f, light_y = 1.0f, light_z = 1.0f;
+  wireframe = true, flat_shading = false, projection_type = true;
+  light_pos = QVector3D(1.0f, 1.0f, 1.0f);
   start_x_ = 0, start_y_ = 0;
   x_rot_ = 1, y_rot_ = 1;
   x_trans_ = 0, y_trans_ = 0;
 
   LoadSettings_();
+}
+
+scene::~scene() {
 }
 
 void scene::SaveSettings_() {
@@ -27,16 +30,9 @@ void scene::SaveSettings_() {
   settings->endGroup();
 
   settings->beginGroup("rgb");
-  settings->setValue("red_bg", red_bg);
-  settings->setValue("green_bg", green_bg);
-  settings->setValue("blue_bg", blue_bg);
-  settings->setValue("alpha_bg", alpha_bg);
-  settings->setValue("red_vertex", red_vertex);
-  settings->setValue("green_vertex", green_vertex);
-  settings->setValue("blue_vertex", blue_vertex);
-  settings->setValue("red_lines", red_lines);
-  settings->setValue("green_lines", green_lines);
-  settings->setValue("blue_lines", blue_lines);
+  settings->setValue("background_color", background);
+  settings->setValue("vertices_color", vertices_color);
+  settings->setValue("lines_color", lines_color);
   settings->endGroup();
 
   settings->beginGroup("size");
@@ -55,16 +51,9 @@ void scene::LoadSettings_() {
   settings->endGroup();
 
   settings->beginGroup("rgb");
-  red_bg = settings->value("red_bg", 0.0).toFloat();
-  green_bg = settings->value("green_bg", 0.0).toFloat();
-  blue_bg = settings->value("blue_bg", 0.0).toFloat();
-  alpha_bg = settings->value("alpha_bg", 0.0).toFloat();
-  red_vertex = settings->value("red_vertex", 0.0).toFloat();
-  green_vertex = settings->value("green_vertex", 0.0).toFloat();
-  blue_vertex = settings->value("blue_vertex", 0.0).toFloat();
-  red_lines = settings->value("red_lines", 255.).toFloat();
-  green_lines = settings->value("green_lines", 0.).toFloat();
-  blue_lines = settings->value("blue_lines", 45.).toFloat();
+  background = settings->value("background_color", QColor(0.0f, 0.0f, 0.0f, 0.0f)).value<QColor>();
+  vertices_color = settings->value("vertices_color", QColor(0.0f, 0.0f, 0.0f)).value<QColor>();
+  lines_color = settings->value("lines_color", QColor(255.0f, 0.0f, 45.0f)).value<QColor>();
   settings->endGroup();
 
   settings->beginGroup("size");
@@ -76,8 +65,6 @@ void scene::LoadSettings_() {
 
 void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices) {
     vao.bind();
-
-    vsize = 10000;
 
     vbo.bind();
     vbo.allocate(vertices.data(), sizeof(vertices[0]) * vertices.size());
@@ -144,29 +131,31 @@ void scene::resizeGL(int w, int h) {
 }
 
 void scene::paintGL() {
-    glClearColor(red_bg, green_bg, blue_bg, alpha_bg);
+    glClearColor(background.red() / 255.0f, background.green() / 255.0f, background.blue() / 255.0f, background.alpha() / 255.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     calculateCamera();
 
     program.bind();
 
-    /*if (is_textured)*/
-      if (texture)  program.setUniformValue("is_textured", true);
-//    else
-        QVector3D ocol(1.0f, 0.9f, 0.31f);
+    if (texture && !wireframe) {
+        program.setUniformValue("is_textured", true);
+    } else {
+        program.setUniformValue("is_textured", false);
+        QVector3D ocol(lines_color.red() / 255.0f, lines_color.green() / 255.0f, lines_color.blue() / 255.0f);
         program.setUniformValueArray("objectColor", &ocol, 1);
+    }
 
-
-    /*if (have_normals)*/
+    if (has_normals && !wireframe) {
         program.setUniformValue("have_normals", true);
         QVector3D lcol(1.0f, 1.0f, 1.0f);
         program.setUniformValueArray("lightColor", &lcol, 1);
-        QVector3D lpos(light_x, light_y, light_z);
-        program.setUniformValueArray("lightPos", &lpos, 1);
+        program.setUniformValueArray("lightPos", &light_pos, 1);
         program.setUniformValueArray("viewPos", &cameraPos, 1);
-
-    program.setUniformValue("flat_shading", flat_shading ? true : false);
+        program.setUniformValue("flat_shading", flat_shading ? true : false);
+    } else {
+        program.setUniformValue("have_normals", false);
+    }
 
     program.setUniformValueArray("view", &view, 1);
     projection.setToIdentity();
@@ -182,26 +171,38 @@ void scene::paintGL() {
 
     vao.bind();
 
-//    /*if (is_textured)*/ texture->bind();
     if (texture) texture->bind();
 
-    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
     vao.bind();
-    glDrawArrays(GL_POINTS, 1, (s21::parse::GetInstance().getVertexArr().size()+3)/3);
-    glPointSize(vertex_size);
-    glDrawElements(wireframe ? GL_LINES : GL_TRIANGLES , s21::parse::GetInstance().getFacetsArr().size() / 8, GL_UNSIGNED_INT, nullptr);
+    glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
+
+//    glLineWidth(line_width);
+//    if (dashed_solid) {
+//      glLineStipple(1, 0x00FF);
+//      glEnable(GL_LINE_STIPPLE);
+//    }
+    glDrawElements(GL_TRIANGLES , s21::Controller::GetInstance().GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+
+    if (!is_none) {
+//        if (!circle_square) glEnable(GL_POINT_SMOOTH);  -- not working
+        glPointSize(vertex_size);
+        QVector3D v_col(vertices_color.red() / 255.0f, vertices_color.green() / 255.0f, vertices_color.blue() / 255.0f);
+        program.setUniformValueArray("objectColor", &v_col, 1);
+        glDrawArrays(GL_POINTS, 1, (s21::Controller::GetInstance().GetVertices().size() - 3) / 3);
+//        glDisable(GL_POINT_SMOOTH);
+    }
 
     vao.release();
     program.release();
 
-    /*if (have_normals)*/
+    if (has_normals && !wireframe) {
         light.bind();
 
         light.setUniformValueArray("projection", &projection, 1);
         light.setUniformValueArray("view", &view, 1);
 
         lamp.setToIdentity();
-        lamp.translate(lpos);
+        lamp.translate(light_pos);
         lamp.scale(0.1f);
         light.setUniformValueArray("model", &lamp, 1);
 
@@ -211,6 +212,8 @@ void scene::paintGL() {
 
         vao_light.release();
         light.release();
+    }
+    SaveSettings_();
 }
 
 void scene::StartDraw_() {

@@ -10,10 +10,11 @@ viewer::viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::viewer) {
   ui->horizontalSlider_versize->setValue(ui->widget->vertex_size);
   ui->lcdNumber_versize->display((int)ui->widget->vertex_size);
 
-  this->setStyleSheet("QMainWindow{ background-color: rgb(" +
-                      QString::number(ui->widget->red_bg) + ", " +
-                      QString::number(ui->widget->green_bg) + ", " +
-                      QString::number(ui->widget->blue_bg) + ");}");
+  ui->pushButton_apply_texture->setDisabled(true);
+  ui->pushButton_unload_texture->setDisabled(true);
+  ui->pushButton_save_uvmap->setDisabled(true);
+
+  SetFrameColor();
 
   hiden_ = false, is_recording_ = false;
   time_ = 0.0;
@@ -29,79 +30,32 @@ void viewer::on_actionOpen_triggered() {
   if (fname != "") {
     ui->widget->filename = fname;
     s21::Controller::GetInstance().clearArrays();
-    s21::Controller::GetInstance().ParseVertex_3D(fname.toStdString());
-    ui->widget->InitModel(s21::Controller::GetInstance().GetPolygonsArray(), s21::parse::GetInstance().getIndicesArr());
+    s21::Controller::GetInstance().ParseVertex_3D(fname);
+    ui->widget->InitModel(s21::Controller::GetInstance().GetPolygonsArray(), s21::Controller::GetInstance().GetIndices());
+
+    on_pushButton_unload_texture_clicked();
+    if ((ui->widget->has_normals = s21::Controller::GetInstance().NormalsUsage()))
+        ui->actionLight->setDisabled(false);
+    else
+        ui->actionLight->setDisabled(true);
+
+    if ((ui->widget->has_texture = s21::Controller::GetInstance().TextureUsage()) && !ui->widget->wireframe)
+        ui->pushButton_apply_texture->setDisabled(false);
+    else
+        ui->pushButton_apply_texture->setDisabled(true);
+
     ui->widget->update();
-
-//    QVector<GLfloat> vertices = {
-//        1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
-//        -1.000000, 1.000000, -1.000000,  0.333089, 0.500000,   0.0000, 1.0000, 0.0000,
-//        -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
-
-//        1.000000, 1.000000, -1.000000,   0.000245, 0.500000,   0.0000, 1.0000, 0.0000,
-//        -1.000000, 1.000000, 1.000000,   0.333089, 0.999266,   0.0000, 1.0000, 0.0000,
-//        1.000000, 1.000000, 1.000000,    0.000245, 0.999266,   0.0000, 1.0000, 0.0000,
-
-
-//        1.000000, -1.000000, 1.000000,   0.666911, 0.499511,   0.0000, 0.0000, 1.0000,
-//        1.000000, 1.000000, 1.000000,    0.666911, 0.000245,   0.0000, 0.0000, 1.0000,
-//        -1.000000, 1.000000, 1.000000,   0.999755, 0.000245,   0.0000, 0.0000, 1.0000,
-
-//        1.000000, -1.000000, 1.000000,   0.666911, 0.499511,   0.0000, 0.0000, 1.0000,
-//        -1.000000, 1.000000, 1.000000,   0.999755, 0.000245,   0.0000, 0.0000, 1.0000,
-//        -1.000000, -1.000000, 1.000000,  0.999756, 0.499511,   0.0000, 0.0000, 1.0000,
-
-
-//        -1.000000, -1.000000, 1.000000,  0.666422, 0.500000,   -1.0000, 0.0000, 0.0000,
-//        -1.000000, 1.000000, 1.000000,   0.666422, 0.999266,   -1.0000, 0.0000, 0.0000,
-//        -1.000000, 1.000000, -1.000000,  0.333578, 0.999266,   -1.0000, 0.0000, 0.0000,
-
-//        -1.000000, -1.000000, 1.000000,  0.666422, 0.500000,   -1.0000, 0.0000, 0.0000,
-//        -1.000000, 1.000000, -1.000000,  0.333578, 0.999266,   -1.0000, 0.0000, 0.0000,
-//        -1.000000, -1.000000, -1.000000, 0.333578, 0.500000,   -1.0000, 0.0000, 0.0000,
-
-
-//        -1.000000, -1.000000, -1.000000, 0.000245, 0.000245,   0.0000, -1.0000, 0.0000,
-//        1.000000, -1.000000, -1.000000,  0.333089, 0.000245,   0.0000, -1.0000, 0.0000,
-//        1.000000, -1.000000, 1.000000,   0.333089, 0.499511,   0.0000, -1.0000, 0.0000,
-
-//        -1.000000, -1.000000, -1.000000, 0.000245, 0.000245,   0.0000, -1.0000, 0.0000,
-//        1.000000, -1.000000, 1.000000,   0.333089, 0.499511,   0.0000, -1.0000, 0.0000,
-//        -1.000000, -1.000000, 1.000000,  0.000245, 0.499511,   0.0000, -1.0000, 0.0000,
-
-
-//        1.000000, -1.000000, -1.000000,  0.666911, 0.999266,   1.0000, 0.0000, 0.0000,
-//        1.000000, 1.000000, -1.000000,   0.666911, 0.500000,   1.0000, 0.0000, 0.0000,
-//        1.000000, 1.000000, 1.000000,    0.999755, 0.500000,   1.0000, 0.0000, 0.0000,
-
-//        1.000000, -1.000000, -1.000000,  0.666911, 0.999266,   1.0000, 0.0000, 0.0000,
-//        1.000000, 1.000000, 1.000000,    0.999755, 0.500000,   1.0000, 0.0000, 0.0000,
-//        1.000000, -1.000000, 1.000000,   0.999756, 0.999266,   1.0000, 0.0000, 0.0000,
-
-
-//        -1.000000, -1.000000, -1.000000, 0.666422, 0.000245,   0.0000, 0.0000, -1.0000,
-//        -1.000000, 1.000000, -1.000000,  0.666422, 0.499511,   0.0000, 0.0000, -1.0000,
-//        1.000000, 1.000000, -1.000000,   0.333578, 0.499511,   0.0000, 0.0000, -1.0000,
-
-//        -1.000000, -1.000000, -1.000000, 0.666422, 0.000245,   0.0000, 0.0000, -1.0000,
-//        1.000000, 1.000000, -1.000000,   0.333578, 0.499511,   0.0000, 0.0000, -1.0000,
-//        1.000000, -1.000000, -1.000000,  0.333578, 0.000245,   0.0000, 0.0000, -1.0000
-//    };
-
-//    QVector<GLuint> indices = {
-//        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
-//    };
-//    ui->widget->InitModel(vertices, nullptr);
   }
 }
 
 void viewer::on_actionClose_triggered() {
-//  if (!s21::Controller::GetInstance().GetVertex().empty()) {
-//    s21::Controller::GetInstance().GetVertex().clear();
-//    s21::Controller::GetInstance().GetIndices().clear();
-//    ui->widget->filename = "";
-//    ui->widget->update();
-//  }
+    s21::Controller::GetInstance().clearArrays();
+    on_pushButton_unload_texture_clicked();
+    ui->pushButton_apply_texture->setDisabled(true);
+    ui->widget->has_texture = false;
+    ui->widget->has_normals = false;
+    ui->widget->filename = "";
+    ui->widget->update();
 }
 
 void viewer::on_actionInfo_triggered() {
@@ -125,30 +79,24 @@ void viewer::keyPressEvent(QKeyEvent *event) {
     ui->widget->keyPressEvent(event);
 }
 
+void viewer::SetFrameColor() {
+    this->setStyleSheet("QMainWindow{ background-color: rgb(" +
+                        QString::number(ui->widget->background.red()) + ", " +
+                        QString::number(ui->widget->background.green()) + ", " +
+                        QString::number(ui->widget->background.blue()) + ");}");
+}
+
 void viewer::on_pushButton_bg_clicked() {
-  QColor BG_color = QColorDialog::getColor();
-  ui->widget->red_bg = BG_color.red();
-  ui->widget->green_bg = BG_color.green();
-  ui->widget->blue_bg = BG_color.blue();
-  ui->widget->alpha_bg = BG_color.alpha();
-  this->setStyleSheet("QMainWindow{ background-color: rgb(" +
-                      QString::number(BG_color.red()) + ", " +
-                      QString::number(BG_color.green()) + ", " +
-                      QString::number(BG_color.blue()) + ");}");
+  ui->widget->background = QColorDialog::getColor();
+  SetFrameColor();
 }
 
 void viewer::on_pushButton_vertex_clicked() {
-  QColor ver_color = QColorDialog::getColor();
-  ui->widget->red_vertex = ver_color.red();
-  ui->widget->green_vertex = ver_color.green();
-  ui->widget->blue_vertex = ver_color.blue();
+  ui->widget->vertices_color = QColorDialog::getColor();
 }
 
 void viewer::on_pushButton_lines_clicked() {
-  QColor line_color = QColorDialog::getColor();
-  ui->widget->red_lines = line_color.red();
-  ui->widget->green_lines = line_color.green();
-  ui->widget->blue_lines = line_color.blue();
+  ui->widget->lines_color = QColorDialog::getColor();
 }
 
 void viewer::on_horizontalSlider_lineWidth_sliderMoved(int position) {
@@ -329,20 +277,19 @@ void viewer::SaveGIF_() {
   time_ = 0.0;
   is_recording_ = false;
 
-  this->setStyleSheet("QMainWindow{ background-color: rgb(" +
-                      QString::number(ui->widget->red_bg) + ", " +
-                      QString::number(ui->widget->green_bg) + ", " +
-                      QString::number(ui->widget->blue_bg) + ");}");
+  SetFrameColor();
 }
 
 void viewer::on_pushButton_wireframe_clicked() {
     if (!ui->widget->wireframe) ui->widget->wireframe = true;
-    if (!ui->widget->texture) delete ui->widget->texture;
+    ui->pushButton_apply_texture->setDisabled(true);
+    on_pushButton_unload_texture_clicked();
     ui->widget->update();
 }
 
 void viewer::on_pushButton_flat_shading_clicked() {
     if (ui->widget->wireframe) ui->widget->wireframe = false;
+    if (ui->widget->has_texture) ui->pushButton_apply_texture->setDisabled(false);
     ui->widget->flat_shading = true;
     ui->widget->update();
 }
@@ -350,6 +297,7 @@ void viewer::on_pushButton_flat_shading_clicked() {
 
 void viewer::on_pushButton_smooth_shading_clicked() {
     if (ui->widget->wireframe) ui->widget->wireframe = false;
+    if (ui->widget->has_texture) ui->pushButton_apply_texture->setDisabled(false);
     ui->widget->flat_shading = false;
     ui->widget->update();
 }
@@ -366,30 +314,35 @@ void viewer::on_pushButton_apply_texture_clicked() {
         ui->widget->texture->setMinificationFilter(QOpenGLTexture::Nearest);
         ui->widget->texture->setMagnificationFilter(QOpenGLTexture::Linear);
         ui->widget->texture->setWrapMode(QOpenGLTexture::Repeat);
+        ui->pushButton_unload_texture->setDisabled(false);
+        ui->pushButton_save_uvmap->setDisabled(false);
     }
     ui->widget->update();
 }
 
 void viewer::on_pushButton_unload_texture_clicked() {
-    if (!ui->widget->texture)
+    if (ui->widget->texture)
         delete ui->widget->texture;
+    ui->widget->texture = nullptr;
+    ui->pushButton_unload_texture->setDisabled(true);
+    ui->pushButton_save_uvmap->setDisabled(true);
     ui->widget->update();
 }
 
 void viewer::on_doubleSpinBox_x_light_pos_valueChanged(double arg1) {
-    ui->widget->light_x = arg1;
+    ui->widget->light_pos[0] = arg1;
     ui->widget->update();
 }
 
 
 void viewer::on_doubleSpinBox_y_light_pos_valueChanged(double arg1) {
-    ui->widget->light_y = arg1;
+    ui->widget->light_pos[1] = arg1;
     ui->widget->update();
 }
 
 
 void viewer::on_doubleSpinBox_z_light_pos_valueChanged(double arg1) {
-    ui->widget->light_z = arg1;
+    ui->widget->light_pos[2] = arg1;
     ui->widget->update();
 }
 
@@ -446,34 +399,60 @@ static const QVector<GLfloat> text = {
 //    0.666422, 0.000245,
 //    0.333578, 0.499511,
 //    0.333578, 0.000245
+
     0.000245, 0.500000,
     0.333089, 0.500000,
     0.333089, 0.999266,
+    0.000245, 0.500000,
+    0.333089, 0.999266,
     0.000245, 0.999266,
+    0.000245, 0.500000,
+
     0.666911, 0.499511,
     0.666911, 0.000245,
     0.999755, 0.000245,
+    0.666911, 0.499511,
+    0.999755, 0.000245,
     0.999756, 0.499511,
+    0.666911, 0.499511,
+
     0.666422, 0.500000,
     0.666422, 0.999266,
     0.333578, 0.999266,
+    0.666422, 0.500000,
+    0.333578, 0.999266,
     0.333578, 0.500000,
+    0.666422, 0.500000,
+
     0.000245, 0.000245,
     0.333089, 0.000245,
     0.333089, 0.499511,
+    0.000245, 0.000245,
+    0.333089, 0.499511,
     0.000245, 0.499511,
+    0.000245, 0.000245,
+
     0.666911, 0.999266,
     0.666911, 0.500000,
     0.999755, 0.500000,
+    0.666911, 0.999266,
+    0.999755, 0.500000,
     0.999756, 0.999266,
+    0.666911, 0.999266,
+
     0.666422, 0.000245,
     0.666422, 0.499511,
     0.333578, 0.499511,
-    0.333578, 0.000245
+    0.666422, 0.000245,
+    0.333578, 0.499511,
+    0.333578, 0.000245,
+    0.666422, 0.000245
+    //
 
 };
 
-void viewer::on_pushButton_save_uvmap_clicked() {
+void viewer::on_pushButton_save_uvmap_clicked()
+{
     QString fname = QFileDialog::getOpenFileName(
         this, "Choose File", QDir::homePath(), tr("BMP (*.bmp)"));
 
@@ -482,19 +461,59 @@ void viewer::on_pushButton_save_uvmap_clicked() {
 
     QList<QLine> parser_x_y;
     int count = 0;
-    for (int i = 0; text.size() > i; i+=2, ++count) {
-        if (i == 0) {
-            parser_x_y.push_back(QLine(i* map.width(), i * map.height(), text[i]* map.width(), text[i+1]* map.height()));
+//    for (int i = 0; text.size() > i; i+=2, ++count) {
+//        if (i == 0) {
+//            parser_x_y.push_back(QLine(i* map.width(), i * map.height(), text[i]* map.width(), text[i+1]* map.height()));
+//        }
+//        parser_x_y.push_back(QLine(parser_x_y[count].x2()* map.width(), parser_x_y[count].y2()* map.height(), text[i]* map.width(), text[i+1]* map.height()));
+
+//    }
+
+    //int count = 0; более менее финальная версия
+    for (int i = 0; text.size()-2 > i; i+=2, ++count) {
+        if(count == 3) {
+            std::cout << "Значение n равно: " << count;
+            i += 2;
+            count = 0;
         }
-        parser_x_y.push_back(QLine(parser_x_y[count].x2()* map.width(), parser_x_y[count].y2()* map.height(), text[i]* map.width(), text[i+1]* map.height()));
+        parser_x_y.push_back(QLine(text[i]* map.width(), text[i+1]* map.height(), text[i+2]* map.width(), text[i+3]* map.height()));
+
+
 
     }
 
-    for (int i = 0; parser_x_y.size() > i; ++i) {
+//int count = 0; более менее финальная версия
+    for (int i = 0; parser_x_y.size() > i; ++i, ++count) {
         painter.drawLine(parser_x_y[i]);
     }
 
-//    painter.drawLine( map.height(), map.width(), 0, 0);
+//    painter.drawLine(parser_x_y[0]);
+//    painter.drawLine(parser_x_y[1]);
+//    painter.drawLine(parser_x_y[2]);
+//    painter.drawLine(parser_x_y[3]);
+
+//    painter.drawLine(parser_x_y[4]);
+//    painter.drawLine(parser_x_y[5]);
+//    painter.drawLine(parser_x_y[6]);
+//    painter.drawLine(parser_x_y[7]);
+//    painter.drawLine(parser_x_y[8]);
+//    painter.drawLine(parser_x_y[9]);
+
+
+//    painter.drawLine(parser_x_y[12]);
+//    painter.drawLine(parser_x_y[13]);
+
+
+
+
+//    painter.drawLine(parser_x_y[18]);
+
+
+//    painter.drawLine(parser_x_y[21]);
+
+    //painter.translate(this->rect().bottomLeft());
+//    painter.scale(1.0, 0);
+    //painter.drawLine(QLine(0.000245 * map.width(), 0.999266 * map.height(), 0.666911 * map.width(), 0.499511 * map.height()));
 
     QString str = QFileDialog::getSaveFileName(
         this, tr("Save GIF"), QDir::homePath(), tr("BMP (*.bmp)"));
@@ -503,5 +522,3 @@ void viewer::on_pushButton_save_uvmap_clicked() {
 //    QPixmap image(fname);
 //    image
 }
-
-

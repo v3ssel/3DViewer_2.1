@@ -24,6 +24,8 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
 
  public:
   scene(QWidget *parent = nullptr);
+  ~scene();
+
   void keyPressEvent(QKeyEvent *) override;
   void InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices);
   void calculateCamera();
@@ -43,15 +45,10 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
 
   bool has_texture, has_normals; // tmp?
 
-  float light_x, light_y, light_z;
-  float red_bg, green_bg, blue_bg, alpha_bg;
-  float red_vertex, green_vertex, blue_vertex;
-  float red_lines, green_lines, blue_lines;
-
+  QVector3D light_pos, light_color;
+  QColor background, vertices_color, lines_color;
   unsigned line_width, vertex_size;
   bool circle_square, dashed_solid, is_none;
-
-  GLuint vsize = 0;  // tmp
 
  protected:
   void initializeGL() override;

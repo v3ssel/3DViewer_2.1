@@ -20,8 +20,11 @@ class Controller {
   QVector<QVector3D>& GetNormals();
   QVector<QVector2D>& GetUV();
 
+  bool NormalsUsage();
+  bool TextureUsage();
+
   void clearArrays();
-  void ParseVertex_3D(const std::string path_to_file);
+  void ParseVertex_3D(QString path_to_file);
 
  private:
   Controller() {}

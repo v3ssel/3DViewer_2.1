@@ -89,6 +89,8 @@ private:
   void Recording_();
   void SaveGIF_();
 
+  void SetFrameColor();
+
   float time_;
   bool hiden_, is_recording_;
   QTimer *record_time_;

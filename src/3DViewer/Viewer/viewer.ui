@@ -56,6 +56,7 @@
     </property>
     <addaction name="actionHide"/>
     <addaction name="actionOrthographic_Perspective"/>
+    <addaction name="actionLight"/>
    </widget>
    <widget class="QMenu" name="menuImage">
     <property name="title">
@@ -1741,6 +1742,14 @@ QDockWidget::float-button {
   <action name="actionBMP">
    <property name="text">
     <string>BMP</string>
+   </property>
+  </action>
+  <action name="actionLight">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Light</string>
    </property>
   </action>
   <zorder>dockWidget_main</zorder>

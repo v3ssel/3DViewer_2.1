@@ -1,7 +1,7 @@
 #include "controller.h"
 
 namespace s21 {
-void Controller::ParseVertex_3D(std::string path_to_file) {
+void Controller::ParseVertex_3D(QString path_to_file) {
     return s21::parse::GetInstance().ParseVertex_3D(path_to_file);
 }
 
@@ -23,6 +23,14 @@ QVector<QVector3D> &Controller::GetNormals() {
 
 QVector<QVector2D> &Controller::GetUV() {
     return s21::parse::GetInstance().getUVsArr();
+}
+
+bool Controller::NormalsUsage() {
+    return s21::parse::GetInstance().vn_used;
+}
+
+bool Controller::TextureUsage() {
+    return s21::parse::GetInstance().vt_used;
 }
 
 void Controller::clearArrays() {
