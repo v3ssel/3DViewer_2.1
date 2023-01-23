@@ -16,9 +16,9 @@ uniform sampler2D texture1;
 
 void main() {
     vec3 color;
-//    if (is_textured)
-//        color = texture(texture1, TexCoord).rgb;
-//    else
+    if (is_textured)
+        color = texture2D(texture1, TexCoord).rgb;
+    else
         color = objectColor;
 
     vec3 Normal;
