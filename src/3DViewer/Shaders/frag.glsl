@@ -1,10 +1,7 @@
-#version 330 core
-out vec4 FragColor;
-
-flat in  vec3 NormalFlat;
-smooth in  vec3 NormalSmooth;
-smooth in  vec3 FragPos;
-in vec2 TexCoord;
+/*flat*/   varying  vec3 NormalFlat;
+/*smooth*/ varying  vec3 NormalSmooth;
+/*smooth*/ varying  vec3 FragPos;
+varying vec2 TexCoord;
 
 uniform vec3 objectColor;
 uniform vec3 lightPos;
@@ -19,9 +16,9 @@ uniform sampler2D texture1;
 
 void main() {
     vec3 color;
-    if (is_textured)
-        color = texture(texture1, TexCoord).rgb;
-    else
+//    if (is_textured)
+//        color = texture(texture1, TexCoord).rgb;
+//    else
         color = objectColor;
 
     vec3 Normal;
@@ -47,10 +44,10 @@ void main() {
         float specularStrength = 0.5;
         vec3 viewDir = normalize(viewPos - FragPos);
         vec3 reflectDir = reflect(-lightDir, norm);
-        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32.0);
         vec3 specular = specularStrength * spec * lightColor;
         result *= (ambient + diffuse + specular);
     }
 
-    FragColor = vec4(result, 1.0);
+    gl_FragColor = vec4(result, 1.0);
 }

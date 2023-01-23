@@ -84,6 +84,10 @@ class viewer : public QMainWindow {
   void on_doubleSpinBox_y_light_pos_valueChanged(double arg1);
   void on_doubleSpinBox_z_light_pos_valueChanged(double arg1);
 
+  void on_doubleSpinBox_r_light_intens_valueChanged(double arg1);
+  void on_doubleSpinBox_g_light_intens_valueChanged(double arg1);
+  void on_doubleSpinBox_b_light_intens_valueChanged(double arg1);
+
 private:
   void SaveImage_(QString format);
   void Recording_();

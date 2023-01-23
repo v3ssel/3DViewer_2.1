@@ -1,20 +1,20 @@
-#version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aTexCoord;
-layout (location = 2) in vec3 aNormal;
+attribute vec3 aPos;
+attribute vec2 aTexCoord;
+attribute vec3 aNormal;
 
-flat out  vec3 NormalFlat;
-smooth out  vec3 FragPos;
-smooth out  vec3 NormalSmooth;
-out  vec2 TexCoord;
+/*flat*/   varying  vec3 NormalFlat;
+/*smooth*/ varying  vec3 FragPos;
+/*smooth*/ varying  vec3 NormalSmooth;
+varying  vec2 TexCoord;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 it_model;
 
 void main() {
     FragPos = vec3(model * vec4(aPos, 1.0));
-    NormalFlat = NormalSmooth = mat3(transpose(inverse(model))) * aNormal;
+    NormalFlat = NormalSmooth = mat3(it_model[0].xyz, it_model[1].xyz, it_model[2].xyz) * aNormal;
     TexCoord = vec2(aTexCoord.x, 1.0 - aTexCoord.y);
 
     gl_Position = projection * view * vec4(FragPos, 1.0);

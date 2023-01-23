@@ -522,3 +522,18 @@ void viewer::on_pushButton_save_uvmap_clicked()
 //    QPixmap image(fname);
 //    image
 }
+
+void viewer::on_doubleSpinBox_r_light_intens_valueChanged(double arg1) {
+    ui->widget->light_color[0] = arg1;
+    ui->widget->update();
+}
+
+void viewer::on_doubleSpinBox_g_light_intens_valueChanged(double arg1) {
+    ui->widget->light_color[1] = arg1;
+    ui->widget->update();
+}
+
+void viewer::on_doubleSpinBox_b_light_intens_valueChanged(double arg1) {
+    ui->widget->light_color[2] = arg1;
+    ui->widget->update();
+}

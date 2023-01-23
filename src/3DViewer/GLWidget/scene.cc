@@ -11,6 +11,7 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
   moving_ = false, dragging_ = false;
   wireframe = true, flat_shading = false, projection_type = true;
   light_pos = QVector3D(1.0f, 1.0f, 1.0f);
+  light_color = QVector3D(1.0f, 1.0f, 1.0f);
   start_x_ = 0, start_y_ = 0;
   x_rot_ = 1, y_rot_ = 1;
   x_trans_ = 0, y_trans_ = 0;
@@ -69,12 +70,13 @@ void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices) {
     vbo.bind();
     vbo.allocate(vertices.data(), sizeof(vertices[0]) * vertices.size());
 
-    program.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * sizeof(float));
-    program.setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(float), 2, 8 * sizeof(float));
-    program.setAttributeBuffer(2, GL_FLOAT, 5 * sizeof(float), 3, 8 * sizeof(float));
-    program.enableAttributeArray(0);
-    program.enableAttributeArray(1);
-    program.enableAttributeArray(2);
+    program.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, 8 * sizeof(float));
+    program.setAttributeBuffer("aTexCoord", GL_FLOAT, 3 * sizeof(float), 2, 8 * sizeof(float));
+    program.setAttributeBuffer("aNormal", GL_FLOAT, 5 * sizeof(float), 3, 8 * sizeof(float));
+
+    program.enableAttributeArray("aPos");
+    program.enableAttributeArray("aTexCoord");
+    program.enableAttributeArray("aNormal");
 
     ebo.bind();
     qDebug() << indices.size();
@@ -89,8 +91,8 @@ void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices) {
 
     vao_light.bind();
     vbo.bind();
-    light.setAttributeBuffer(0, GL_FLOAT, 0, 3, 8 * sizeof(float));
-    light.enableAttributeArray(0);
+    light.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, 8 * sizeof(float));
+    light.enableAttributeArray("aPos");
     light.bind();
 
     vao_light.release();
@@ -101,6 +103,9 @@ void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices) {
 void scene::initializeGL() {
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
+
+//    glEnable(GL_BLEND);
+//    glEnable(GL_MULTISAMPLE);
 
     program.create();
     program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/vert.glsl");
@@ -148,8 +153,7 @@ void scene::paintGL() {
 
     if (has_normals && !wireframe) {
         program.setUniformValue("have_normals", true);
-        QVector3D lcol(1.0f, 1.0f, 1.0f);
-        program.setUniformValueArray("lightColor", &lcol, 1);
+        program.setUniformValueArray("lightColor", &light_color, 1);
         program.setUniformValueArray("lightPos", &light_pos, 1);
         program.setUniformValueArray("viewPos", &cameraPos, 1);
         program.setUniformValue("flat_shading", flat_shading ? true : false);
@@ -169,6 +173,9 @@ void scene::paintGL() {
     program.setUniformValueArray("projection", &projection, 1);
     program.setUniformValueArray("model", &model, 1);
 
+    QMatrix4x4 inversed_transposed_model = model.inverted().transposed();
+    program.setUniformValueArray("it_model", &inversed_transposed_model, 1);
+
     vao.bind();
 
     if (texture) texture->bind();
@@ -176,20 +183,23 @@ void scene::paintGL() {
     vao.bind();
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
 
-//    glLineWidth(line_width);
-//    if (dashed_solid) {
-//      glLineStipple(1, 0x00FF);
-//      glEnable(GL_LINE_STIPPLE);
-//    }
+    glLineWidth(line_width);
+    if (dashed_solid) {
+      glLineStipple(1, 0x00FF);
+      glEnable(GL_LINE_STIPPLE);
+    }
+    qDebug() << "VBO" << vbo.size();
+    qDebug() << "EBO" << ebo.size();
     glDrawElements(GL_TRIANGLES , s21::Controller::GetInstance().GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+    glDisable(GL_LINE_STIPPLE);
 
     if (!is_none) {
-//        if (!circle_square) glEnable(GL_POINT_SMOOTH);  -- not working
+        if (!circle_square) glEnable(GL_POINT_SMOOTH);
         glPointSize(vertex_size);
         QVector3D v_col(vertices_color.red() / 255.0f, vertices_color.green() / 255.0f, vertices_color.blue() / 255.0f);
         program.setUniformValueArray("objectColor", &v_col, 1);
         glDrawArrays(GL_POINTS, 1, (s21::Controller::GetInstance().GetVertices().size() - 3) / 3);
-//        glDisable(GL_POINT_SMOOTH);
+        glDisable(GL_POINT_SMOOTH);
     }
 
     vao.release();
