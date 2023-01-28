@@ -4,7 +4,7 @@
 
 viewer::viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::viewer) {
   ui->setupUi(this);
-  this->setWindowTitle("3D Viewer 2.1");
+  this->setWindowTitle("3DViewer 2.1");
   ui->horizontalSlider_lineWidth->setValue(ui->widget->line_width);
   ui->lcdNumber_lineWidth->display((int)ui->widget->line_width);
   ui->horizontalSlider_versize->setValue(ui->widget->vertex_size);
@@ -22,13 +22,21 @@ viewer::viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::viewer) {
   connect(record_time_, &QTimer::timeout, this, &viewer::Recording_);
 }
 
-viewer::~viewer() { delete ui; }
+viewer::~viewer() {
+    ui->widget->makeCurrent();
+    s21::Controller::GetInstance().clearArrays();
+    ui->widget->vbo.destroy();
+    ui->widget->ebo.destroy();
+    ui->widget->vao.destroy();
+    ui->widget->vao_light.destroy();
+    on_pushButton_unload_texture_clicked();
+    delete ui;
+}
 
 void viewer::on_actionOpen_triggered() {
   QString fname = QFileDialog::getOpenFileName(
       this, "Choose File", QDir::homePath(), tr("OBJ (*.obj)"));
   if (fname != "") {
-    ui->widget->filename = fname;
     s21::Controller::GetInstance().clearArrays();
     s21::Controller::GetInstance().ParseVertex_3D(fname);
     ui->widget->InitModel(s21::Controller::GetInstance().GetPolygonsArray(), s21::Controller::GetInstance().GetIndices());
@@ -54,7 +62,6 @@ void viewer::on_actionClose_triggered() {
     ui->pushButton_apply_texture->setDisabled(true);
     ui->widget->has_texture = false;
     ui->widget->has_normals = false;
-    ui->widget->filename = "";
     ui->widget->update();
 }
 
@@ -146,26 +153,23 @@ void viewer::on_pushButton_ver_square_clicked() {
 
 void viewer::on_pushButton_ver_none_clicked() {
   ui->widget->is_none = true;
+  ui->horizontalSlider_versize->setValue(1);
+  ui->lcdNumber_versize->display(1);
   ui->widget->update();
 }
 
 void viewer::on_horizontalSlider_scale_sliderMoved(int position) {
-//  if (ui->widget->filename != "") {
-//    s21::Transform::GetInstance().Scale((double)position);
-//  }
-//  ui->lcdNumber_scale->display(position);
-//  ui->widget->update();
-}
-
-void viewer::on_doubleSpinBox_valueChanged(double arg1) {
-//  if (ui->widget->filename != "") {
-//    s21::Transform::GetInstance().Scale((double)arg1);
-//  }
-//  ui->widget->update();
+  if (position > 0) {
+      ui->widget->scale_factor = position;
+  } else {
+      ui->widget->scale_factor = float(1.0f - abs(position) / 100.0f);
+  }
+  ui->lcdNumber_scale->display(position);
+  ui->widget->update();
 }
 
 void viewer::on_horizontalSlider_scale_sliderPressed() {
-  on_doubleSpinBox_valueChanged(ui->horizontalSlider_scale->value());
+  on_horizontalSlider_scale_sliderMoved(ui->horizontalSlider_scale->value());
 }
 
 void viewer::on_doubleSpinBox_x_move_valueChanged() {
@@ -227,6 +231,14 @@ void viewer::on_actionHide_triggered() {
     ui->dockWidget_main->hide();
     hiden_ = true;
   }
+}
+
+void viewer::on_actionLight_triggered() {
+    if (ui->actionLight->isChecked())
+        ui->widget->is_light_enabled = true;
+    else
+        ui->widget->is_light_enabled = false;
+    ui->widget->update();
 }
 
 void viewer::SaveImage_(QString format) {

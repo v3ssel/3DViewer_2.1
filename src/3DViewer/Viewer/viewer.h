@@ -40,6 +40,7 @@ class viewer : public QMainWindow {
   void on_actionInfo_triggered();
   void on_actionOrthographic_Perspective_triggered();
   void on_actionHide_triggered();
+  void on_actionLight_triggered();
 
   void on_pushButton_bg_clicked();
   void on_pushButton_vertex_clicked();
@@ -66,7 +67,6 @@ class viewer : public QMainWindow {
   void on_doubleSpinBox_x_rot_valueChanged(double);
   void on_doubleSpinBox_y_rot_valueChanged(double);
   void on_doubleSpinBox_z_rot_valueChanged(double);
-  void on_doubleSpinBox_valueChanged(double arg1);
 
   void on_actionJPEG_triggered();
   void on_actionBMP_triggered();

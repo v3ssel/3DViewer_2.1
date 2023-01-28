@@ -1,3 +1,4 @@
+#extension GL_EXT_gpu_shader4 : require
 attribute vec3 aPos;
 
 uniform mat4 model;

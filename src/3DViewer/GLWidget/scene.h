@@ -28,27 +28,25 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
 
   void keyPressEvent(QKeyEvent *) override;
   void InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices);
-  void calculateCamera();
-
-  QOpenGLShaderProgram program, light;
-  QOpenGLVertexArrayObject vao, vao_light;
-  QOpenGLBuffer vbo, ebo;
-
-  QOpenGLTexture *texture = nullptr;
-
-  QMatrix4x4 view, projection, model, lamp;
-
-  QString filename;
-  QSettings *settings;
-
-  bool projection_type, wireframe, flat_shading;
-
-  bool has_texture, has_normals; // tmp?
+  void CalculateCamera();
 
   QVector3D light_pos, light_color;
   QColor background, vertices_color, lines_color;
   unsigned line_width, vertex_size;
   bool circle_square, dashed_solid, is_none;
+
+  float scale_factor;
+
+  bool projection_type, wireframe, flat_shading;
+  bool has_texture, has_normals, is_light_enabled;
+
+  QSettings *settings;
+
+  QOpenGLShaderProgram program, light;
+  QOpenGLVertexArrayObject vao, vao_light;
+  QOpenGLBuffer vbo, ebo;
+  QOpenGLTexture *texture;
+  QMatrix4x4 view;
 
  protected:
   void initializeGL() override;
@@ -60,15 +58,19 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   void wheelEvent(QWheelEvent *) override;
 
  private:
-  QVector3D cameraTarget, cameraPos, cameraUp;
-
-  float x_rot_, y_rot_, zoom_scale_, x_trans_, y_trans_, start_y_, start_x_;
-  bool moving_, dragging_;
+  void LightInit_();
+  void CheckDisplayType_();
+  void StartDraw_();
+  void DrawLight_(QMatrix4x4& projection, QMatrix4x4& lamp);
 
   void SaveSettings_();
   void LoadSettings_();
 
-  void StartDraw_();
+
+  float x_rot_, y_rot_, x_trans_, y_trans_, start_y_, start_x_;
+  bool moving_, dragging_;
+
+  QVector3D camera_target_, camera_pos_, camera_up_;
 };
 
 #endif  // SCENE_H

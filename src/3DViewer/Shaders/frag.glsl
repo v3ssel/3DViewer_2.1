@@ -1,6 +1,7 @@
-/*flat*/   varying  vec3 NormalFlat;
-/*smooth*/ varying  vec3 NormalSmooth;
-/*smooth*/ varying  vec3 FragPos;
+#extension GL_EXT_gpu_shader4 : require
+flat varying  vec3 NormalFlat;
+varying  vec3 NormalSmooth;
+varying  vec3 FragPos;
 varying vec2 TexCoord;
 
 uniform vec3 objectColor;
