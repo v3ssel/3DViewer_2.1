@@ -173,14 +173,10 @@ void viewer::on_horizontalSlider_scale_sliderPressed() {
 }
 
 void viewer::on_doubleSpinBox_x_move_valueChanged() {
-//  if (ui->widget->filename != "") {
-//    double x = ui->doubleSpinBox_x_move->value();
-//    double y = ui->doubleSpinBox_y_move->value();
-//    double z = ui->doubleSpinBox_z_move->value();
-
-//    s21::Transform::GetInstance().MoveXYZ(x, y, z);
-//    ui->widget->update();
-//  }
+    ui->widget->move_object[0] = ui->doubleSpinBox_x_move->value();
+    ui->widget->move_object[1] = ui->doubleSpinBox_y_move->value();
+    ui->widget->move_object[2] = ui->doubleSpinBox_z_move->value();
+    ui->widget->update();
 }
 
 void viewer::on_doubleSpinBox_y_move_valueChanged() {

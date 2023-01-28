@@ -30,12 +30,12 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   void InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices);
   void CalculateCamera();
 
-  QVector3D light_pos, light_color;
+  QVector3D light_pos, light_color, move_object;
   QColor background, vertices_color, lines_color;
   unsigned line_width, vertex_size;
   bool circle_square, dashed_solid, is_none;
 
-  float scale_factor;
+  float scale_factor, x_trans_, y_trans_;
 
   bool projection_type, wireframe, flat_shading;
   bool has_texture, has_normals, is_light_enabled;
@@ -46,7 +46,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   QOpenGLVertexArrayObject vao, vao_light;
   QOpenGLBuffer vbo, ebo;
   QOpenGLTexture *texture;
-  QMatrix4x4 view;
+  QMatrix4x4 view, projection;
 
  protected:
   void initializeGL() override;
@@ -61,13 +61,13 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   void LightInit_();
   void CheckDisplayType_();
   void StartDraw_();
-  void DrawLight_(QMatrix4x4& projection, QMatrix4x4& lamp);
+  void DrawLight_(QMatrix4x4& lamp);
 
   void SaveSettings_();
   void LoadSettings_();
 
 
-  float x_rot_, y_rot_, x_trans_, y_trans_, start_y_, start_x_;
+  float x_rot_, y_rot_, start_y_, start_x_;
   bool moving_, dragging_;
 
   QVector3D camera_target_, camera_pos_, camera_up_;

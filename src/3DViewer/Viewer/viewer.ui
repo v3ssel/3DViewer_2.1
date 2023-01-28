@@ -825,6 +825,9 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
                    <property name="maximum">
                     <double>1500.000000000000000</double>
                    </property>
+                   <property name="singleStep">
+                    <double>0.100000000000000</double>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -838,6 +841,9 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
                    <property name="maximum">
                     <double>1500.000000000000000</double>
                    </property>
+                   <property name="singleStep">
+                    <double>0.100000000000000</double>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -850,6 +856,9 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
                    </property>
                    <property name="maximum">
                     <double>1500.000000000000000</double>
+                   </property>
+                   <property name="singleStep">
+                    <double>0.100000000000000</double>
                    </property>
                   </widget>
                  </item>
@@ -1214,7 +1223,7 @@ QDockWidget::float-button {
                       <double>1500.000000000000000</double>
                      </property>
                      <property name="singleStep">
-                      <double>0.010000000000000</double>
+                      <double>0.100000000000000</double>
                      </property>
                      <property name="value">
                       <double>1.000000000000000</double>
@@ -1233,7 +1242,7 @@ QDockWidget::float-button {
                       <double>1500.000000000000000</double>
                      </property>
                      <property name="singleStep">
-                      <double>0.010000000000000</double>
+                      <double>0.100000000000000</double>
                      </property>
                      <property name="value">
                       <double>1.000000000000000</double>
@@ -1252,7 +1261,7 @@ QDockWidget::float-button {
                       <double>1500.000000000000000</double>
                      </property>
                      <property name="singleStep">
-                      <double>0.010000000000000</double>
+                      <double>0.100000000000000</double>
                      </property>
                      <property name="value">
                       <double>1.000000000000000</double>

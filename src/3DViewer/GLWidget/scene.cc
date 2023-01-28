@@ -6,7 +6,7 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
   settings = new QSettings(QDir::homePath() + "/3DViewerConfig/settings.conf",
                            QSettings::IniFormat);
 
-  camera_target_ = QVector3D(0.0f, 0.0f, 0.0f);
+  move_object = camera_target_ = QVector3D(0.0f, 0.0f, 0.0f);
   moving_ = false, dragging_ = false;
   wireframe = true, flat_shading = false;
   projection_type = true, is_light_enabled = false;
@@ -193,7 +193,7 @@ void scene::paintGL() {
     program.bind();
     CheckDisplayType_();
 
-    QMatrix4x4 projection, model, lamp;
+    QMatrix4x4 model, lamp;
     program.setUniformValueArray("view", &view, 1);
     projection.setToIdentity();
     view.setToIdentity();
@@ -206,6 +206,7 @@ void scene::paintGL() {
     program.setUniformValueArray("projection", &projection, 1);
 
     model.setToIdentity();
+    model.translate(move_object);
     model.scale(scale_factor);
     program.setUniformValueArray("model", &model, 1);
 
@@ -217,7 +218,7 @@ void scene::paintGL() {
     StartDraw_();
     program.release();
 
-    DrawLight_(projection, lamp);
+    DrawLight_(lamp);
     SaveSettings_();
 }
 
@@ -234,7 +235,7 @@ void scene::CheckDisplayType_() {
         program.setUniformValue("have_normals", true);
         program.setUniformValueArray("lightColor", &light_color, 1);
         program.setUniformValueArray("lightPos", &light_pos, 1);
-        program.setUniformValueArray("viewPos", &camera_target_, 1);
+        program.setUniformValueArray("viewPos", &camera_pos_, 1);
         program.setUniformValue("flat_shading", flat_shading ? true : false);
     } else {
         program.setUniformValue("have_normals", false);
@@ -265,7 +266,7 @@ void scene::StartDraw_() {
     vao.release();
 }
 
-void scene::DrawLight_(QMatrix4x4& projection, QMatrix4x4& lamp) {
+void scene::DrawLight_(QMatrix4x4& lamp) {
     if (has_normals && !wireframe && is_light_enabled) {
         light.bind();
         vao_light.bind();
