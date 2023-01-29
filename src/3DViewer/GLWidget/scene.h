@@ -29,6 +29,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   void keyPressEvent(QKeyEvent *) override;
   void InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices);
   void CalculateCamera();
+  void RotateModel(float x, float y, float z);
 
   QVector3D light_pos, light_color, move_object;
   QColor background, vertices_color, lines_color;
@@ -36,6 +37,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   bool circle_square, dashed_solid, is_none;
 
   float scale_factor, x_trans_, y_trans_;
+  float r_x, r_y, r_z;
 
   bool projection_type, wireframe, flat_shading;
   bool has_texture, has_normals, is_light_enabled;
@@ -61,7 +63,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   void LightInit_();
   void CheckDisplayType_();
   void StartDraw_();
-  void DrawLight_(QMatrix4x4& lamp);
+  void DrawLight_();
 
   void SaveSettings_();
   void LoadSettings_();
@@ -71,6 +73,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   bool moving_, dragging_;
 
   QVector3D camera_target_, camera_pos_, camera_up_;
+  QQuaternion rotation_;
 };
 
 #endif  // SCENE_H

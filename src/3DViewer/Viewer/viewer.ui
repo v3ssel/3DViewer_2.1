@@ -150,7 +150,7 @@ QDockWidget::float-button {
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-275</y>
+          <y>0</y>
           <width>561</width>
           <height>1048</height>
          </rect>
@@ -607,41 +607,32 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
                <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_7">
                  <item>
-                  <widget class="QDoubleSpinBox" name="doubleSpinBox_x_rot">
+                  <widget class="QSpinBox" name="spinBox_x_rot">
                    <property name="minimum">
-                    <double>-3.140000000000000</double>
+                    <number>-180</number>
                    </property>
                    <property name="maximum">
-                    <double>3.140000000000000</double>
-                   </property>
-                   <property name="singleStep">
-                    <double>0.010000000000000</double>
+                    <number>180</number>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="doubleSpinBox_y_rot">
+                  <widget class="QSpinBox" name="spinBox_y_rot">
                    <property name="minimum">
-                    <double>-3.140000000000000</double>
+                    <number>-180</number>
                    </property>
                    <property name="maximum">
-                    <double>3.140000000000000</double>
-                   </property>
-                   <property name="singleStep">
-                    <double>0.010000000000000</double>
+                    <number>180</number>
                    </property>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QDoubleSpinBox" name="doubleSpinBox_z_rot">
+                  <widget class="QSpinBox" name="spinBox_z_rot">
                    <property name="minimum">
-                    <double>-3.140000000000000</double>
+                    <number>-180</number>
                    </property>
                    <property name="maximum">
-                    <double>3.140000000000000</double>
-                   </property>
-                   <property name="singleStep">
-                    <double>0.010000000000000</double>
+                    <number>180</number>
                    </property>
                   </widget>
                  </item>

@@ -64,9 +64,9 @@ class viewer : public QMainWindow {
   void on_doubleSpinBox_y_move_valueChanged();
   void on_doubleSpinBox_z_move_valueChanged();
 
-  void on_doubleSpinBox_x_rot_valueChanged(double);
-  void on_doubleSpinBox_y_rot_valueChanged(double);
-  void on_doubleSpinBox_z_rot_valueChanged(double);
+  void on_spinBox_x_rot_valueChanged(int);
+  void on_spinBox_y_rot_valueChanged(int);
+  void on_spinBox_z_rot_valueChanged(int);
 
   void on_actionJPEG_triggered();
   void on_actionBMP_triggered();

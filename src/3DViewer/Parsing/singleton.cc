@@ -46,8 +46,8 @@ void parse::clear() {
 
 
 void parse::pushArr(const char **curr) {
-//        qDebug() << "push now ---->" << *curr;
     int vertIndex = std::stoi(*curr);
+    if(vertIndex < 0) vertIndex += vertex_.size();
     facetsArray.emplace_back(vertex_[vertIndex].x());
     facetsArray.emplace_back(vertex_[vertIndex].y());
     facetsArray.emplace_back(vertex_[vertIndex].z());
@@ -82,32 +82,30 @@ void parse::pushArr(const char **curr) {
 void parse::ParseF(QStringList str_list) {
     int counter = 0;
     QString first_elem = str_list[1];
-    const char *copy_curr;
     const char *first = first_elem.toStdString().c_str();
-    for(const auto &i : str_list) {
-        const char *curr = i.toStdString().c_str();
-////        qDebug() << "curr " << curr << ", first " << first;
-//        if(str_list.size() - 1 == 2 && std::isdigit(*curr)) {
-//            auto tmp = first;
-//            if(!std::strcmp(curr, first)) { pushArr(&tmp); }
-//            pushArr(&curr);
-//        } else
-       copy_curr = i.toStdString().c_str();
-       if(counter < 4) {
-            if(std::isdigit(*curr)) {
-                pushArr(&curr);
-            }
-            ++counter;
-        } else {
-            auto tmp = first;
-//            qDebug() << "curr" << curr;
-//            qDebug() << "copy_curr" << copy_curr;
-//            qDebug() << "first" << first;
-            pushArr(&curr);
-            pushArr(&copy_curr);
-            pushArr(&tmp);
+    const char *copy_curr = first;
 
-            copy_curr = curr;
+    for (const auto &i : str_list) {
+        const char *curr = i.toStdString().c_str();
+        if(str_list.size() - 1 == 2 && std::isdigit(*curr)) {
+           auto tmp = first;
+           if(!std::strcmp(curr, first)) { pushArr(&tmp); }
+           pushArr(&curr);
+        } else {
+            if(counter < 4) {
+                if(std::isdigit(*curr) || *curr == '-') {
+                    pushArr(&curr);
+                }
+                ++counter;
+                copy_curr = i.toStdString().c_str();
+            } else {
+                auto tmp = first;
+                auto tmp_copy = curr;
+                pushArr(&curr);
+                pushArr(&copy_curr);
+                pushArr(&tmp);
+                copy_curr = tmp_copy;
+            }
         }
     }
 }
@@ -131,7 +129,6 @@ void parse::ParseVertex_3D(QString path_to_file) {
     while (!file.atEnd()) {
       current_string = file.readLine();
       current_string = current_string.simplified();
-//      qDebug() << "current_string" << current_string;
       QStringList numbers = current_string.split(" ");
       if (numbers[0] == "v") vertex_.push_back(QVector3D(numbers[1].toFloat(), numbers[2].toFloat(), numbers[3].toFloat()));
       if (numbers[0] == "vt") uvs_.push_back(QVector2D(numbers[1].toFloat(), numbers[2].toFloat()));
@@ -141,8 +138,5 @@ void parse::ParseVertex_3D(QString path_to_file) {
   }
 
   for (int i = 0; i < facetsArray.size() / 8; i++) indices.push_back(i);
-
-//      qDebug() << "flag facetsArray" << facetsArray;
-//      qDebug() << "size facetsArray" << facetsArray.size();
 }
 } // namespace

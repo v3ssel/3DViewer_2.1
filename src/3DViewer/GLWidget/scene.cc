@@ -16,8 +16,9 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
 
   texture = nullptr;
   scale_factor = 1.0f;
-  start_x_ = 0, start_y_ = 0;
-  x_rot_ = 1, y_rot_ = 1;
+  start_x_ = 0.0f, start_y_ = 0.0f;
+  x_rot_ = 1.0f, y_rot_ = 1.0f;
+  r_x = 0.0f, r_y = 0.0f, r_z = 0.0f;
   x_trans_ = 0, y_trans_ = 0; // not needed now
 
   LoadSettings_();
@@ -193,7 +194,7 @@ void scene::paintGL() {
     program.bind();
     CheckDisplayType_();
 
-    QMatrix4x4 model, lamp;
+    QMatrix4x4 model;
     program.setUniformValueArray("view", &view, 1);
     projection.setToIdentity();
     view.setToIdentity();
@@ -207,6 +208,7 @@ void scene::paintGL() {
 
     model.setToIdentity();
     model.translate(move_object);
+    model.rotate(rotation_);
     model.scale(scale_factor);
     program.setUniformValueArray("model", &model, 1);
 
@@ -218,7 +220,7 @@ void scene::paintGL() {
     StartDraw_();
     program.release();
 
-    DrawLight_(lamp);
+    DrawLight_();
     SaveSettings_();
 }
 
@@ -266,7 +268,7 @@ void scene::StartDraw_() {
     vao.release();
 }
 
-void scene::DrawLight_(QMatrix4x4& lamp) {
+void scene::DrawLight_() {
     if (has_normals && !wireframe && is_light_enabled) {
         light.bind();
         vao_light.bind();
@@ -274,7 +276,7 @@ void scene::DrawLight_(QMatrix4x4& lamp) {
         light.setUniformValueArray("projection", &projection, 1);
         light.setUniformValueArray("view", &view, 1);
 
-        lamp.setToIdentity();
+        QMatrix4x4 lamp;
         lamp.translate(light_pos);
         lamp.scale(0.1f);
         light.setUniformValueArray("model", &lamp, 1);
@@ -295,7 +297,28 @@ void scene::CalculateCamera() {
 
     camera_up_    = QVector3D(-sin(x_rot_ * M_PI / 180) * sin(y_rot_ * M_PI / 180),
                             cos(y_rot_ * M_PI / 180),
-                            -cos(x_rot_ * M_PI / 180) * sin(y_rot_ * M_PI / 180));
+                              -cos(x_rot_ * M_PI / 180) * sin(y_rot_ * M_PI / 180));
+}
+
+void scene::RotateModel(float x, float y, float z) {
+    float diff_x = x - r_x;
+    float diff_y = y - r_y;
+    float diff_z = z - r_z;
+    r_x = x;
+    r_y = y;
+    r_z = z;
+    double angle = QVector3D(diff_y, diff_x, diff_z).length();
+    QVector3D axis = QVector3D(diff_y, diff_x, diff_z);
+    rotation_ = QQuaternion::fromAxisAndAngle(axis, angle) * rotation_;
+}
+
+void scene::wheelEvent(QWheelEvent* event) {
+    if (event->angleDelta().y() > 0) {
+        scale_factor *= 1.1f;
+    } else {
+        scale_factor *= 0.9f;
+    }
+    update();
 }
 
 void scene::mousePressEvent(QMouseEvent* mouse) {
@@ -341,9 +364,7 @@ void scene::mouseMoveEvent(QMouseEvent* mouse) {
       start_y_ = tmpY;
   }
   if (dragging_) {
-      camera_target_ = QVector3D(mouse->pos().x() - start_x_,(mouse->pos().y() - start_y_), 1.0f);
-//    x_trans_ = x_trans_ + (mouse->pos().x() - start_x_) / 4.f;
-//    y_trans_ = y_trans_ - (mouse->pos().y() - start_y_) / 4.f;
+    //
   }
   start_x_ = mouse->pos().x();
   start_y_ = mouse->pos().y();
@@ -353,25 +374,17 @@ void scene::mouseMoveEvent(QMouseEvent* mouse) {
 void scene::keyPressEvent(QKeyEvent* event) {
   switch (event->key()) {
     case Qt::Key_R:
-      x_trans_ = 0, y_trans_ = 0;
+      camera_pos_ = camera_up_ = move_object = QVector3D(0.0f, 0.0f, 0.0f);
+      CalculateCamera();
+      rotation_ = QQuaternion();
+      r_x = 0.0f, r_y = 0.0f, r_z = 0.0f;
       break;
     case Qt::Key_O:
-      x_trans_ = 0, y_trans_ = 0;
       projection_type = false;
       break;
     case Qt::Key_P:
-      x_trans_ = 0, y_trans_ = 0;
       projection_type = true;
       break;
   }
   update();
-}
-
-void scene::wheelEvent(QWheelEvent* event) {
-    if (event->angleDelta().y() > 0) {
-        scale_factor *= 1.1f;
-    } else {
-        scale_factor *= 0.9f;
-    }
-    update();
 }

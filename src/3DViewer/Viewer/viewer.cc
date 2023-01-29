@@ -83,6 +83,11 @@ void viewer::on_actionInfo_triggered() {
 }
 
 void viewer::keyPressEvent(QKeyEvent *event) {
+    switch (event->key()) {
+        case Qt::Key_R:
+            ui->spinBox_x_rot->setValue(0), ui->spinBox_y_rot->setValue(0), ui->spinBox_z_rot->setValue(0);
+            ui->doubleSpinBox_x_move->setValue(0.0f), ui->doubleSpinBox_y_move->setValue(0.0f), ui->doubleSpinBox_z_move->setValue(0.0f);
+    }
     ui->widget->keyPressEvent(event);
 }
 
@@ -187,28 +192,19 @@ void viewer::on_doubleSpinBox_z_move_valueChanged() {
   on_doubleSpinBox_x_move_valueChanged();
 }
 
-void viewer::on_doubleSpinBox_x_rot_valueChanged(double arg1) {
-//  if (ui->widget->filename != "") {
-//    s21::Transform::GetInstance().RotateXYZ('x',
-//                                            ui->doubleSpinBox_x_rot->value());
-//    ui->widget->update();
-//  }
+void viewer::on_spinBox_x_rot_valueChanged(int arg1) {
+    ui->widget->RotateModel(arg1, ui->widget->r_y, ui->widget->r_z);
+    ui->widget->update();
 }
 
-void viewer::on_doubleSpinBox_y_rot_valueChanged(double arg1) {
-//  if (ui->widget->filename != "") {
-//    s21::Transform::GetInstance().RotateXYZ('y',
-//                                            ui->doubleSpinBox_y_rot->value());
-//    ui->widget->update();
-//  }
+void viewer::on_spinBox_y_rot_valueChanged(int arg1) {
+    ui->widget->RotateModel(ui->widget->r_x, arg1, ui->widget->r_z);
+    ui->widget->update();
 }
 
-void viewer::on_doubleSpinBox_z_rot_valueChanged(double arg1) {
-//  if (ui->widget->filename != "") {
-//    s21::Transform::GetInstance().RotateXYZ('z',
-//                                            ui->doubleSpinBox_z_rot->value());
-//    ui->widget->update();
-//  }
+void viewer::on_spinBox_z_rot_valueChanged(int arg1) {
+    ui->widget->RotateModel(ui->widget->r_x, ui->widget->r_y, arg1);
+    ui->widget->update();
 }
 
 void viewer::on_actionOrthographic_Perspective_triggered() {
