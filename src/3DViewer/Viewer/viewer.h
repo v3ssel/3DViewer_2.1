@@ -97,6 +97,8 @@ private:
 
   float time_;
   bool hiden_, is_recording_;
+  QString filename;
+  QImage texture_image;
   QTimer *record_time_;
   QVector<QImage> GIF_;
 

@@ -37,6 +37,7 @@ void viewer::on_actionOpen_triggered() {
   QString fname = QFileDialog::getOpenFileName(
       this, "Choose File", QDir::homePath(), tr("OBJ (*.obj)"));
   if (fname != "") {
+    filename = fname;
     s21::Controller::GetInstance().clearArrays();
     s21::Controller::GetInstance().ParseVertex_3D(fname);
     ui->widget->InitModel(s21::Controller::GetInstance().GetPolygonsArray(), s21::Controller::GetInstance().GetIndices());
@@ -45,7 +46,7 @@ void viewer::on_actionOpen_triggered() {
     if ((ui->widget->has_normals = s21::Controller::GetInstance().NormalsUsage()))
         ui->actionLight->setDisabled(false);
     else
-        ui->actionLight->setDisabled(true);
+        ui->actionLight->setDisabled(true), ui->actionLight->setChecked(false);
 
     if ((ui->widget->has_texture = s21::Controller::GetInstance().TextureUsage()) && !ui->widget->wireframe)
         ui->pushButton_apply_texture->setDisabled(false);
@@ -63,23 +64,16 @@ void viewer::on_actionClose_triggered() {
     ui->widget->has_texture = false;
     ui->widget->has_normals = false;
     ui->widget->update();
+    filename = "";
 }
 
 void viewer::on_actionInfo_triggered() {
-//  QMessageBox::information(
-//      this, "Information",
-//      "Filename: " + ui->widget->filename + "\nVertices: " +
-//          QString::number(
-//              ui->widget->filename == ""
-//                  ? 0
-//                  : ((s21::Controller::GetInstance().GetVertex().size() - 3) /
-//                     3)) +
-//          "\nLines: " +
-//          QString::number(
-//              ui->widget->filename == ""
-//                  ? 0
-//                  : (s21::Controller::GetInstance().GetIndices().size() / 3 -
-//                     4)));
+  QMessageBox::information(
+      this, "Information",
+      "Filename: " + filename + "\nVertices: " +
+      QString::number(!s21::Controller::GetInstance().GetVertices().size() ? 0 : s21::Controller::GetInstance().GetVertices().size() - 1) +
+      "\nLines: " +
+      QString::number(s21::Controller::GetInstance().GetIndices().size()));
 }
 
 void viewer::keyPressEvent(QKeyEvent *event) {
@@ -218,9 +212,11 @@ void viewer::on_actionOrthographic_Perspective_triggered() {
 void viewer::on_actionHide_triggered() {
   if (hiden_) {
     ui->dockWidget_main->show();
+    ui->dockWidget_3->show();
     hiden_ = false;
   } else {
     ui->dockWidget_main->hide();
+    ui->dockWidget_3->hide();
     hiden_ = true;
   }
 }
@@ -312,9 +308,10 @@ void viewer::on_pushButton_apply_texture_clicked() {
         this, "Choose File", QDir::homePath(), tr("BMP (*.bmp)"));
 
     if (fname != "") {
+        texture_image = QImage(fname);
         if (!ui->widget->texture)
             delete ui->widget->texture;
-        ui->widget->texture = new QOpenGLTexture(QImage(fname));
+        ui->widget->texture = new QOpenGLTexture(texture_image);
         ui->widget->texture->setMinificationFilter(QOpenGLTexture::Nearest);
         ui->widget->texture->setMagnificationFilter(QOpenGLTexture::Linear);
         ui->widget->texture->setWrapMode(QOpenGLTexture::Repeat);

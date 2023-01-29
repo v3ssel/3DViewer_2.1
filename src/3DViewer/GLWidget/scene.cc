@@ -261,7 +261,7 @@ void scene::StartDraw_() {
         glPointSize(vertex_size);
         QVector3D v_col(vertices_color.red() / 255.0f, vertices_color.green() / 255.0f, vertices_color.blue() / 255.0f);
         program.setUniformValueArray("objectColor", &v_col, 1);
-        glDrawArrays(GL_POINTS, 1, s21::Controller::GetInstance().GetVertices().size() * 3);
+        glDrawArrays(GL_POINTS, 1, s21::Controller::GetInstance().GetVertices().size() * 5);
         glDisable(GL_POINT_SMOOTH);
     }
 
