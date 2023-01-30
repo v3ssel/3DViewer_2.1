@@ -101,9 +101,10 @@ void parse::ParseF(QStringList str_list) {
             } else {
                 auto tmp = first;
                 auto tmp_copy = curr;
-                pushArr(&curr);
-                pushArr(&copy_curr);
                 pushArr(&tmp);
+                pushArr(&copy_curr);
+                pushArr(&curr);
+
                 copy_curr = tmp_copy;
             }
         }

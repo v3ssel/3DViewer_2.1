@@ -304,11 +304,11 @@ void viewer::on_pushButton_smooth_shading_clicked() {
 
 void viewer::on_pushButton_apply_texture_clicked() {
     ui->widget->wireframe = false;
-    QString fname = QFileDialog::getOpenFileName(
+    fname_texture = QFileDialog::getOpenFileName(
         this, "Choose File", QDir::homePath(), tr("BMP (*.bmp)"));
 
-    if (fname != "") {
-        texture_image = QImage(fname);
+    if (fname_texture != "") {
+        texture_image = QImage(fname_texture);
         if (!ui->widget->texture)
             delete ui->widget->texture;
         ui->widget->texture = new QOpenGLTexture(texture_image);
@@ -452,65 +452,32 @@ static const QVector<GLfloat> text = {
 
 };
 
-void viewer::on_pushButton_save_uvmap_clicked()
-{
-    QString fname = QFileDialog::getOpenFileName(
-        this, "Choose File", QDir::homePath(), tr("BMP (*.bmp)"));
-
-    QPixmap map(fname);
+void viewer::on_pushButton_save_uvmap_clicked() {
+    QPixmap map(fname_texture);
     QPainter painter(&map);
 
+    QVector<GLfloat> finalArr = s21::parse::GetInstance().getFacetsArr();
+    QVector<QVector2D> uvArr = s21::parse::GetInstance().getUVsArr();
+    qDebug() << finalArr;
     QList<QLine> parser_x_y;
     int count = 0;
-//    for (int i = 0; text.size() > i; i+=2, ++count) {
-//        if (i == 0) {
-//            parser_x_y.push_back(QLine(i* map.width(), i * map.height(), text[i]* map.width(), text[i+1]* map.height()));
-//        }
-//        parser_x_y.push_back(QLine(parser_x_y[count].x2()* map.width(), parser_x_y[count].y2()* map.height(), text[i]* map.width(), text[i+1]* map.height()));
-
-//    }
 
     //int count = 0; более менее финальная версия
-    for (int i = 0; text.size()-2 > i; i+=2, ++count) {
+    for (int i = 3; uvArr.size()*8 > i; i+=8, ++count) {
         if(count == 3) {
-            std::cout << "Значение n равно: " << count;
-            i += 2;
+            qDebug() << finalArr[i];
+            qDebug() << i;
+//            i -= 8;
             count = 0;
         }
-        parser_x_y.push_back(QLine(text[i]* map.width(), text[i+1]* map.height(), text[i+2]* map.width(), text[i+3]* map.height()));
-
-
-
+        qDebug() << finalArr[i] << finalArr[i+1] << finalArr[i+8] << finalArr[i+9];
+        parser_x_y.push_back(QLine(finalArr[i]* map.width(), finalArr[i+1]* map.height(), finalArr[i+8]* map.width(), finalArr[i+9]* map.height()));
     }
 
-//int count = 0; более менее финальная версия
+//    qDebug() <<  parser_x_y;
     for (int i = 0; parser_x_y.size() > i; ++i, ++count) {
         painter.drawLine(parser_x_y[i]);
     }
-
-//    painter.drawLine(parser_x_y[0]);
-//    painter.drawLine(parser_x_y[1]);
-//    painter.drawLine(parser_x_y[2]);
-//    painter.drawLine(parser_x_y[3]);
-
-//    painter.drawLine(parser_x_y[4]);
-//    painter.drawLine(parser_x_y[5]);
-//    painter.drawLine(parser_x_y[6]);
-//    painter.drawLine(parser_x_y[7]);
-//    painter.drawLine(parser_x_y[8]);
-//    painter.drawLine(parser_x_y[9]);
-
-
-//    painter.drawLine(parser_x_y[12]);
-//    painter.drawLine(parser_x_y[13]);
-
-
-
-
-//    painter.drawLine(parser_x_y[18]);
-
-
-//    painter.drawLine(parser_x_y[21]);
 
     //painter.translate(this->rect().bottomLeft());
 //    painter.scale(1.0, 0);
