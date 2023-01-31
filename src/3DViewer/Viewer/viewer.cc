@@ -458,30 +458,40 @@ void viewer::on_pushButton_save_uvmap_clicked() {
 
     QVector<GLfloat> finalArr = s21::parse::GetInstance().getFacetsArr();
     QVector<QVector2D> uvArr = s21::parse::GetInstance().getUVsArr();
-    qDebug() << finalArr;
+    for(int i = 3; i < finalArr.size(); i+= 8) {
+        qDebug() << finalArr[i] << finalArr[i+1];
+    }
+
     QList<QLine> parser_x_y;
     int count = 0;
+    QVector<GLfloat> tmp_first_elem = {0.0, 0.0};
 
     //int count = 0; более менее финальная версия
-    for (int i = 3; uvArr.size()*8 > i; i+=8, ++count) {
-        if(count == 3) {
-            qDebug() << finalArr[i];
-            qDebug() << i;
-//            i -= 8;
-            count = 0;
+    for (int i = 3; uvArr.size()*11 > i; i+=8, ++count) {
+        if(count == 0) {
+            tmp_first_elem[0] = finalArr[i];
+            tmp_first_elem[1] = finalArr[i+1];
         }
-        qDebug() << finalArr[i] << finalArr[i+1] << finalArr[i+8] << finalArr[i+9];
-        parser_x_y.push_back(QLine(finalArr[i]* map.width(), finalArr[i+1]* map.height(), finalArr[i+8]* map.width(), finalArr[i+9]* map.height()));
+
+        qDebug() << " 1/2 " << finalArr[i] << finalArr[i+1];
+//                qDebug() << i << i+1 << i+8 << i+9;
+        if(count != 2) {
+            parser_x_y.push_back(QLine(finalArr[i]* map.width(), finalArr[i+1]* map.height(), finalArr[i+8]* map.width(), finalArr[i+9]* map.height()));
+            qDebug() << " 2/2 " << finalArr[i+8] << finalArr[i+9];
+        } else {
+            parser_x_y.push_back(QLine(finalArr[i]* map.width(), finalArr[i+1]* map.height(), tmp_first_elem[0]* map.width(), tmp_first_elem[1]* map.height()));
+            qDebug()<< " 2/2.1 " << tmp_first_elem[0] << tmp_first_elem[1];
+        }
+        if(count == 2) {
+            qDebug() << "here";
+            count = -1;
+        }
     }
 
 //    qDebug() <<  parser_x_y;
     for (int i = 0; parser_x_y.size() > i; ++i, ++count) {
         painter.drawLine(parser_x_y[i]);
     }
-
-    //painter.translate(this->rect().bottomLeft());
-//    painter.scale(1.0, 0);
-    //painter.drawLine(QLine(0.000245 * map.width(), 0.999266 * map.height(), 0.666911 * map.width(), 0.499511 * map.height()));
 
     QString str = QFileDialog::getSaveFileName(
         this, tr("Save GIF"), QDir::homePath(), tr("BMP (*.bmp)"));
