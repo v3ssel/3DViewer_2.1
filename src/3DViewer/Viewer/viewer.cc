@@ -467,7 +467,7 @@ void viewer::on_pushButton_save_uvmap_clicked() {
     QVector<GLfloat> tmp_first_elem = {0.0, 0.0};
 
     //int count = 0; более менее финальная версия
-    for (int i = 3; uvArr.size()*11 > i; i+=8, ++count) {
+    for (int i = 3; finalArr.size() > i; i+=8, ++count) {
         if(count == 0) {
             tmp_first_elem[0] = finalArr[i];
             tmp_first_elem[1] = finalArr[i+1];
