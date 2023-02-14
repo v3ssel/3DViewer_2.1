@@ -1,5 +1,4 @@
 #include "singleton.h"
-#include <QDebug>
 
 namespace s21 {
 
@@ -124,7 +123,7 @@ void parse::ParseVertex_3D(QString path_to_file) {
   CheckFlags(path_to_file);
   QFile file(path_to_file);
   if (file.open(QFile::ReadOnly)) {
-    add_pseudo_str();     // псевдострока
+    add_pseudo_str();
     QString current_string;
 
     while (!file.atEnd()) {
@@ -140,4 +139,4 @@ void parse::ParseVertex_3D(QString path_to_file) {
 
   for (int i = 0; i < facetsArray.size() / 8; i++) indices.push_back(i);
 }
-} // namespace
+} // namespace s21

@@ -4,10 +4,11 @@
 #include <QFile>
 
 #include <QWidget>
-#include <QOpenGLVertexArrayObject>
 #include <QVector3D>
 
 #include <QVector>
+using GLfloat = float;
+using GLuint = unsigned int;
 
 namespace s21 {
 class parse {

@@ -1,0 +1,24 @@
+# This file uses centimeters as units for non-parametric coordinates.
+
+mtllib cube.mtl
+g default
+
+v  48.656645  48.864150  4.766477
+v  58.189599  48.864150  4.766477
+v  48.656645  58.397104  4.766477
+v  58.189599  58.397104  4.766477
+v  48.656645  58.397104  -4.766477
+v  58.189599  58.397104  -4.766477
+v  48.656645  48.864150  -4.766477
+v  58.189599  48.864150  -4.766477
+
+s  off
+g  pCube1
+usemtl  initialShadingGroup
+
+f  1  2  4  3
+f  3  4  6  5
+f  5  6  8  7
+f  7  8  2  1
+f  2  8  6  4
+f  7  1  3  5
