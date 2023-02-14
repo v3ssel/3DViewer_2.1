@@ -347,158 +347,35 @@ void viewer::on_doubleSpinBox_z_light_pos_valueChanged(double arg1) {
     ui->widget->update();
 }
 
-static const QVector<GLfloat> text = {
-//    0.000245, 0.500000,
-//    0.333089, 0.500000,
-//    0.333089, 0.999266,
-
-//    0.000245, 0.500000,
-//    0.333089, 0.999266,
-//    0.000245, 0.999266,
-
-
-//    0.666911, 0.499511,
-//    0.666911, 0.000245,
-//    0.999755, 0.000245,
-
-//    0.666911, 0.499511,
-//    0.999755, 0.000245,
-//    0.999756, 0.499511,
-
-
-//    0.666422, 0.500000,
-//    0.666422, 0.999266,
-//    0.333578, 0.999266,
-
-//    0.666422, 0.500000,
-//    0.333578, 0.999266,
-//    0.333578, 0.500000,
-
-
-//    0.000245, 0.000245,
-//    0.333089, 0.000245,
-//    0.333089, 0.499511,
-
-//    0.000245, 0.000245,
-//    0.333089, 0.499511,
-//    0.000245, 0.499511,
-
-
-//    0.666911, 0.999266,
-//    0.666911, 0.500000,
-//    0.999755, 0.500000,
-
-//    0.666911, 0.999266,
-//    0.999755, 0.500000,
-//    0.999756, 0.999266,
-
-
-//    0.666422, 0.000245,
-//    0.666422, 0.499511,
-//    0.333578, 0.499511,
-
-//    0.666422, 0.000245,
-//    0.333578, 0.499511,
-//    0.333578, 0.000245
-
-    0.000245, 0.500000,
-    0.333089, 0.500000,
-    0.333089, 0.999266,
-    0.000245, 0.500000,
-    0.333089, 0.999266,
-    0.000245, 0.999266,
-    0.000245, 0.500000,
-
-    0.666911, 0.499511,
-    0.666911, 0.000245,
-    0.999755, 0.000245,
-    0.666911, 0.499511,
-    0.999755, 0.000245,
-    0.999756, 0.499511,
-    0.666911, 0.499511,
-
-    0.666422, 0.500000,
-    0.666422, 0.999266,
-    0.333578, 0.999266,
-    0.666422, 0.500000,
-    0.333578, 0.999266,
-    0.333578, 0.500000,
-    0.666422, 0.500000,
-
-    0.000245, 0.000245,
-    0.333089, 0.000245,
-    0.333089, 0.499511,
-    0.000245, 0.000245,
-    0.333089, 0.499511,
-    0.000245, 0.499511,
-    0.000245, 0.000245,
-
-    0.666911, 0.999266,
-    0.666911, 0.500000,
-    0.999755, 0.500000,
-    0.666911, 0.999266,
-    0.999755, 0.500000,
-    0.999756, 0.999266,
-    0.666911, 0.999266,
-
-    0.666422, 0.000245,
-    0.666422, 0.499511,
-    0.333578, 0.499511,
-    0.666422, 0.000245,
-    0.333578, 0.499511,
-    0.333578, 0.000245,
-    0.666422, 0.000245
-    //
-
-};
-
 void viewer::on_pushButton_save_uvmap_clicked() {
     QPixmap map(fname_texture);
     QPainter painter(&map);
 
     QVector<GLfloat> finalArr = s21::parse::GetInstance().getFacetsArr();
-    QVector<QVector2D> uvArr = s21::parse::GetInstance().getUVsArr();
-    for(int i = 3; i < finalArr.size(); i+= 8) {
-        qDebug() << finalArr[i] << finalArr[i+1];
-    }
 
     QList<QLine> parser_x_y;
     int count = 0;
     QVector<GLfloat> tmp_first_elem = {0.0, 0.0};
 
-    //int count = 0; более менее финальная версия
     for (int i = 3; finalArr.size() > i; i+=8, ++count) {
         if(count == 0) {
             tmp_first_elem[0] = finalArr[i];
             tmp_first_elem[1] = finalArr[i+1];
         }
 
-        qDebug() << " 1/2 " << finalArr[i] << finalArr[i+1];
-//                qDebug() << i << i+1 << i+8 << i+9;
-        if(count != 2) {
+        if(count != 2)
             parser_x_y.push_back(QLine(finalArr[i]* map.width(), finalArr[i+1]* map.height(), finalArr[i+8]* map.width(), finalArr[i+9]* map.height()));
-            qDebug() << " 2/2 " << finalArr[i+8] << finalArr[i+9];
-        } else {
+        else
             parser_x_y.push_back(QLine(finalArr[i]* map.width(), finalArr[i+1]* map.height(), tmp_first_elem[0]* map.width(), tmp_first_elem[1]* map.height()));
-            qDebug()<< " 2/2.1 " << tmp_first_elem[0] << tmp_first_elem[1];
-        }
-        if(count == 2) {
-            qDebug() << "here";
+        
+        if(count == 2)
             count = -1;
-        }
     }
-
-//    qDebug() <<  parser_x_y;
-    for (int i = 0; parser_x_y.size() > i; ++i, ++count) {
-        painter.drawLine(parser_x_y[i]);
-    }
+    painter.drawLines(parser_x_y);
 
     QString str = QFileDialog::getSaveFileName(
         this, tr("Save GIF"), QDir::homePath(), tr("BMP (*.bmp)"));
     map.save(str);
-//    painter.save();
-//    QPixmap image(fname);
-//    image
 }
 
 void viewer::on_doubleSpinBox_r_light_intens_valueChanged(double arg1) {
