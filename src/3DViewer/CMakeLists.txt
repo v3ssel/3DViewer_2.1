@@ -18,7 +18,6 @@ add_subdirectory(GIFCreation)
 set(MACOSX_BUNDLE_ICON_FILE 3d-icon.icns)
 set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/3d-icon.icns")
 set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
-# qt_add_executable(3DViewer MACOSX_BUNDLE main.cpp ${app_icon_macos})
 
 set(PROJECT_SOURCES
         Parsing/singleton.cc
