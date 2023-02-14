@@ -7,15 +7,14 @@
 #include <QKeyEvent>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QOpenGLTexture>
+#include <QPainter>
 #include <QTimer>
 #include <QVector>
-#include <QPainter>
 #include <iostream>
 
 #include "../Controller/controller.h"
 #include "../GIFCreation/gifImage/qgifimage.h"
-
-#include <QOpenGLTexture>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -59,7 +58,7 @@ class viewer : public QMainWindow {
   void on_pushButton_ver_square_clicked();
   void on_pushButton_ver_none_clicked();
   void on_pushButton_wireframe_clicked();
-//  void on_pushButton_12_clicked();
+  //  void on_pushButton_12_clicked();
 
   void on_doubleSpinBox_x_move_valueChanged();
   void on_doubleSpinBox_y_move_valueChanged();
@@ -89,7 +88,7 @@ class viewer : public QMainWindow {
   void on_doubleSpinBox_g_light_intens_valueChanged(double arg1);
   void on_doubleSpinBox_b_light_intens_valueChanged(double arg1);
 
-private:
+ private:
   void SaveImage_(QString format);
   void Recording_();
   void SaveGIF_();

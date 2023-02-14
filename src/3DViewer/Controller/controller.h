@@ -13,7 +13,7 @@ class Controller {
     return controller_;
   }
 
-  QVector<GLfloat>&  GetPolygonsArray();
+  QVector<GLfloat>& GetPolygonsArray();
   QVector<GLuint>& GetIndices();
 
   QVector<QVector3D>& GetVertices();

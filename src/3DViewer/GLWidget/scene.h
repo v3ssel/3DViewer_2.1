@@ -5,19 +5,17 @@
 
 #include <QtOpenGLWidgets/qopenglwidget.h>
 
-#include <QOpenGLFunctions>
-#include <QOpenGLVertexArrayObject>
-#include <QOpenGLShader>
-#include <QOpenGLBuffer>
-#include <QOpenGLTexture>
-#include <QMatrix4x4>
-
-#include <QMouseEvent>
-#include <QSettings>
-
-#include <QWidget>
-#include <QTimer>
 #include <QDebug>
+#include <QMatrix4x4>
+#include <QMouseEvent>
+#include <QOpenGLBuffer>
+#include <QOpenGLFunctions>
+#include <QOpenGLShader>
+#include <QOpenGLTexture>
+#include <QOpenGLVertexArrayObject>
+#include <QSettings>
+#include <QTimer>
+#include <QWidget>
 
 class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   Q_OBJECT
@@ -27,7 +25,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   ~scene();
 
   void keyPressEvent(QKeyEvent *) override;
-  void InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices);
+  void InitModel(QVector<GLfloat> &vertices, QVector<GLuint> &indices);
   void CalculateCamera();
   void RotateModel(float x, float y, float z);
 
@@ -67,7 +65,6 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
 
   void SaveSettings_();
   void LoadSettings_();
-
 
   float x_rot_, y_rot_, start_y_, start_x_;
   bool moving_, dragging_;
