@@ -26,7 +26,7 @@ uninstall:
 
 clean:
 	rm -rf ${ARCHIVE}*
-	rm -rf ./report test.out
+	rm -rf ./report 3DViewer/Unit-tests/Tests
 
 dvi:
 	open dvi.md -a Visual\ Studio\ Code
@@ -39,8 +39,9 @@ dist:
 	rm -rf ${ARCHIVE}
 
 tests:
-	$(CC) $(CFLAGS) 3DViewer/Parsing/singleton.cc 3DViewer/Controller/controller.cc 3DViewer/Unit-tests/test.cc $(TEST_LIBS) -o tests
-	 ./tests
+	cd 3DViewer/Unit-tests && mkdir build && cd build && \
+	cmake .. && cmake --build . --target all && \
+	mv Tests ../ && rm -rf build && ./Tests
 
 gcov_report:
 	$(CC) $(CFLAGS) --coverage $(TEST_LIBS) 3DViewer/Parsing/singleton.cc 3DViewer/Controller/controller.cc 3DViewer/Unit-tests/test.cc -o gcov_test
@@ -61,7 +62,8 @@ check:
 									GLWidget/scene.h 			\
 									Viewer/viewer.cc 			\
 									Viewer/viewer.h 			\
-									Unit-tests/test.cc			\
+									Unit-tests/main.cc			\
+									Unit-tests/tst_parsing.cc	\
 									GIFCreation/gifImage/*.cpp  \
 									GIFCreation/gifImage/*.h 	\
 									GIFCreation/gifLib/*.c 		\
