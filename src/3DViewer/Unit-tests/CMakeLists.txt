@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.9)
 
 project(Tests LANGUAGES CXX)
 
@@ -10,7 +10,9 @@ add_definitions(-DGTEST_LANGUAGE_CXX17)
 
 find_package(QT NAMES Qt6 REQUIRED COMPONENTS Widgets Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core)
-find_package(Threads REQUIRED)
+find_package(GTest REQUIRED)
+
+set(CMAKE_CXX_COMPILER "/usr/local/bin/g++")
 
 set(PROJECT_SOURCES
         main.cc 
@@ -21,14 +23,14 @@ set(PROJECT_SOURCES
         ../Controller/controller.cc
 )
 
-include_directories("C:\\msys64\\mingw64\\include\\") # CHANGE THE PATH
-link_directories("C:\\msys64\\mingw64\\lib\\") # CHANGE THE PATH
+set(FLAGS "-Wall -Wextra -Werror -Wno-unused -pedantic -std=c++17")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Coverage")
-        set(CMAKE_CXX_FLAGS "--coverage")
+        message("COVERAGE")
+        set(CMAKE_CXX_FLAGS "${FLAGS} --coverage")
 endif()
 
 add_executable(Tests ${PROJECT_SOURCES})
 add_test(NAME Tests COMMAND Tests)
-target_link_libraries(Tests PRIVATE Threads::Threads gtest Qt${QT_VERSION_MAJOR}::Widgets
+target_link_libraries(Tests PRIVATE gtest Qt${QT_VERSION_MAJOR}::Widgets
                                                            Qt${QT_VERSION_MAJOR}::Core)
