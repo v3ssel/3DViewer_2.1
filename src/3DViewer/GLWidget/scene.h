@@ -5,7 +5,6 @@
 
 #include <QtOpenGLWidgets/qopenglwidget.h>
 
-#include <QDebug>
 #include <QMatrix4x4>
 #include <QMouseEvent>
 #include <QOpenGLBuffer>
@@ -28,13 +27,14 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   void InitModel(QVector<GLfloat> &vertices, QVector<GLuint> &indices);
   void CalculateCamera();
   void RotateModel(float x, float y, float z);
+  QList<QLine> GetLines(QPixmap map);
 
   QVector3D light_pos, light_color, move_object;
   QColor background, vertices_color, lines_color;
   unsigned line_width, vertex_size;
   bool circle_square, dashed_solid, is_none;
 
-  float scale_factor, x_trans_, y_trans_;
+  float scale_factor;
   float r_x, r_y, r_z;
 
   bool projection_type, wireframe, flat_shading;
@@ -67,7 +67,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
   void LoadSettings_();
 
   float x_rot_, y_rot_, start_y_, start_x_;
-  bool moving_, dragging_;
+  bool moving_;
 
   QVector3D camera_target_, camera_pos_, camera_up_;
   QQuaternion rotation_;

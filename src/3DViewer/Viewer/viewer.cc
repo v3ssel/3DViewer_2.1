@@ -14,7 +14,7 @@ viewer::viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::viewer) {
   ui->pushButton_unload_texture->setDisabled(true);
   ui->pushButton_save_uvmap->setDisabled(true);
 
-  SetFrameColor();
+  SetFrameColor_();
 
   hiden_ = false, is_recording_ = false;
   time_ = 0.0;
@@ -37,7 +37,7 @@ void viewer::on_actionOpen_triggered() {
   QString fname = QFileDialog::getOpenFileName(
       this, "Choose File", QDir::homePath(), tr("OBJ (*.obj)"));
   if (fname != "") {
-    filename = fname;
+    filename_ = fname;
     s21::Controller::GetInstance().clearArrays();
     s21::Controller::GetInstance().ParseVertex_3D(fname);
     ui->widget->InitModel(s21::Controller::GetInstance().GetPolygonsArray(),
@@ -68,13 +68,13 @@ void viewer::on_actionClose_triggered() {
   ui->widget->has_texture = false;
   ui->widget->has_normals = false;
   ui->widget->update();
-  filename = "";
+  filename_ = "";
 }
 
 void viewer::on_actionInfo_triggered() {
   QMessageBox::information(
       this, "Information",
-      "Filename: " + filename + "\nVertices: " +
+      "Filename: " + filename_ + "\nVertices: " +
           QString::number(
               !s21::Controller::GetInstance().GetVertices().size()
                   ? 0
@@ -95,7 +95,7 @@ void viewer::keyPressEvent(QKeyEvent *event) {
   ui->widget->keyPressEvent(event);
 }
 
-void viewer::SetFrameColor() {
+void viewer::SetFrameColor_() {
   this->setStyleSheet("QMainWindow{ background-color: rgb(" +
                       QString::number(ui->widget->background.red()) + ", " +
                       QString::number(ui->widget->background.green()) + ", " +
@@ -104,7 +104,7 @@ void viewer::SetFrameColor() {
 
 void viewer::on_pushButton_bg_clicked() {
   ui->widget->background = QColorDialog::getColor();
-  SetFrameColor();
+  SetFrameColor_();
 }
 
 void viewer::on_pushButton_vertex_clicked() {
@@ -287,7 +287,7 @@ void viewer::SaveGIF_() {
   time_ = 0.0;
   is_recording_ = false;
 
-  SetFrameColor();
+  SetFrameColor_();
 }
 
 void viewer::on_pushButton_wireframe_clicked() {
@@ -313,13 +313,13 @@ void viewer::on_pushButton_smooth_shading_clicked() {
 
 void viewer::on_pushButton_apply_texture_clicked() {
   ui->widget->wireframe = false;
-  fname_texture = QFileDialog::getOpenFileName(
+  fname_texture_ = QFileDialog::getOpenFileName(
       this, "Choose File", QDir::homePath(), tr("BMP (*.bmp)"));
 
-  if (fname_texture != "") {
-    texture_image = QImage(fname_texture);
+  if (fname_texture_ != "") {
+    texture_image_ = QImage(fname_texture_);
     if (!ui->widget->texture) delete ui->widget->texture;
-    ui->widget->texture = new QOpenGLTexture(texture_image);
+    ui->widget->texture = new QOpenGLTexture(texture_image_);
     ui->widget->texture->setMinificationFilter(QOpenGLTexture::Nearest);
     ui->widget->texture->setMagnificationFilter(QOpenGLTexture::Linear);
     ui->widget->texture->setWrapMode(QOpenGLTexture::Repeat);
@@ -353,32 +353,11 @@ void viewer::on_doubleSpinBox_z_light_pos_valueChanged(double arg1) {
 }
 
 void viewer::on_pushButton_save_uvmap_clicked() {
-  QPixmap map(fname_texture);
+  QPixmap map(fname_texture_);
   QPainter painter(&map);
 
-  QVector<GLfloat> finalArr = s21::parse::GetInstance().getFacetsArr();
-
-  QList<QLine> parser_x_y;
-  int count = 0;
-  QVector<GLfloat> tmp_first_elem = {0.0, 0.0};
-
-  for (int i = 3; finalArr.size() > i; i += 8, ++count) {
-    if (count == 0) {
-      tmp_first_elem[0] = finalArr[i];
-      tmp_first_elem[1] = finalArr[i + 1];
-    }
-
-    if (count != 2)
-      parser_x_y.push_back(
-          QLine(finalArr[i] * map.width(), finalArr[i + 1] * map.height(),
-                finalArr[i + 8] * map.width(), finalArr[i + 9] * map.height()));
-    else
-      parser_x_y.push_back(QLine(
-          finalArr[i] * map.width(), finalArr[i + 1] * map.height(),
-          tmp_first_elem[0] * map.width(), tmp_first_elem[1] * map.height()));
-
-    if (count == 2) count = -1;
-  }
+  QList<QLine> parser_x_y = ui->widget->GetLines(map);
+  painter.setPen(QColorDialog::getColor());
   painter.drawLines(parser_x_y);
 
   QString str = QFileDialog::getSaveFileName(

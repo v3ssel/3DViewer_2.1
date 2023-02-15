@@ -9,10 +9,10 @@ using GLfloat = float;
 using GLuint = unsigned int;
 
 namespace s21 {
-class parse {
+class Parse {
  public:
-  static parse& GetInstance() {
-    static parse instance;
+  static Parse& GetInstance() {
+    static Parse instance;
     return instance;
   }
   void ParseVertex_3D(QString path_to_file);
@@ -24,21 +24,21 @@ class parse {
   QVector<QVector3D>& getVertexArr() { return vertex_; }
   QVector<QVector3D>& getNormalsArr() { return normals_; }
   QVector<QVector2D>& getUVsArr() { return uvs_; }
-  QVector<GLfloat>& getFacetsArr() { return facetsArray; }
-  QVector<GLuint>& getIndicesArr() { return indices; }
+  QVector<GLfloat>& getFacetsArr() { return facets_array_; }
+  QVector<GLuint>& getIndicesArr() { return indices_; }
 
   bool vn_used;
   bool vt_used;
 
  private:
-  parse() { clear(); }
-  parse(const parse&);
-  void operator=(parse&);
+  Parse() { clear(); }
+  Parse(const Parse&);
+  void operator=(Parse&);
 
-  void add_pseudo_str();
+  void add_pseudo_str_();
 
-  QVector<GLfloat> facetsArray;
-  QVector<GLuint> indices;
+  QVector<GLfloat> facets_array_;
+  QVector<GLuint> indices_;
   QVector<QVector3D> vertex_;
   QVector<QVector3D> normals_;
   QVector<QVector2D> uvs_;

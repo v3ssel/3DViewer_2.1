@@ -58,7 +58,6 @@ class viewer : public QMainWindow {
   void on_pushButton_ver_square_clicked();
   void on_pushButton_ver_none_clicked();
   void on_pushButton_wireframe_clicked();
-  //  void on_pushButton_12_clicked();
 
   void on_doubleSpinBox_x_move_valueChanged();
   void on_doubleSpinBox_y_move_valueChanged();
@@ -93,13 +92,13 @@ class viewer : public QMainWindow {
   void Recording_();
   void SaveGIF_();
 
-  void SetFrameColor();
+  void SetFrameColor_();
 
   float time_;
   bool hiden_, is_recording_;
-  QString filename;
-  QImage texture_image;
-  QString fname_texture;
+  QString filename_;
+  QImage texture_image_;
+  QString fname_texture_;
   QTimer *record_time_;
   QVector<QImage> GIF_;
 

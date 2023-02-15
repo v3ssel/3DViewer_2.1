@@ -7,7 +7,7 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
                            QSettings::IniFormat);
 
   move_object = camera_target_ = QVector3D(0.0f, 0.0f, 0.0f);
-  moving_ = false, dragging_ = false;
+  moving_ = false;
   wireframe = true, flat_shading = false;
   projection_type = true, is_light_enabled = false;
 
@@ -19,7 +19,6 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
   start_x_ = 0.0f, start_y_ = 0.0f;
   x_rot_ = 1.0f, y_rot_ = 1.0f;
   r_x = 0.0f, r_y = 0.0f, r_z = 0.0f;
-  x_trans_ = 0, y_trans_ = 0;  // not needed now
 
   LoadSettings_();
 }
@@ -308,6 +307,33 @@ void scene::RotateModel(float x, float y, float z) {
   rotation_ = QQuaternion::fromAxisAndAngle(axis, angle) * rotation_;
 }
 
+QList<QLine> scene::GetLines(QPixmap map) {
+  QVector<GLfloat> finalArr = s21::Parse::GetInstance().getFacetsArr();
+
+  QList<QLine> parser_x_y;
+  int count = 0;
+  QVector<GLfloat> tmp_first_elem = {0.0, 0.0};
+
+  for (int i = 3; finalArr.size() > i; i += 8, ++count) {
+    if (count == 0) {
+      tmp_first_elem[0] = finalArr[i];
+      tmp_first_elem[1] = finalArr[i + 1];
+    }
+
+    if (count != 2)
+      parser_x_y.push_back(
+          QLine(finalArr[i] * map.width(), finalArr[i + 1] * map.height(),
+                finalArr[i + 8] * map.width(), finalArr[i + 9] * map.height()));
+    else
+      parser_x_y.push_back(QLine(
+          finalArr[i] * map.width(), finalArr[i + 1] * map.height(),
+          tmp_first_elem[0] * map.width(), tmp_first_elem[1] * map.height()));
+
+    if (count == 2) count = -1;
+  }
+  return parser_x_y;
+}
+
 void scene::wheelEvent(QWheelEvent* event) {
   if (event->angleDelta().y() > 0) {
     scale_factor *= 1.1f;
@@ -321,15 +347,9 @@ void scene::mousePressEvent(QMouseEvent* mouse) {
   switch (mouse->button()) {
     case Qt::LeftButton:
       moving_ = true;
-      dragging_ = false;
-      break;
-    case Qt::MiddleButton:
-      dragging_ = true;
-      moving_ = false;
       break;
     default:
       moving_ = false;
-      dragging_ = false;
       break;
   }
   start_x_ = mouse->pos().x();
@@ -358,9 +378,6 @@ void scene::mouseMoveEvent(QMouseEvent* mouse) {
 
     start_x_ = tmpX;
     start_y_ = tmpY;
-  }
-  if (dragging_) {
-    //
   }
   start_x_ = mouse->pos().x();
   start_y_ = mouse->pos().y();

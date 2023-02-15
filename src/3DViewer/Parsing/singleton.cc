@@ -2,7 +2,7 @@
 
 namespace s21 {
 
-void parse::CheckFlags(QString path_to_file) {
+void Parse::CheckFlags(QString path_to_file) {
   QFile file(path_to_file);
   if (file.open(QFile::ReadOnly)) {
     QString str;
@@ -36,9 +36,9 @@ void parse::CheckFlags(QString path_to_file) {
   }
 }
 
-void parse::clear() {
-  facetsArray.clear();
-  indices.clear();
+void Parse::clear() {
+  facets_array_.clear();
+  indices_.clear();
   vertex_.clear();
   normals_.clear();
   uvs_.clear();
@@ -46,12 +46,12 @@ void parse::clear() {
   vt_used = false;
 }
 
-void parse::pushArr(const char **curr) {
+void Parse::pushArr(const char **curr) {
   int vertIndex = std::stoi(*curr);
   if (vertIndex < 0) vertIndex += vertex_.size();
-  facetsArray.emplace_back(vertex_[vertIndex].x());
-  facetsArray.emplace_back(vertex_[vertIndex].y());
-  facetsArray.emplace_back(vertex_[vertIndex].z());
+  facets_array_.emplace_back(vertex_[vertIndex].x());
+  facets_array_.emplace_back(vertex_[vertIndex].y());
+  facets_array_.emplace_back(vertex_[vertIndex].z());
   while (**curr != '/' && **curr) {
     ++*curr;
   }
@@ -60,8 +60,8 @@ void parse::pushArr(const char **curr) {
   int textureIndex = 0;
   if (vt_used) textureIndex = std::stoi(*curr);
   if (textureIndex < 0) textureIndex += uvs_.size();
-  facetsArray.emplace_back(uvs_[textureIndex].x());
-  facetsArray.emplace_back(uvs_[textureIndex].y());
+  facets_array_.emplace_back(uvs_[textureIndex].x());
+  facets_array_.emplace_back(uvs_[textureIndex].y());
   if (**curr) {
     while (**curr != '/') {
       ++*curr;
@@ -72,12 +72,12 @@ void parse::pushArr(const char **curr) {
   int normalIndex = 0;
   if (vn_used) normalIndex = std::stoi(*curr);
   if (normalIndex < 0) normalIndex += normals_.size();
-  facetsArray.emplace_back(normals_[normalIndex].x());
-  facetsArray.emplace_back(normals_[normalIndex].y());
-  facetsArray.emplace_back(normals_[normalIndex].z());
+  facets_array_.emplace_back(normals_[normalIndex].x());
+  facets_array_.emplace_back(normals_[normalIndex].y());
+  facets_array_.emplace_back(normals_[normalIndex].z());
 }
 
-void parse::ParseF(QStringList str_list) {
+void Parse::ParseF(QStringList str_list) {
   int counter = 0;
   QString first_elem = str_list[1];
   const char *first = first_elem.toStdString().c_str();
@@ -111,17 +111,17 @@ void parse::ParseF(QStringList str_list) {
   }
 }
 
-void parse::add_pseudo_str() {
+void Parse::add_pseudo_str_() {
   if (vertex_.empty()) vertex_.push_back({0, 0, 0});
   if (uvs_.empty()) uvs_.push_back({0, 0});
   if (normals_.empty()) normals_.push_back({0, 0, 0});
 }
 
-void parse::ParseVertex_3D(QString path_to_file) {
+void Parse::ParseVertex_3D(QString path_to_file) {
   CheckFlags(path_to_file);
   QFile file(path_to_file);
   if (file.open(QFile::ReadOnly)) {
-    add_pseudo_str();
+    add_pseudo_str_();
     QString current_string;
 
     while (!file.atEnd()) {
@@ -140,6 +140,6 @@ void parse::ParseVertex_3D(QString path_to_file) {
     }
   }
 
-  for (int i = 0; i < facetsArray.size() / 8; i++) indices.push_back(i);
+  for (int i = 0; i < facets_array_.size() / 8; i++) indices_.push_back(i);
 }
 }  // namespace s21
