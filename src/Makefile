@@ -1,14 +1,8 @@
 CC = g++
 CFLAGS = -Wall -Wextra -Werror -Wno-unused -pedantic -std=c++17
-TEST_LIBS = -lgtest
 ARCHIVE = archive-3dviewer
 BUILD = build
 INSTALL_DIR = ~/Desktop/
-OS = $(shell uname)
-
-ifeq (${OS}, Linux)
-	TEST_LIBS += -lsubunit -lrt
-endif
 
 all: install dist tests check
 
@@ -26,9 +20,6 @@ uninstall:
 clean:
 	rm -rf ${ARCHIVE}*
 	rm -rf 3DViewer/Unit-tests/report 3DViewer/Unit-tests/Tests
-
-dvi:
-	open dvi.md -a Visual\ Studio\ Code
 
 dist:
 	mkdir -p ${ARCHIVE}
@@ -52,7 +43,7 @@ gcov_report: clean
 	rm -rf ./*.gcno ./*.gcda ./gcov* build/
 
 check:
-	cp ../materials/linters/.clang-format .
+	clang-format -style=Google -dump-config > .clang-format
 	cd 3DViewer/ && clang-format -n Parsing/singleton.cc		\
 									Parsing/singleton.h			\
 									Controller/controller.cc 	\
