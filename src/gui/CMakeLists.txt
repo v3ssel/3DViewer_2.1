@@ -12,27 +12,27 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(OpenGL REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Widgets OpenGL OpenGLWidgets Core Gui)
 
-set(MACOSX_BUNDLE_ICON_FILE 3d-icon.icns)
-set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/3d-icon.icns")
-set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+# set(MACOSX_BUNDLE_ICON_FILE 3d-icon.icns)
+# set(app_icon_macos "${CMAKE_CURRENT_SOURCE_DIR}/3d-icon.icns")
+# set_source_files_properties(${app_icon_macos} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 
 set(PROJECT_SOURCES
     main.cc
-    ${app_icon_macos}
     Resources.qrc
+    # ${app_icon_macos}
     
-    Parsing/singleton.cc
-    Parsing/singleton.h
+    viewer.h
+    viewer.cc
+    viewer.ui
     
-    Controller/controller.h
-    Controller/controller.cc
+    scene.h
+    scene.cc
     
-    GLWidget/scene.h
-    GLWidget/scene.cc
-
-    Viewer/viewer.h
-    Viewer/viewer.cc
-    Viewer/viewer.ui
+    ../core/singleton.cc
+    ../core/singleton.h
+    
+    ../controller/controller.h
+    ../controller/controller.cc
 )
 
 qt_add_executable(${PROJECT_NAME}

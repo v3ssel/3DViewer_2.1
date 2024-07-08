@@ -6,17 +6,16 @@ all: install
 install:
 	mkdir -p ${BUILD}
 	cd ${BUILD} && \
-	cmake .. && \
+	cmake -G "Unix Makefiles" .. && \
 	cmake --build . --target 3DViewer
 
 
 uninstall:
-	rm -rf 3DViewer libQGifImage
+	rm -rf 3DViewer libQGifImage.*
 
 
 clean:
-	rm -rf ${ARCHIVE}*
-	rm -rf 3DViewer/Unit-tests/report 3DViewer/Unit-tests/Tests
+	rm -rf ${BUILD}
 
 
 dist:
@@ -43,20 +42,7 @@ gcov_report: clean
 	rm -rf ./*.gcno ./*.gcda ./gcov* build/
 
 check:
-	clang-format -style=Google -dump-config > .clang-format
-	cd 3DViewer/ && clang-format -n Parsing/singleton.cc		\
-									Parsing/singleton.h			\
-									Controller/controller.cc 	\
-									Controller/controller.h 	\
-									GLWidget/scene.cc 			\
-									GLWidget/scene.h 			\
-									Viewer/viewer.cc 			\
-									Viewer/viewer.h 			\
-									Unit-tests/main.cc			\
-									Unit-tests/tst_parsing.cc	\
-									GIFCreation/gifImage/*.cpp  \
-									GIFCreation/gifImage/*.h 	\
-									GIFCreation/gifLib/*.c 		\
-									GIFCreation/gifLib/*.h		\
-									main.cc
-	rm -f .clang-format
+	clang-format -n \
+		core/*.cc \
+		core/*/*.cc \
+		core/*/*.h \

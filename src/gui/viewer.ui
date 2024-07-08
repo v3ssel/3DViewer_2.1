@@ -1763,7 +1763,7 @@ QDockWidget::float-button {
   <customwidget>
    <class>scene</class>
    <extends>QWidget</extends>
-   <header>GLWidget/scene.h</header>
+   <header>scene.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
