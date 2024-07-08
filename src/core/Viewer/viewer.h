@@ -14,7 +14,7 @@
 #include <iostream>
 
 #include "../Controller/controller.h"
-#include "../GIFCreation/gifImage/qgifimage.h"
+#include "../../QGifImage/QGifImage/qgifimage.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

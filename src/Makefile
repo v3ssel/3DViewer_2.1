@@ -1,25 +1,23 @@
-CC = g++
-CFLAGS = -Wall -Wextra -Werror -Wno-unused -pedantic -std=c++17
 ARCHIVE = archive-3dviewer
 BUILD = build
-INSTALL_DIR = ~/Desktop/
 
-all: install dist tests check
+all: install
 
 install:
 	mkdir -p ${BUILD}
-	cd ${BUILD} && cmake ../3DViewer/CMakeLists.txt && ${MAKE} && rm -rf ${INSTALL_DIR}/3DViewer.app && mv -f 3DViewer.app ${INSTALL_DIR}
-	rm -rf ${BUILD}
+	cd ${BUILD} && \
+	cmake .. && \
+	cmake --build . --target 3DViewer
 
-open:
-	open ~/Desktop/3DViewer.app
 
 uninstall:
-	rm -rf ~/Desktop/3DViewer.app
+	rm -rf 3DViewer libQGifImage
+
 
 clean:
 	rm -rf ${ARCHIVE}*
 	rm -rf 3DViewer/Unit-tests/report 3DViewer/Unit-tests/Tests
+
 
 dist:
 	mkdir -p ${ARCHIVE}
@@ -28,10 +26,12 @@ dist:
 	gzip -9f ${ARCHIVE}.tar
 	rm -rf ${ARCHIVE}
 
+
 tests:
 	cd 3DViewer/Unit-tests && mkdir -p build && cd build && \
 	cmake .. && cmake --build . --target all && \
 	mv Tests ../ && cd .. && rm -rf build && ./Tests
+
 
 gcov_report: clean
 	cd 3DViewer/Unit-tests && mkdir -p build && cd build && \
