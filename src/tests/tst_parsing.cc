@@ -1,11 +1,14 @@
 #include <gtest/gtest.h>
+#include <filesystem>
 
 #include <QDebug>
 
 #include "../Controller/controller.h"
 
+const QString kObjDir = "C:\\Coding\\Projects\\3DViewer_2.1\\src\\";
+
 TEST(LoadingModels, FullCube) {
-    s21::Controller::GetInstance().ParseVertex_3D("../Unit-tests/OBJ/cube.obj");
+    s21::Controller::GetInstance().ParseVertex_3D(kObjDir + "tests/OBJ/cube.obj");
 
     QVector<GLfloat> polygons_after_pars = {
         1,  1,  -1, 0.000245, 0.5,      0,  1,  0,
@@ -143,7 +146,7 @@ TEST(LoadingModels, FullCube) {
 
 TEST(LoadingModels, CubeNoLight) {
     s21::Controller::GetInstance().ParseVertex_3D(
-        "../Unit-tests/OBJ/cube_no_light.obj");
+        kObjDir + "tests/OBJ/cube_no_light.obj");
 
     QVector<GLfloat> polygons_after_pars = {
         1,  1,  -1, 0.000245, 0.5,      0, 0, 0,
@@ -270,7 +273,7 @@ TEST(LoadingModels, CubeNoLight) {
 
 TEST(LoadingModels, CubeNoTexture) {
     s21::Controller::GetInstance().ParseVertex_3D(
-        "../Unit-tests/OBJ/cube_no_texture.obj");
+        kObjDir + "tests/OBJ/cube_no_texture.obj");
 
     QVector<GLfloat> polygons_after_pars = {
         1,  1,  -1, 0,  0,  0,  1,  0,  -1, 1,  -1, 0,  0,  0,  1,  0,  -1, 1,
@@ -358,7 +361,7 @@ TEST(LoadingModels, CubeNoTexture) {
 
 TEST(LoadingModels, CubeNoTextureAndLight) {
     s21::Controller::GetInstance().ParseVertex_3D(
-        "../Unit-tests/OBJ/cube_no_texture_and_light.obj");
+        kObjDir + "tests/OBJ/cube_no_texture_and_light.obj");
 
     QVector<GLfloat> polygons_after_pars = {
         1,  1,  -1, 0, 0,  0,  0,  0,  -1, 1,  -1, 0,  0,  0,  0,  0,  -1, 1,

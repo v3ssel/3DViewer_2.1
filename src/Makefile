@@ -1,16 +1,17 @@
 ARCHIVE = archive-3dviewer
 BUILD = build
 
+.PHONY: tests
 all: install
 
 install:
 	mkdir -p ${BUILD}
 	cd ${BUILD} && \
 	cmake -G "Unix Makefiles" .. && \
-	cmake --build . --target 3DViewer
+	cmake --build . --target 3DViewer --config=Debug
 
 
-uninstall:
+uninstall: clean
 	rm -rf 3DViewer libQGifImage.*
 
 
@@ -27,9 +28,11 @@ dist:
 
 
 tests:
-	cd 3DViewer/Unit-tests && mkdir -p build && cd build && \
-	cmake .. && cmake --build . --target all && \
-	mv Tests ../ && cd .. && rm -rf build && ./Tests
+	mkdir -p ${BUILD}
+	cd ${BUILD} && \
+	cmake -G "Unix Makefiles" .. && \
+	cmake --build . --target Tests --config=Debug
+	./Tests.exe
 
 
 gcov_report: clean

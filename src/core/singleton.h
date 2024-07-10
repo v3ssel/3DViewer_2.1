@@ -16,8 +16,8 @@ class Parse {
         return instance;
     }
     void ParseVertex_3D(QString path_to_file);
-    void ParseF(QStringList str);
-    void pushArr(const char** tmp);
+    void ParseF(QStringList& str_list);
+    void pushArr(const QString& str);
     void CheckFlags(QString path_to_file);
     void clear();
 

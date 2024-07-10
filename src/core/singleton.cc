@@ -46,66 +46,62 @@ void Parse::clear() {
     vt_used = false;
 }
 
-void Parse::pushArr(const char **curr) {
-    int vertIndex = std::stoi(*curr);
-    if (vertIndex < 0) vertIndex += vertex_.size();
-    facets_array_.emplace_back(vertex_[vertIndex].x());
-    facets_array_.emplace_back(vertex_[vertIndex].y());
-    facets_array_.emplace_back(vertex_[vertIndex].z());
-    while (**curr != '/' && **curr) {
-        ++*curr;
-    }
-    ++*curr;
+void Parse::pushArr(const QString &str) {
+    std::vector<uint> indices = { 0, 0, 0 };
+    
+    uint index = 0;
+    size_t last_slash = 0;
+    for (size_t i = 0; i <= str.length(); i++) {
+        if (i == str.length() || str[i] == '/') {
+            indices[index] = str.mid(last_slash, i - last_slash).toUInt();
+            last_slash = i + 1;
 
-    int textureIndex = 0;
-    if (vt_used) textureIndex = std::stoi(*curr);
-    if (textureIndex < 0) textureIndex += uvs_.size();
-    facets_array_.emplace_back(uvs_[textureIndex].x());
-    facets_array_.emplace_back(uvs_[textureIndex].y());
-    if (**curr) {
-        while (**curr != '/') {
-            ++*curr;
+            index++;
+            if (index > 2) break;
         }
-        ++*curr;
     }
 
-    int normalIndex = 0;
-    if (vn_used) normalIndex = std::stoi(*curr);
-    if (normalIndex < 0) normalIndex += normals_.size();
-    facets_array_.emplace_back(normals_[normalIndex].x());
-    facets_array_.emplace_back(normals_[normalIndex].y());
-    facets_array_.emplace_back(normals_[normalIndex].z());
+    if (indices[0] < 0) indices[0] += vertex_.size();
+    facets_array_.emplace_back(vertex_[indices[0]].x());
+    facets_array_.emplace_back(vertex_[indices[0]].y());
+    facets_array_.emplace_back(vertex_[indices[0]].z());
+
+    if (indices[1] < 0) indices[1] += uvs_.size();
+    facets_array_.emplace_back(uvs_[indices[1]].x());
+    facets_array_.emplace_back(uvs_[indices[1]].y());
+
+    if (indices[2] < 0) indices[2] += normals_.size();
+    facets_array_.emplace_back(normals_[indices[2]].x());
+    facets_array_.emplace_back(normals_[indices[2]].y());
+    facets_array_.emplace_back(normals_[indices[2]].z());
 }
 
-void Parse::ParseF(QStringList str_list) {
+void Parse::ParseF(QStringList& str_list) {
     int counter = 0;
-    QString first_elem = str_list[1];
-    const char *first = first_elem.toStdString().c_str();
-    const char *copy_curr = first;
+    str_list.pop_front();
 
-    for (const auto &i : str_list) {
-        const char *curr = i.toStdString().c_str();
-        if (str_list.size() - 1 == 2 && std::isdigit(*curr)) {
-            auto tmp = first;
-            if (!std::strcmp(curr, first)) {
-                pushArr(&tmp);
+    QString first_elem = str_list.first();
+    QString copy_curr = first_elem;
+
+    for (const QString &str : str_list) {
+        if (str_list.size() == 2 && std::isdigit(str[0].toLatin1())) {
+            if (str == first_elem) {
+                pushArr(first_elem);
             }
-            pushArr(&curr);
-        } else {
-            if (counter < 4) {
-                if (std::isdigit(*curr) || *curr == '-') {
-                    pushArr(&curr);
-                }
-                ++counter;
-                copy_curr = i.toStdString().c_str();
-            } else {
-                auto tmp = first;
-                auto tmp_copy = curr;
-                pushArr(&tmp);
-                pushArr(&copy_curr);
-                pushArr(&curr);
 
-                copy_curr = tmp_copy;
+            pushArr(str);
+        } else {
+            if (counter < 3) {
+                if (std::isdigit(str[0].toLatin1()) || str[0].toLatin1() == '-') {
+                    pushArr(str);
+                }
+
+                ++counter;
+                copy_curr = str;
+            } else {
+                pushArr(first_elem);
+                pushArr(copy_curr);
+                pushArr(str);
             }
         }
     }
@@ -120,6 +116,7 @@ void Parse::add_pseudo_str_() {
 void Parse::ParseVertex_3D(QString path_to_file) {
     CheckFlags(path_to_file);
     QFile file(path_to_file);
+
     if (file.open(QFile::ReadOnly)) {
         add_pseudo_str_();
         QString current_string;
@@ -128,17 +125,27 @@ void Parse::ParseVertex_3D(QString path_to_file) {
             current_string = file.readLine();
             current_string = current_string.simplified();
             QStringList numbers = current_string.split(" ");
+
+            // if (current_string.contains("9227/10128/9551")) {
+            //     qDebug() << "heh\n";
+            //     for (QString& s : numbers) {
+            //         qDebug() << s;
+            //     }
+            // }
+
             if (numbers[0] == "v")
                 vertex_.push_back(QVector3D(numbers[1].toFloat(),
                                             numbers[2].toFloat(),
                                             numbers[3].toFloat()));
             if (numbers[0] == "vt")
-                uvs_.push_back(
-                    QVector2D(numbers[1].toFloat(), numbers[2].toFloat()));
+                uvs_.push_back(QVector2D(numbers[1].toFloat(),
+                                         numbers[2].toFloat()));
+
             if (numbers[0] == "vn")
                 normals_.push_back(QVector3D(numbers[1].toFloat(),
                                              numbers[2].toFloat(),
                                              numbers[3].toFloat()));
+
             if (numbers[0] == "f") ParseF(numbers);
         }
     }

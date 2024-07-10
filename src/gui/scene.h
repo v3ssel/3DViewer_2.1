@@ -24,7 +24,7 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
     ~scene();
 
     void keyPressEvent(QKeyEvent *) override;
-    void InitModel(QVector<GLfloat> &vertices, QVector<GLuint> &indices);
+    void InitModel(QVector<GLfloat> vertices, QVector<GLuint> indices);
     void CalculateCamera();
     void RotateModel(float x, float y, float z);
     QList<QLine> GetLines(QPixmap map);

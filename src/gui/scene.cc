@@ -54,13 +54,9 @@ void scene::LoadSettings_() {
     settings->endGroup();
 
     settings->beginGroup("rgb");
-    background =
-        settings->value("background_color", QColor(0.0f, 0.0f, 0.0f, 0.0f))
-            .value<QColor>();
-    vertices_color = settings->value("vertices_color", QColor(0.0f, 0.0f, 0.0f))
-                         .value<QColor>();
-    lines_color = settings->value("lines_color", QColor(255.0f, 0.0f, 45.0f))
-                      .value<QColor>();
+    background = settings->value("background_color", QColor(0.0f, 0.0f, 0.0f, 0.0f)).value<QColor>();
+    vertices_color = settings->value("vertices_color", QColor(0.0f, 0.0f, 0.0f)).value<QColor>();
+    lines_color = settings->value("lines_color", QColor(255.0f, 0.0f, 45.0f)).value<QColor>();
     settings->endGroup();
 
     settings->beginGroup("size");
@@ -74,39 +70,54 @@ void scene::initializeGL() {
     glEnable(GL_DEPTH_TEST);
 
     program.create();
-    program.addShaderFromSourceFile(QOpenGLShader::Vertex,
-                                    ":/Shaders/vert.glsl");
-    program.addShaderFromSourceFile(QOpenGLShader::Fragment,
-                                    ":/Shaders/frag.glsl");
-    program.link();
+    program.bind();
 
-    light.create();
-    light.addShaderFromSourceFile(QOpenGLShader::Vertex,
-                                  ":/Shaders/light_vert.glsl");
-    light.addShaderFromSourceFile(QOpenGLShader::Fragment,
-                                  ":/Shaders/light_frag.glsl");
-    light.link();
+    program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/vert.glsl");
+    program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/frag.glsl");
+    if (!program.link()) {
+        QMessageBox::critical(this, "Error", "Shader program error" + program.log());
+    }
 
     vao.create();
+    vao.bind();
 
     vbo = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
     vbo.create();
+    vbo.bind();
     vbo.setUsagePattern(QOpenGLBuffer::StaticDraw);
+
+    program.setAttributeBuffer("aPos",      GL_FLOAT, 0, 3, 8 * sizeof(float));
+    program.setAttributeBuffer("aTexCoord", GL_FLOAT, 3 * sizeof(float), 2, 8 * sizeof(float));
+    program.setAttributeBuffer("aNormal",   GL_FLOAT, 5 * sizeof(float), 3, 8 * sizeof(float));
+
+    program.enableAttributeArray("aPos");
+    program.enableAttributeArray("aTexCoord");
+    program.enableAttributeArray("aNormal");
 
     ebo = QOpenGLBuffer(QOpenGLBuffer::IndexBuffer);
     ebo.create();
+    ebo.bind();
     ebo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
-    vao.bind();
-    vao.release();
+    light.create();
+    light.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/light_vert.glsl");
+    light.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/light_frag.glsl");
+    if (!light.link()) {
+        QMessageBox::critical(this, "Error", "Light Shader program error" + light.log());
+    }
 
     LightInit_();
 }
 
 void scene::LightInit_() {
+    light.bind();
+    
     vao_light.create();
-    QOpenGLBuffer vbo_light = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+    vao_light.bind();
+
+    QOpenGLBuffer vbo_light(QOpenGLBuffer::VertexBuffer);
     vbo_light.create();
+    vbo_light.bind();
     vbo_light.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
     GLfloat lamp_vertices[] = {
@@ -129,14 +140,10 @@ void scene::LightInit_() {
         1.000000,  1.000000,  -1.000000, -1.000000, -1.000000, -1.000000,
         1.000000,  1.000000,  -1.000000, 1.000000,  -1.000000, -1.000000};
 
-    vao_light.bind();
-
-    vbo_light.bind();
     vbo_light.allocate(lamp_vertices, sizeof(GLfloat) * 36 * 3);
 
     light.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
     light.enableAttributeArray("aPos");
-    light.bind();
 
     vao_light.release();
     vbo_light.release();
@@ -145,31 +152,15 @@ void scene::LightInit_() {
 
 void scene::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
 
-void scene::InitModel(QVector<GLfloat>& vertices, QVector<GLuint>& indices) {
+void scene::InitModel(QVector<GLfloat> vertices, QVector<GLuint> indices) {
+    program.bind();
     vao.bind();
 
     vbo.bind();
     vbo.allocate(vertices.data(), sizeof(vertices[0]) * vertices.size());
 
-    program.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, 8 * sizeof(float));
-    program.setAttributeBuffer("aTexCoord", GL_FLOAT, 3 * sizeof(float), 2,
-                               8 * sizeof(float));
-    program.setAttributeBuffer("aNormal", GL_FLOAT, 5 * sizeof(float), 3,
-                               8 * sizeof(float));
-
-    program.enableAttributeArray("aPos");
-    program.enableAttributeArray("aTexCoord");
-    program.enableAttributeArray("aNormal");
-
     ebo.bind();
     ebo.allocate(indices.data(), sizeof(indices[0]) * indices.size());
-
-    program.bind();
-
-    vao.release();
-    ebo.release();
-    vbo.release();
-    program.release();
 }
 
 void scene::paintGL() {
@@ -180,17 +171,19 @@ void scene::paintGL() {
     CalculateCamera();
 
     program.bind();
+    vao.bind();
+
     CheckDisplayType_();
 
     QMatrix4x4 model;
     program.setUniformValueArray("view", &view, 1);
     projection.setToIdentity();
-    view.setToIdentity();
 
     projection_type
         ? projection.perspective(45.0f, (float)width() / height(), 0.1f, 100.0f)
         : projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
 
+    view.setToIdentity();
     view.lookAt(camera_pos_, camera_target_, camera_up_);
 
     program.setUniformValueArray("projection", &projection, 1);
@@ -207,7 +200,6 @@ void scene::paintGL() {
     if (texture) texture->bind();
 
     StartDraw_();
-    program.release();
 
     DrawLight_();
     SaveSettings_();
@@ -228,14 +220,13 @@ void scene::CheckDisplayType_() {
         program.setUniformValueArray("lightColor", &light_color, 1);
         program.setUniformValueArray("lightPos", &light_pos, 1);
         program.setUniformValueArray("viewPos", &camera_pos_, 1);
-        program.setUniformValue("flat_shading", flat_shading ? true : false);
+        program.setUniformValue("flat_shading", flat_shading);
     } else {
         program.setUniformValue("have_normals", false);
     }
 }
 
 void scene::StartDraw_() {
-    vao.bind();
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
 
     glLineWidth(line_width);
@@ -243,9 +234,7 @@ void scene::StartDraw_() {
         glLineStipple(1, 0x00FF);
         glEnable(GL_LINE_STIPPLE);
     }
-    glDrawElements(GL_TRIANGLES,
-                   s21::Controller::GetInstance().GetIndices().size(),
-                   GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, s21::Controller::GetInstance().GetIndices().size(), GL_UNSIGNED_INT, nullptr);
     glDisable(GL_LINE_STIPPLE);
 
     if (!is_none) {
@@ -255,12 +244,11 @@ void scene::StartDraw_() {
                         vertices_color.green() / 255.0f,
                         vertices_color.blue() / 255.0f);
         program.setUniformValueArray("objectColor", &v_col, 1);
-        glDrawArrays(GL_POINTS, 1,
-                     s21::Controller::GetInstance().GetVertices().size() * 5);
+
+        glDrawArrays(GL_POINTS, 0, s21::Controller::GetInstance().GetIndices().size());
+                     
         glDisable(GL_POINT_SMOOTH);
     }
-
-    vao.release();
 }
 
 void scene::DrawLight_() {
@@ -278,9 +266,6 @@ void scene::DrawLight_() {
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        vao_light.release();
-        light.release();
     }
 }
 

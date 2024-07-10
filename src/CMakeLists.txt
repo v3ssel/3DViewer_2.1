@@ -5,6 +5,7 @@ project(3DViewer_2_0 LANGUAGES CXX)
 # option(TESTING OFF)
 
 # add_compile_options(-Wall -Werror -Wextra)
+add_compile_options(-g)
 
 # if (TESTING)
 #     enable_testing()
@@ -24,4 +25,5 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 # set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_subdirectory(gui)
+add_subdirectory(tests)
 add_subdirectory(QGifImage)
