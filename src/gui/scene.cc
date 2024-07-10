@@ -296,7 +296,8 @@ void scene::RotateModel(float x, float y, float z) {
 }
 
 QList<QLine> scene::GetLines(QPixmap map) {
-    QVector<GLfloat> finalArr = s21::Parse::GetInstance().getFacetsArr();
+    // !!!!!!!
+    QVector<GLfloat> finalArr = s21::MeshParser::GetInstance().getFacetsArr();
 
     QList<QLine> parser_x_y;
     int count = 0;

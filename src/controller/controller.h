@@ -1,7 +1,7 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include "../core/singleton.h"
+#include "../core/mesh_parser.h"
 
 //  Facade
 namespace s21 {

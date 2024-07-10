@@ -17,8 +17,9 @@ set(PROJECT_SOURCES
         main.cc 
         tst_parsing.cc
 
-        ../core/singleton.cc
-        ../core/singleton.h
+        ../core/mesh_parser.cc
+        ../core/mesh_parser.h
+        
         ../controller/controller.h
         ../controller/controller.cc
 )
