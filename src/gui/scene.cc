@@ -298,7 +298,6 @@ void Scene::DrawModel() {
         program.setUniformValueArray("objectColor", &v_col, 1);
 
         glDrawArrays(GL_POINTS, 0, mesh_->indices.size());
-                     
         glDisable(GL_POINT_SMOOTH);
     }
 }

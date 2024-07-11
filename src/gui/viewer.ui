@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>viewer</class>
- <widget class="QMainWindow" name="viewer">
+ <class>Viewer</class>
+ <widget class="QMainWindow" name="Viewer">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>viewer</string>
+   <string>Viewer</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QMainWindow { background-color: red; }</string>

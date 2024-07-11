@@ -18,17 +18,17 @@
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
-class viewer;
+class Viewer;
 }
 QT_END_NAMESPACE
 
 //  Observer
-class viewer : public QMainWindow {
+class Viewer : public QMainWindow {
     Q_OBJECT
 
    public:
-    viewer(QWidget *parent = nullptr);
-    ~viewer();
+    Viewer(QWidget *parent = nullptr);
+    ~Viewer();
 
    protected:
     void keyPressEvent(QKeyEvent *event) override;
@@ -102,6 +102,7 @@ class viewer : public QMainWindow {
     QTimer *record_time_;
     QVector<QImage> GIF_;
 
-    Ui::viewer *ui;
+    Ui::Viewer *ui;
 };
+
 #endif  // VIEWER_H

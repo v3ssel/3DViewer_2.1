@@ -2,9 +2,10 @@
 
 #include "ui_viewer.h"
 
-viewer::viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::viewer) {
+Viewer::Viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::Viewer) {
     ui->setupUi(this);
     this->setWindowTitle("3DViewer 2.1");
+
     ui->horizontalSlider_lineWidth->setValue(ui->widget->line_width);
     ui->lcdNumber_lineWidth->display((int)ui->widget->line_width);
     ui->horizontalSlider_versize->setValue(ui->widget->vertex_size);
@@ -19,15 +20,15 @@ viewer::viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::viewer) {
     hiden_ = false, is_recording_ = false;
     time_ = 0.0;
     record_time_ = new QTimer(this);
-    connect(record_time_, &QTimer::timeout, this, &viewer::Recording_);
+    connect(record_time_, &QTimer::timeout, this, &Viewer::Recording_);
 }
 
-viewer::~viewer() {
+Viewer::~Viewer() {
     on_pushButton_unload_texture_clicked();
     delete ui;
 }
 
-void viewer::on_actionOpen_triggered() {
+void Viewer::on_actionOpen_triggered() {
     QString filename = QFileDialog::getOpenFileName(this, "Choose File", QDir::homePath(), tr("OBJ (*.obj)"));
 
     if (filename != "") {
@@ -49,7 +50,7 @@ void viewer::on_actionOpen_triggered() {
     }
 }
 
-void viewer::on_actionClose_triggered() {
+void Viewer::on_actionClose_triggered() {
     ui->widget->ResetModel();
 
     on_pushButton_unload_texture_clicked();
@@ -60,7 +61,7 @@ void viewer::on_actionClose_triggered() {
     filename_ = "";
 }
 
-void viewer::on_actionInfo_triggered() {
+void Viewer::on_actionInfo_triggered() {
     // size_t vertices = !s21::Controller::Instance().GetVertices().size()
     //                     ? 0
     //                     : s21::Controller::Instance().GetVertices().size() - 1;
@@ -73,7 +74,7 @@ void viewer::on_actionInfo_triggered() {
         "\nLines: " + QString::number(ui->widget->IndexCount()));
 }
 
-void viewer::keyPressEvent(QKeyEvent *event) {
+void Viewer::keyPressEvent(QKeyEvent *event) {
     switch (event->key()) {
         case Qt::Key_R:
             ui->spinBox_x_rot->setValue(0), ui->spinBox_y_rot->setValue(0),
@@ -85,79 +86,79 @@ void viewer::keyPressEvent(QKeyEvent *event) {
     ui->widget->keyPressEvent(event);
 }
 
-void viewer::SetFrameColor_() {
+void Viewer::SetFrameColor_() {
     this->setStyleSheet("QMainWindow{ background-color: rgb(" +
                         QString::number(ui->widget->background.red()) + ", " +
                         QString::number(ui->widget->background.green()) + ", " +
                         QString::number(ui->widget->background.blue()) + ");}");
 }
 
-void viewer::on_pushButton_bg_clicked() {
+void Viewer::on_pushButton_bg_clicked() {
     ui->widget->background = QColorDialog::getColor();
     SetFrameColor_();
 }
 
-void viewer::on_pushButton_vertex_clicked() {
+void Viewer::on_pushButton_vertex_clicked() {
     ui->widget->vertices_color = QColorDialog::getColor();
 }
 
-void viewer::on_pushButton_lines_clicked() {
+void Viewer::on_pushButton_lines_clicked() {
     ui->widget->lines_color = QColorDialog::getColor();
 }
 
-void viewer::on_horizontalSlider_lineWidth_sliderMoved(int position) {
+void Viewer::on_horizontalSlider_lineWidth_sliderMoved(int position) {
     ui->widget->line_width = position;
     ui->lcdNumber_lineWidth->display(position);
     ui->widget->update();
 }
 
-void viewer::on_horizontalSlider_lineWidth_sliderPressed() {
+void Viewer::on_horizontalSlider_lineWidth_sliderPressed() {
     on_horizontalSlider_lineWidth_sliderMoved(
         ui->horizontalSlider_lineWidth->value());
 }
 
-void viewer::on_horizontalSlider_versize_sliderMoved(int position) {
+void Viewer::on_horizontalSlider_versize_sliderMoved(int position) {
     ui->widget->no_vertices = false;
     ui->widget->vertex_size = position;
     ui->lcdNumber_versize->display(position);
     ui->widget->update();
 }
 
-void viewer::on_horizontalSlider_versize_sliderPressed() {
+void Viewer::on_horizontalSlider_versize_sliderPressed() {
     on_horizontalSlider_versize_sliderMoved(
         ui->horizontalSlider_versize->value());
 }
 
-void viewer::on_pushButton_line_solid_clicked() {
+void Viewer::on_pushButton_line_solid_clicked() {
     ui->widget->dashed_solid = false;
     ui->widget->update();
 }
 
-void viewer::on_pushButton_line_dashed_clicked() {
+void Viewer::on_pushButton_line_dashed_clicked() {
     ui->widget->dashed_solid = true;
     ui->widget->update();
 }
 
-void viewer::on_pushButton_ver_circle_clicked() {
+void Viewer::on_pushButton_ver_circle_clicked() {
     ui->widget->no_vertices = false;
     ui->widget->circle_square = false;
     ui->widget->update();
 }
 
-void viewer::on_pushButton_ver_square_clicked() {
+void Viewer::on_pushButton_ver_square_clicked() {
     ui->widget->no_vertices = false;
     ui->widget->circle_square = true;
     ui->widget->update();
 }
 
-void viewer::on_pushButton_ver_none_clicked() {
+void Viewer::on_pushButton_ver_none_clicked() {
     ui->widget->no_vertices = true;
     ui->horizontalSlider_versize->setValue(1);
     ui->lcdNumber_versize->display(1);
     ui->widget->update();
 }
 
-void viewer::on_horizontalSlider_scale_sliderMoved(int position) {
+void Viewer::on_horizontalSlider_scale_sliderMoved(int position) {
     if (position > 0) {
         ui->widget->scale_factor = position;
     } else {
@@ -168,41 +169,41 @@ void viewer::on_horizontalSlider_scale_sliderMoved(int position) {
     ui->widget->update();
 }
 
-void viewer::on_horizontalSlider_scale_sliderPressed() {
+void Viewer::on_horizontalSlider_scale_sliderPressed() {
     on_horizontalSlider_scale_sliderMoved(ui->horizontalSlider_scale->value());
 }
 
-void viewer::on_doubleSpinBox_x_move_valueChanged() {
+void Viewer::on_doubleSpinBox_x_move_valueChanged() {
     ui->widget->model_pos[0] = ui->doubleSpinBox_x_move->value();
     ui->widget->model_pos[1] = ui->doubleSpinBox_y_move->value();
     ui->widget->model_pos[2] = ui->doubleSpinBox_z_move->value();
     ui->widget->update();
 }
 
-void viewer::on_doubleSpinBox_y_move_valueChanged() {
+void Viewer::on_doubleSpinBox_y_move_valueChanged() {
     on_doubleSpinBox_x_move_valueChanged();
 }
 
-void viewer::on_doubleSpinBox_z_move_valueChanged() {
+void Viewer::on_doubleSpinBox_z_move_valueChanged() {
     on_doubleSpinBox_x_move_valueChanged();
 }
 
-void viewer::on_spinBox_x_rot_valueChanged(int arg1) {
+void Viewer::on_spinBox_x_rot_valueChanged(int arg1) {
     ui->widget->RotateModel(arg1, ui->widget->prev_rotation.y(), ui->widget->prev_rotation.z());
     ui->widget->update();
 }
 
-void viewer::on_spinBox_y_rot_valueChanged(int arg1) {
+void Viewer::on_spinBox_y_rot_valueChanged(int arg1) {
     ui->widget->RotateModel(ui->widget->prev_rotation.x(), arg1, ui->widget->prev_rotation.z());
     ui->widget->update();
 }
 
-void viewer::on_spinBox_z_rot_valueChanged(int arg1) {
+void Viewer::on_spinBox_z_rot_valueChanged(int arg1) {
     ui->widget->RotateModel(ui->widget->prev_rotation.x(), ui->widget->prev_rotation.y(), arg1);
     ui->widget->update();
 }
 
-void viewer::on_actionOrthographic_Perspective_triggered() {
+void Viewer::on_actionOrthographic_Perspective_triggered() {
     QKeyEvent *key = new QKeyEvent(
         QEvent::KeyPress, ui->widget->projection_type ? Qt::Key_O : Qt::Key_P,
         Qt::NoModifier);
@@ -210,7 +211,7 @@ void viewer::on_actionOrthographic_Perspective_triggered() {
     delete key;
 }
 
-void viewer::on_actionHide_triggered() {
+void Viewer::on_actionHide_triggered() {
     if (hiden_) {
         ui->dockWidget_main->show();
         ui->dockWidget_3->show();
@@ -222,7 +223,7 @@ void viewer::on_actionHide_triggered() {
     }
 }
 
-void viewer::on_actionLight_triggered() {
+void Viewer::on_actionLight_triggered() {
     if (ui->actionLight->isChecked())
         ui->widget->is_light_enabled = true;
     else
@@ -230,17 +231,17 @@ void viewer::on_actionLight_triggered() {
     ui->widget->update();
 }
 
-void viewer::SaveImage_(QString format) {
+void Viewer::SaveImage_(QString format) {
     QString str = QFileDialog::getSaveFileName(this, "Save file as",
                                                QDir::homePath(), format);
     if (str != "") ui->widget->grabFramebuffer().save(str);
 }
 
-void viewer::on_actionJPEG_triggered() { SaveImage_("*.jpeg"); }
+void Viewer::on_actionJPEG_triggered() { SaveImage_("*.jpeg"); }
 
-void viewer::on_actionBMP_triggered() { SaveImage_("*.bmp"); }
+void Viewer::on_actionBMP_triggered() { SaveImage_("*.bmp"); }
 
-void viewer::on_actionGIF_triggered() {
+void Viewer::on_actionGIF_triggered() {
     if (!is_recording_) {
         is_recording_ = true;
         this->setStyleSheet("QMainWindow{ background-color: red;}");
@@ -248,7 +249,7 @@ void viewer::on_actionGIF_triggered() {
     }
 }
 
-void viewer::Recording_() {
+void Viewer::Recording_() {
     if (is_recording_ && time_ <= 5.0) {
         GIF_.push_back(ui->widget->grab().toImage());
         time_ += 0.1;
@@ -258,7 +259,7 @@ void viewer::Recording_() {
     }
 }
 
-void viewer::SaveGIF_() {
+void Viewer::SaveGIF_() {
     QString str = QFileDialog::getSaveFileName(
         this, tr("Save GIF"), QDir::homePath(), tr("GIF (*.gif)"));
     if (str != "") {
@@ -281,14 +282,14 @@ void viewer::SaveGIF_() {
     SetFrameColor_();
 }
 
-void viewer::on_pushButton_wireframe_clicked() {
+void Viewer::on_pushButton_wireframe_clicked() {
     if (!ui->widget->wireframe) ui->widget->wireframe = true;
     ui->pushButton_apply_texture->setDisabled(true);
     on_pushButton_unload_texture_clicked();
     ui->widget->update();
 }
 
-void viewer::on_pushButton_flat_shading_clicked() {
+void Viewer::on_pushButton_flat_shading_clicked() {
     if (ui->widget->wireframe) ui->widget->wireframe = false;
     if (ui->widget->has_texture)
         ui->pushButton_apply_texture->setDisabled(false);
@@ -296,7 +297,7 @@ void viewer::on_pushButton_flat_shading_clicked() {
     ui->widget->update();
 }
 
-void viewer::on_pushButton_smooth_shading_clicked() {
+void Viewer::on_pushButton_smooth_shading_clicked() {
     if (ui->widget->wireframe) ui->widget->wireframe = false;
     if (ui->widget->has_texture)
         ui->pushButton_apply_texture->setDisabled(false);
@@ -304,7 +305,7 @@ void viewer::on_pushButton_smooth_shading_clicked() {
     ui->widget->update();
 }
 
-void viewer::on_pushButton_apply_texture_clicked() {
+void Viewer::on_pushButton_apply_texture_clicked() {
     ui->widget->wireframe = false;
     fname_texture_ = QFileDialog::getOpenFileName(
         this, "Choose File", QDir::homePath(), tr("BMP (*.bmp)"));
@@ -322,7 +323,7 @@ void viewer::on_pushButton_apply_texture_clicked() {
     ui->widget->update();
 }
 
-void viewer::on_pushButton_unload_texture_clicked() {
+void Viewer::on_pushButton_unload_texture_clicked() {
     // if (ui->widget->texture) delete ui->widget->texture;
     // ui->widget->texture = nullptr;
     ui->pushButton_unload_texture->setDisabled(true);
@@ -330,22 +331,22 @@ void viewer::on_pushButton_unload_texture_clicked() {
     ui->widget->update();
 }
 
-void viewer::on_doubleSpinBox_x_light_pos_valueChanged(double arg1) {
+void Viewer::on_doubleSpinBox_x_light_pos_valueChanged(double arg1) {
     ui->widget->light_pos[0] = arg1;
     ui->widget->update();
 }
 
-void viewer::on_doubleSpinBox_y_light_pos_valueChanged(double arg1) {
+void Viewer::on_doubleSpinBox_y_light_pos_valueChanged(double arg1) {
     ui->widget->light_pos[1] = arg1;
     ui->widget->update();
 }
 
-void viewer::on_doubleSpinBox_z_light_pos_valueChanged(double arg1) {
+void Viewer::on_doubleSpinBox_z_light_pos_valueChanged(double arg1) {
     ui->widget->light_pos[2] = arg1;
     ui->widget->update();
 }
 
-void viewer::on_pushButton_save_uvmap_clicked() {
+void Viewer::on_pushButton_save_uvmap_clicked() {
     QPixmap map(fname_texture_);
     QPainter painter(&map);
 
@@ -358,17 +359,17 @@ void viewer::on_pushButton_save_uvmap_clicked() {
     map.save(str);
 }
 
-void viewer::on_doubleSpinBox_r_light_intens_valueChanged(double arg1) {
+void Viewer::on_doubleSpinBox_r_light_intens_valueChanged(double arg1) {
     ui->widget->light_color[0] = arg1;
     ui->widget->update();
 }
 
-void viewer::on_doubleSpinBox_g_light_intens_valueChanged(double arg1) {
+void Viewer::on_doubleSpinBox_g_light_intens_valueChanged(double arg1) {
     ui->widget->light_color[1] = arg1;
     ui->widget->update();
 }
 
-void viewer::on_doubleSpinBox_b_light_intens_valueChanged(double arg1) {
+void Viewer::on_doubleSpinBox_b_light_intens_valueChanged(double arg1) {
     ui->widget->light_color[2] = arg1;
     ui->widget->update();
 }
