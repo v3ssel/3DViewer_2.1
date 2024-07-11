@@ -66,9 +66,8 @@ void Viewer::keyPressEvent(QKeyEvent *event) {
             ui->doubleSpinBox_x_move->setValue(0.0f),
             ui->doubleSpinBox_y_move->setValue(0.0f),
             ui->doubleSpinBox_z_move->setValue(0.0f);
+            ui->widget->ResetScene();
     }
-
-    ui->widget->keyPressEvent(event);
 }
 
 void Viewer::SetFrameColor() {
@@ -91,9 +90,9 @@ void Viewer::on_pushButton_lines_clicked() {
     ui->widget->lines_color = QColorDialog::getColor();
 }
 
-void Viewer::on_horizontalSlider_lineWidth_sliderMoved(int position) {
-    ui->widget->line_width = position;
-    ui->lcdNumber_lineWidth->display(position);
+void Viewer::on_horizontalSlider_lineWidth_sliderMoved(int width) {
+    ui->widget->line_width = width;
+    ui->lcdNumber_lineWidth->display(width);
     ui->widget->update();
 }
 
@@ -115,24 +114,24 @@ void Viewer::on_horizontalSlider_versize_sliderPressed() {
 }
 
 void Viewer::on_pushButton_line_solid_clicked() {
-    ui->widget->dashed_solid = false;
+    ui->widget->dashed_line = false;
     ui->widget->update();
 }
 
 void Viewer::on_pushButton_line_dashed_clicked() {
-    ui->widget->dashed_solid = true;
+    ui->widget->dashed_line = true;
     ui->widget->update();
 }
 
 void Viewer::on_pushButton_ver_circle_clicked() {
     ui->widget->no_vertices = false;
-    ui->widget->circle_square = false;
+    ui->widget->circle_vertex = false;
     ui->widget->update();
 }
 
 void Viewer::on_pushButton_ver_square_clicked() {
     ui->widget->no_vertices = false;
-    ui->widget->circle_square = true;
+    ui->widget->circle_vertex = true;
     ui->widget->update();
 }
 
@@ -145,9 +144,9 @@ void Viewer::on_pushButton_ver_none_clicked() {
 
 void Viewer::on_horizontalSlider_scale_sliderMoved(int position) {
     if (position > 0) {
-        ui->widget->scale_factor = position;
+        ui->widget->ScaleModel(position);
     } else {
-        ui->widget->scale_factor = float(1.0f - abs(position) / 100.0f);
+        ui->widget->ScaleModel(1.0f - std::abs(position) / 100.0f);
     }
 
     ui->lcdNumber_scale->display(position);
@@ -159,9 +158,9 @@ void Viewer::on_horizontalSlider_scale_sliderPressed() {
 }
 
 void Viewer::on_doubleSpinBox_x_move_valueChanged() {
-    ui->widget->model_pos[0] = ui->doubleSpinBox_x_move->value();
-    ui->widget->model_pos[1] = ui->doubleSpinBox_y_move->value();
-    ui->widget->model_pos[2] = ui->doubleSpinBox_z_move->value();
+    ui->widget->MoveModel(ui->doubleSpinBox_x_move->value(),
+                          ui->doubleSpinBox_y_move->value(),
+                          ui->doubleSpinBox_z_move->value());
     ui->widget->update();
 }
 
@@ -173,27 +172,23 @@ void Viewer::on_doubleSpinBox_z_move_valueChanged() {
     on_doubleSpinBox_x_move_valueChanged();
 }
 
-void Viewer::on_spinBox_x_rot_valueChanged(int arg1) {
-    ui->widget->RotateModel(arg1, ui->widget->prev_rotation.y(), ui->widget->prev_rotation.z());
+void Viewer::on_spinBox_x_rot_valueChanged() {
+    ui->widget->RotateModel(ui->spinBox_x_rot->value(),
+                            ui->spinBox_y_rot->value(),
+                            ui->spinBox_z_rot->value());
     ui->widget->update();
 }
 
-void Viewer::on_spinBox_y_rot_valueChanged(int arg1) {
-    ui->widget->RotateModel(ui->widget->prev_rotation.x(), arg1, ui->widget->prev_rotation.z());
-    ui->widget->update();
+void Viewer::on_spinBox_y_rot_valueChanged() {
+    on_spinBox_x_rot_valueChanged();
 }
 
-void Viewer::on_spinBox_z_rot_valueChanged(int arg1) {
-    ui->widget->RotateModel(ui->widget->prev_rotation.x(), ui->widget->prev_rotation.y(), arg1);
-    ui->widget->update();
+void Viewer::on_spinBox_z_rot_valueChanged() {
+    on_spinBox_x_rot_valueChanged();
 }
 
 void Viewer::on_actionOrthographic_Perspective_triggered() {
-    QKeyEvent *key = new QKeyEvent(
-        QEvent::KeyPress, ui->widget->projection_type ? Qt::Key_O : Qt::Key_P,
-        Qt::NoModifier);
-    ui->widget->keyPressEvent(key);
-    delete key;
+    ui->widget->ChangeProjectionType();
 }
 
 void Viewer::on_actionHide_triggered() {
@@ -221,7 +216,7 @@ void Viewer::on_actionBMP_triggered() { SaveImage_("*.bmp"); }
 void Viewer::on_actionGIF_triggered() {
     if (!is_recording_) {
         is_recording_ = true;
-        this->setStyleSheet("QMainWindow{ background-color: red;}");
+        this->setStyleSheet("QMainWindow{ background-color: red; }");
         record_time_->start(100);
     }
 }

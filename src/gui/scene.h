@@ -25,45 +25,48 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     Scene(QWidget *parent = nullptr);
     ~Scene();
 
-    void InitModel(const QString& filename);
-    void ResetModel();
-    void RotateModel(float x, float y, float z);
+    virtual void InitModel(const QString& filename);
+    virtual void ResetModel();
+
+    virtual void MoveModel(float x, float y, float z);
+    virtual void RotateModel(float x, float y, float z);
+    virtual void ScaleModel(float scale);
+
+    virtual void ResetScene();
+    virtual void ChangeProjectionType();
 
     size_t VertexCount();
     size_t IndexCount();
 
-    void keyPressEvent(QKeyEvent *) override;
-
-    QVector3D model_pos, prev_rotation;
     QColor background, vertices_color, lines_color;
-
     unsigned line_width, vertex_size;
-    float scale_factor;
-
-    bool circle_square, dashed_solid, no_vertices;
-    bool projection_type;
-
-    QSettings *settings;
+    bool circle_vertex, dashed_line, no_vertices;
 
    protected:
-    void initializeGL() override;
-    void resizeGL(int w, int h) override;
-    void paintGL() override;
+    virtual void initializeGL() override;
+    virtual void resizeGL(int w, int h) override;
+    virtual void paintGL() override;
 
-    void mousePressEvent(QMouseEvent *) override;
-    void mouseMoveEvent(QMouseEvent *) override;
-    void wheelEvent(QWheelEvent *) override;
+    virtual void mousePressEvent(QMouseEvent *) override;
+    virtual void mouseMoveEvent(QMouseEvent *) override;
+    virtual void wheelEvent(QWheelEvent *) override;
 
     QOpenGLShaderProgram program;
     QOpenGLVertexArrayObject vao;
     QOpenGLBuffer vbo, ebo;
     QMatrix4x4 view, projection;
 
+    bool projection_type;
+
+    QVector3D model_pos;
+    QQuaternion rotation;
+    float scale_factor;
+
    private:
     void LoadShaders();
     void DrawModel();
 
-    void CalculateCamera();
+    void SetCamera();
 
     void SaveSettings();
     void LoadSettings();
@@ -71,8 +74,10 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     float x_rot_, y_rot_, start_y_, start_x_;
     bool is_moving_;
 
+
+    QVector3D prev_rotation_;
     QVector3D camera_target_, camera_pos_, camera_up_;
-    QQuaternion rotation_;
+    QSettings *settings_;
 
     s21::Mesh* mesh_;
 };
