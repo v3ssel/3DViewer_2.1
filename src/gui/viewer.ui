@@ -19,7 +19,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_37">
     <item>
-     <widget class="scene" name="widget" native="true">
+     <widget class="Scene" name="widget" native="true">
       <property name="minimumSize">
        <size>
         <width>0</width>

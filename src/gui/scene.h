@@ -18,12 +18,12 @@
 
 #include "../controller/controller.h"
 
-class scene : public QOpenGLWidget, protected QOpenGLFunctions {
+class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
 
    public:
-    scene(QWidget *parent = nullptr);
-    ~scene();
+    Scene(QWidget *parent = nullptr);
+    ~Scene();
 
     void keyPressEvent(QKeyEvent *) override;
     void InitModel(const QString& filename);

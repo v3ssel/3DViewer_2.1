@@ -2,7 +2,7 @@
 
 #include "viewer.h"
 
-scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
+Scene::Scene(QWidget* parent) : QOpenGLWidget(parent) {
     settings = new QSettings(QDir::homePath() + "/3DViewerConfig/settings.conf",
                              QSettings::IniFormat);
 
@@ -23,9 +23,9 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
     LoadSettings_();
 }
 
-scene::~scene() {}
+Scene::~Scene() {}
 
-void scene::SaveSettings_() {
+void Scene::SaveSettings_() {
     settings->beginGroup("coordinate");
     settings->setValue("dashed_solid", dashed_solid);
     settings->setValue("projection", projection_type);
@@ -45,7 +45,7 @@ void scene::SaveSettings_() {
     settings->endGroup();
 }
 
-void scene::LoadSettings_() {
+void Scene::LoadSettings_() {
     settings->beginGroup("coordinate");
     dashed_solid = settings->value("dashed_solid", false).toBool();
     projection_type = settings->value("projection", true).toBool();
@@ -65,7 +65,7 @@ void scene::LoadSettings_() {
     settings->endGroup();
 }
 
-void scene::initializeGL() {
+void Scene::initializeGL() {
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
 
@@ -109,7 +109,7 @@ void scene::initializeGL() {
     LightInit_();
 }
 
-void scene::LightInit_() {
+void Scene::LightInit_() {
     light.bind();
     
     vao_light.create();
@@ -150,9 +150,9 @@ void scene::LightInit_() {
     light.release();
 }
 
-void scene::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
+void Scene::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
 
-void scene::InitModel(const QString& filename) {
+void Scene::InitModel(const QString& filename) {
     if (mesh_) {
         delete mesh_;
         mesh_ = nullptr;
@@ -172,15 +172,15 @@ void scene::InitModel(const QString& filename) {
     ebo.allocate(mesh_->indices.data(), sizeof(mesh_->indices[0]) * mesh_->indices.size());
 }
 
-void scene::ResetModel() {
+void Scene::ResetModel() {
     mesh_->Reset();
 }
 
-size_t scene::VertexCount() { return mesh_->vertices.size(); }
+size_t Scene::VertexCount() { return mesh_->vertices.size(); }
 
-size_t scene::IndexCount() { return mesh_->indices.size(); }
+size_t Scene::IndexCount() { return mesh_->indices.size(); }
 
-void scene::paintGL() {
+void Scene::paintGL() {
     glClearColor(background.red() / 255.0f, background.green() / 255.0f,
                  background.blue() / 255.0f, background.alpha() / 255.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -224,7 +224,7 @@ void scene::paintGL() {
     SaveSettings_();
 }
 
-void scene::CheckDisplayType_() {
+void Scene::CheckDisplayType_() {
     if (texture && !wireframe) {
         program.setUniformValue("is_textured", true);
     } else {
@@ -245,7 +245,7 @@ void scene::CheckDisplayType_() {
     }
 }
 
-void scene::StartDraw_() {
+void Scene::StartDraw_() {
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
 
     glLineWidth(line_width);
@@ -270,7 +270,7 @@ void scene::StartDraw_() {
     }
 }
 
-void scene::DrawLight_() {
+void Scene::DrawLight_() {
     if (has_normals && !wireframe && is_light_enabled) {
         light.bind();
         vao_light.bind();
@@ -288,7 +288,7 @@ void scene::DrawLight_() {
     }
 }
 
-void scene::CalculateCamera() {
+void Scene::CalculateCamera() {
     float r = 3.0f * cos(y_rot_ * M_PI / 180);
     camera_pos_ =
         QVector3D(camera_target_.x() + r * sin(x_rot_ * M_PI / 180),
@@ -302,7 +302,7 @@ void scene::CalculateCamera() {
                   -cos(x_rot_ * M_PI / 180) * sin(y_rot_ * M_PI / 180));
 }
 
-void scene::RotateModel(float x, float y, float z) {
+void Scene::RotateModel(float x, float y, float z) {
     float diff_x = x - r_x;
     float diff_y = y - r_y;
     float diff_z = z - r_z;
@@ -314,7 +314,7 @@ void scene::RotateModel(float x, float y, float z) {
     rotation_ = QQuaternion::fromAxisAndAngle(axis, angle) * rotation_;
 }
 
-QList<QLine> scene::GetLines(QPixmap map) {
+QList<QLine> Scene::GetLines(QPixmap map) {
     QList<QLine> parser_x_y;
     int count = 0;
     QVector<GLfloat> tmp_first_elem = {0.0, 0.0};
@@ -341,7 +341,7 @@ QList<QLine> scene::GetLines(QPixmap map) {
     return parser_x_y;
 }
 
-void scene::wheelEvent(QWheelEvent* event) {
+void Scene::wheelEvent(QWheelEvent* event) {
     if (event->angleDelta().y() > 0) {
         scale_factor *= 1.1f;
     } else {
@@ -350,7 +350,7 @@ void scene::wheelEvent(QWheelEvent* event) {
     update();
 }
 
-void scene::mousePressEvent(QMouseEvent* mouse) {
+void Scene::mousePressEvent(QMouseEvent* mouse) {
     switch (mouse->button()) {
         case Qt::LeftButton:
             moving_ = true;
@@ -363,7 +363,7 @@ void scene::mousePressEvent(QMouseEvent* mouse) {
     start_y_ = mouse->pos().y();
 }
 
-void scene::mouseMoveEvent(QMouseEvent* mouse) {
+void Scene::mouseMoveEvent(QMouseEvent* mouse) {
     if (moving_) {
         float tmpX = mouse->position().x();
         float tmpY = mouse->position().y();
@@ -391,7 +391,7 @@ void scene::mouseMoveEvent(QMouseEvent* mouse) {
     update();
 }
 
-void scene::keyPressEvent(QKeyEvent* event) {
+void Scene::keyPressEvent(QKeyEvent* event) {
     switch (event->key()) {
         case Qt::Key_R:
             camera_pos_ = camera_up_ = move_object =
