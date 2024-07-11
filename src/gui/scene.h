@@ -25,7 +25,7 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     Scene(QWidget *parent = nullptr);
     ~Scene();
 
-    virtual void InitModel(const QString& filename);
+    virtual void InitModel(s21::Mesh* mesh);
     virtual void ResetModel();
 
     virtual void MoveModel(float x, float y, float z);

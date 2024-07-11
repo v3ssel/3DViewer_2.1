@@ -85,6 +85,8 @@ class Viewer : public QMainWindow {
     QTimer *record_time_;
     QVector<QImage> GIF_;
 
+    s21::Mesh* mesh_;
+
     Ui::Viewer *ui;
 };
 

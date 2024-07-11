@@ -11,12 +11,12 @@ Scene::Scene(QWidget* parent) : QOpenGLWidget(parent) {
     is_moving_ = false;
     projection_type = true;
 
-    mesh_ = nullptr;
     scale_factor = 1.0f;
     start_x_ = 0.0f, start_y_ = 0.0f;
     x_rot_ = 1.0f, y_rot_ = 1.0f;
     prev_rotation_ = QVector3D(0.0f, 0.0f, 0.0f);
 
+    ResetModel();
     LoadSettings();
 }
 
@@ -28,21 +28,11 @@ Scene::~Scene() {
     vbo.destroy();
     ebo.destroy();
     
-    if (mesh_) {
-        delete mesh_;
-        mesh_ = nullptr;
-    }
-
     delete settings_;
 }
 
-void Scene::InitModel(const QString& filename) {
-    if (mesh_) {
-        delete mesh_;
-        mesh_ = nullptr;
-    }
-
-    mesh_ = s21::Controller::Instance().ParseMeshFromFile(filename);
+void Scene::InitModel(s21::Mesh* mesh) {
+    mesh_ = mesh;
 
     program.bind();
     vao.bind();
@@ -55,7 +45,7 @@ void Scene::InitModel(const QString& filename) {
 }
 
 void Scene::ResetModel() {
-    if (mesh_) mesh_->Reset();
+    mesh_ = nullptr;
 }
 
 void Scene::MoveModel(float x, float y, float z) {

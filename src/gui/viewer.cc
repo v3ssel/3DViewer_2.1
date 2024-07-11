@@ -4,7 +4,7 @@
 
 Viewer::Viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::Viewer) {
     ui->setupUi(this);
-    this->setWindowTitle("3DViewer 2.1");
+    this->setWindowTitle("3DViewer 2.0");
 
     ui->horizontalSlider_lineWidth->setValue(ui->widget->line_width);
     ui->lcdNumber_lineWidth->display((int)ui->widget->line_width);
@@ -17,6 +17,7 @@ Viewer::Viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::Viewer) {
 
     SetFrameColor();
 
+    mesh_ = nullptr;
     hiden_ = false, is_recording_ = false;
     time_ = 0.0;
     record_time_ = new QTimer(this);
@@ -24,6 +25,8 @@ Viewer::Viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::Viewer) {
 }
 
 Viewer::~Viewer() {
+    if (mesh_) delete mesh_;
+
     delete ui;
 }
 
@@ -32,12 +35,30 @@ void Viewer::on_actionOpen_triggered() {
 
     if (filename != "") {
         filename_ = filename;
-        ui->widget->InitModel(filename);
-        ui->widget->update();
+        s21::Mesh* tmp_mesh = mesh_;
+        
+        try {
+            mesh_ = s21::Controller::Instance().ParseMeshFromFile(filename);
+            if (tmp_mesh) {
+                delete tmp_mesh;
+            }
+
+            ui->widget->InitModel(mesh_);
+            ui->widget->update();
+        } catch (const std::exception& ex) {
+            QMessageBox::critical(this, "Error", "An error occured during model loading."
+                                        "\nPlease ensure file correctness or try other file");
+            mesh_ = tmp_mesh;
+        }
     }
 }
 
 void Viewer::on_actionClose_triggered() {
+    if (mesh_) {
+        delete mesh_;
+        mesh_ = nullptr;
+    }
+
     ui->widget->ResetModel();
     ui->widget->update();
     filename_ = "";
