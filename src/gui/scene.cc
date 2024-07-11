@@ -23,7 +23,21 @@ Scene::Scene(QWidget* parent) : QOpenGLWidget(parent) {
     LoadSettings_();
 }
 
-Scene::~Scene() {}
+Scene::~Scene() {
+    program.bind();
+    vao.destroy();
+    vbo.destroy();
+    ebo.destroy();
+    
+    light.bind();
+    vao_light.destroy();
+    vbo_light.destroy();
+
+    if (mesh_) {
+        delete mesh_;
+        mesh_ = nullptr;
+    }
+}
 
 void Scene::SaveSettings_() {
     settings->beginGroup("coordinate");
@@ -106,19 +120,14 @@ void Scene::initializeGL() {
         QMessageBox::critical(this, "Error", "Light Shader program error" + light.log());
     }
 
-    LightInit_();
+    InitLight();
 }
 
-void Scene::LightInit_() {
+void Scene::InitLight() {
     light.bind();
     
     vao_light.create();
     vao_light.bind();
-
-    QOpenGLBuffer vbo_light(QOpenGLBuffer::VertexBuffer);
-    vbo_light.create();
-    vbo_light.bind();
-    vbo_light.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
     GLfloat lamp_vertices[] = {
         1.000000,  1.000000,  -1.000000, -1.000000, 1.000000,  -1.000000,
@@ -140,14 +149,14 @@ void Scene::LightInit_() {
         1.000000,  1.000000,  -1.000000, -1.000000, -1.000000, -1.000000,
         1.000000,  1.000000,  -1.000000, 1.000000,  -1.000000, -1.000000};
 
+    vbo_light = QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+    vbo_light.create();
+    vbo_light.bind();
+    vbo_light.setUsagePattern(QOpenGLBuffer::StaticDraw);
     vbo_light.allocate(lamp_vertices, sizeof(GLfloat) * 36 * 3);
 
     light.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
     light.enableAttributeArray("aPos");
-
-    vao_light.release();
-    vbo_light.release();
-    light.release();
 }
 
 void Scene::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
@@ -192,7 +201,7 @@ void Scene::paintGL() {
     program.bind();
     vao.bind();
 
-    CheckDisplayType_();
+    SetDisplayType();
 
     QMatrix4x4 model;
     program.setUniformValueArray("view", &view, 1);
@@ -218,13 +227,13 @@ void Scene::paintGL() {
 
     if (texture) texture->bind();
 
-    StartDraw_();
+    DrawModel();
 
-    DrawLight_();
+    DrawLight();
     SaveSettings_();
 }
 
-void Scene::CheckDisplayType_() {
+void Scene::SetDisplayType() {
     if (texture && !wireframe) {
         program.setUniformValue("is_textured", true);
     } else {
@@ -245,7 +254,7 @@ void Scene::CheckDisplayType_() {
     }
 }
 
-void Scene::StartDraw_() {
+void Scene::DrawModel() {
     glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
 
     glLineWidth(line_width);
@@ -270,7 +279,7 @@ void Scene::StartDraw_() {
     }
 }
 
-void Scene::DrawLight_() {
+void Scene::DrawLight() {
     if (has_normals && !wireframe && is_light_enabled) {
         light.bind();
         vao_light.bind();

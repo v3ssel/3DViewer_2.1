@@ -51,7 +51,7 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
 
     QOpenGLShaderProgram program, light;
     QOpenGLVertexArrayObject vao, vao_light;
-    QOpenGLBuffer vbo, ebo;
+    QOpenGLBuffer vbo, ebo, vbo_light;
     QOpenGLTexture *texture;
     QMatrix4x4 view, projection;
 
@@ -65,10 +65,10 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     void wheelEvent(QWheelEvent *) override;
 
    private:
-    void LightInit_();
-    void CheckDisplayType_();
-    void StartDraw_();
-    void DrawLight_();
+    void InitLight();
+    void SetDisplayType();
+    void DrawModel();
+    void DrawLight();
 
     void SaveSettings_();
     void LoadSettings_();

@@ -23,11 +23,6 @@ viewer::viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::viewer) {
 }
 
 viewer::~viewer() {
-    // ui->widget->makeCurrent();
-    ui->widget->vbo.destroy();
-    ui->widget->ebo.destroy();
-    ui->widget->vao.destroy();
-    ui->widget->vao_light.destroy();
     on_pushButton_unload_texture_clicked();
     delete ui;
 }
