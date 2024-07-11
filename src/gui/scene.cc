@@ -14,7 +14,7 @@ scene::scene(QWidget* parent) : QOpenGLWidget(parent) {
     light_pos = QVector3D(1.0f, 1.0f, 1.0f);
     light_color = QVector3D(1.0f, 1.0f, 1.0f);
 
-    texture = nullptr;
+    texture = nullptr, mesh_ = nullptr;
     scale_factor = 1.0f;
     start_x_ = 0.0f, start_y_ = 0.0f;
     x_rot_ = 1.0f, y_rot_ = 1.0f;
@@ -152,21 +152,40 @@ void scene::LightInit_() {
 
 void scene::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
 
-void scene::InitModel(QVector<GLfloat> vertices, QVector<GLuint> indices) {
+void scene::InitModel(const QString& filename) {
+    if (mesh_) {
+        delete mesh_;
+        mesh_ = nullptr;
+    }
+
+    mesh_ = s21::Controller::Instance().ParseMeshFromFile(filename);
+    has_normals = mesh_->normals.size() > 1;
+    has_texture = mesh_->uvs.size() > 1;
+
     program.bind();
     vao.bind();
 
     vbo.bind();
-    vbo.allocate(vertices.data(), sizeof(vertices[0]) * vertices.size());
+    vbo.allocate(mesh_->facets.data(), sizeof(mesh_->facets[0]) * mesh_->facets.size());
 
     ebo.bind();
-    ebo.allocate(indices.data(), sizeof(indices[0]) * indices.size());
+    ebo.allocate(mesh_->indices.data(), sizeof(mesh_->indices[0]) * mesh_->indices.size());
 }
+
+void scene::ResetModel() {
+    mesh_->Reset();
+}
+
+size_t scene::VertexCount() { return mesh_->vertices.size(); }
+
+size_t scene::IndexCount() { return mesh_->indices.size(); }
 
 void scene::paintGL() {
     glClearColor(background.red() / 255.0f, background.green() / 255.0f,
                  background.blue() / 255.0f, background.alpha() / 255.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if (!mesh_) return;
 
     CalculateCamera();
 
@@ -234,7 +253,7 @@ void scene::StartDraw_() {
         glLineStipple(1, 0x00FF);
         glEnable(GL_LINE_STIPPLE);
     }
-    glDrawElements(GL_TRIANGLES, s21::Controller::GetInstance().GetIndices().size(), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, mesh_->indices.size(), GL_UNSIGNED_INT, nullptr);
     glDisable(GL_LINE_STIPPLE);
 
     if (!is_none) {
@@ -245,7 +264,7 @@ void scene::StartDraw_() {
                         vertices_color.blue() / 255.0f);
         program.setUniformValueArray("objectColor", &v_col, 1);
 
-        glDrawArrays(GL_POINTS, 0, s21::Controller::GetInstance().GetIndices().size());
+        glDrawArrays(GL_POINTS, 0, mesh_->indices.size());
                      
         glDisable(GL_POINT_SMOOTH);
     }
@@ -296,31 +315,29 @@ void scene::RotateModel(float x, float y, float z) {
 }
 
 QList<QLine> scene::GetLines(QPixmap map) {
-    // !!!!!!!
-    QVector<GLfloat> finalArr = s21::MeshParser::GetInstance().getFacetsArr();
-
     QList<QLine> parser_x_y;
     int count = 0;
     QVector<GLfloat> tmp_first_elem = {0.0, 0.0};
 
-    for (int i = 3; finalArr.size() > i; i += 8, ++count) {
+    for (int i = 3; mesh_->facets.size() > i; i += 8, ++count) {
         if (count == 0) {
-            tmp_first_elem[0] = finalArr[i];
-            tmp_first_elem[1] = finalArr[i + 1];
+            tmp_first_elem[0] = mesh_->facets[i];
+            tmp_first_elem[1] = mesh_->facets[i + 1];
         }
 
         if (count != 2)
             parser_x_y.push_back(QLine(
-                finalArr[i] * map.width(), finalArr[i + 1] * map.height(),
-                finalArr[i + 8] * map.width(), finalArr[i + 9] * map.height()));
+                mesh_->facets[i] * map.width(), mesh_->facets[i + 1] * map.height(),
+                mesh_->facets[i + 8] * map.width(), mesh_->facets[i + 9] * map.height()));
         else
-            parser_x_y.push_back(QLine(finalArr[i] * map.width(),
-                                       finalArr[i + 1] * map.height(),
+            parser_x_y.push_back(QLine(mesh_->facets[i] * map.width(),
+                                       mesh_->facets[i + 1] * map.height(),
                                        tmp_first_elem[0] * map.width(),
                                        tmp_first_elem[1] * map.height()));
 
         if (count == 2) count = -1;
     }
+
     return parser_x_y;
 }
 

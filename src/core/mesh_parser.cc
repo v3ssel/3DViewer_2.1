@@ -1,13 +1,14 @@
 #include "mesh_parser.h"
 
 namespace s21 {
-void MeshParser::Parse(const QString& path) {
+Mesh* MeshParser::Parse(const QString& path) {
     QFile file(path);
     if (!file.open(QFile::ReadOnly)) {
         throw std::invalid_argument(std::string("File  not found.").insert(4, path.toStdString())); 
     }
     
-    AddDefaultVertex();
+    Mesh* mesh = new Mesh();
+    AddDefaultVertex(mesh);
     QString current_string;
 
     while (!file.atEnd()) {
@@ -16,39 +17,37 @@ void MeshParser::Parse(const QString& path) {
         QStringList numbers = current_string.split(" ");
 
         if (numbers[0] == "v")
-            mesh_.vertices.push_back({numbers[1].toFloat(),
+            mesh->vertices.push_back({numbers[1].toFloat(),
                                       numbers[2].toFloat(),
                                       numbers[3].toFloat()});
         if (numbers[0] == "vt")
-            mesh_.uvs.push_back({numbers[1].toFloat(),
+            mesh->uvs.push_back({numbers[1].toFloat(),
                                  numbers[2].toFloat()});
 
         if (numbers[0] == "vn")
-            mesh_.normals.push_back({numbers[1].toFloat(),
+            mesh->normals.push_back({numbers[1].toFloat(),
                                      numbers[2].toFloat(),
                                      numbers[3].toFloat()});
 
         if (numbers[0] == "f") {
             numbers.pop_front();
-            ParseFacets(numbers);
+            ParseFacets(mesh, numbers);
         }
     }
 
-    for (int i = 0; i < mesh_.facets.size() / kFacetRowSize; i++)
-        mesh_.indices.push_back(i);
+    for (int i = 0; i < mesh->facets.size() / kFacetRowSize; i++)
+        mesh->indices.push_back(i);
+    
+    return mesh;
 }
 
-void MeshParser::Clear() {
-    mesh_.Reset();
+void MeshParser::AddDefaultVertex(Mesh* mesh) {
+    mesh->vertices.push_back({0, 0, 0});
+    mesh->uvs.push_back({0, 0});
+    mesh->normals.push_back({0, 0, 0});
 }
 
-void MeshParser::AddDefaultVertex() {
-    mesh_.vertices.push_back({0, 0, 0});
-    mesh_.uvs.push_back({0, 0});
-    mesh_.normals.push_back({0, 0, 0});
-}
-
-void MeshParser::ParseFacets(const QStringList& str_list) {
+void MeshParser::ParseFacets(Mesh* mesh, const QStringList& str_list) {
     int counter = 0;
 
     QString first_elem = str_list.first();
@@ -57,28 +56,28 @@ void MeshParser::ParseFacets(const QStringList& str_list) {
     for (const QString &str : str_list) {
         if (str_list.size() == 2 && std::isdigit(str[0].toLatin1())) {
             if (str == first_elem) {
-                AddFacet(first_elem);
+                AddFacet(mesh, first_elem);
             }
 
-            AddFacet(str);
+            AddFacet(mesh, str);
         } else {
             if (counter < 3) {
                 if (std::isdigit(str[0].toLatin1()) || str[0].toLatin1() == '-') {
-                    AddFacet(str);
+                    AddFacet(mesh, str);
                 }
 
                 ++counter;
                 copy_curr = str;
             } else {
-                AddFacet(first_elem);
-                AddFacet(copy_curr);
-                AddFacet(str);
+                AddFacet(mesh, first_elem);
+                AddFacet(mesh, copy_curr);
+                AddFacet(mesh, str);
             }
         }
     }
 }
 
-void MeshParser::AddFacet(const QString &str) {
+void MeshParser::AddFacet(Mesh* mesh, const QString &str) {
     std::vector<uint> indices = { 0, 0, 0 };
     
     uint index = 0;
@@ -93,19 +92,19 @@ void MeshParser::AddFacet(const QString &str) {
         }
     }
 
-    if (indices[0] < 0) indices[0] += mesh_.vertices.size();
-    mesh_.facets.emplace_back(mesh_.vertices[indices[0]].x());
-    mesh_.facets.emplace_back(mesh_.vertices[indices[0]].y());
-    mesh_.facets.emplace_back(mesh_.vertices[indices[0]].z());
+    if (indices[0] < 0) indices[0] += mesh->vertices.size();
+    mesh->facets.emplace_back(mesh->vertices[indices[0]].x());
+    mesh->facets.emplace_back(mesh->vertices[indices[0]].y());
+    mesh->facets.emplace_back(mesh->vertices[indices[0]].z());
 
-    if (indices[1] < 0) indices[1] += mesh_.uvs.size();
-    mesh_.facets.emplace_back(mesh_.uvs[indices[1]].x());
-    mesh_.facets.emplace_back(mesh_.uvs[indices[1]].y());
+    if (indices[1] < 0) indices[1] += mesh->uvs.size();
+    mesh->facets.emplace_back(mesh->uvs[indices[1]].x());
+    mesh->facets.emplace_back(mesh->uvs[indices[1]].y());
 
-    if (indices[2] < 0) indices[2] += mesh_.normals.size();
-    mesh_.facets.emplace_back(mesh_.normals[indices[2]].x());
-    mesh_.facets.emplace_back(mesh_.normals[indices[2]].y());
-    mesh_.facets.emplace_back(mesh_.normals[indices[2]].z());
+    if (indices[2] < 0) indices[2] += mesh->normals.size();
+    mesh->facets.emplace_back(mesh->normals[indices[2]].x());
+    mesh->facets.emplace_back(mesh->normals[indices[2]].y());
+    mesh->facets.emplace_back(mesh->normals[indices[2]].z());
 }
 
 // void MeshParser::CheckFlags(QString path_to_file) {

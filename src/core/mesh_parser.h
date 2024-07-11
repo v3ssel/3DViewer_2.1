@@ -11,33 +11,23 @@
 namespace s21 {
 class MeshParser {
    public:
-    static MeshParser& GetInstance() {
+    static constexpr int kFacetRowSize = 8;
+
+    static MeshParser& Instance() {
         static MeshParser instance;
         return instance;
     }
 
-    void Parse(const QString& path);
-    void Clear();
-
-    QVector<GLfloat>& getFacetsArr() { return mesh_.facets; }
-    QVector<GLuint>& getIndicesArr() { return mesh_.indices; }
-
-    QVector<QVector3D>& getVertexArr() { return mesh_.vertices; }
-    QVector<QVector3D>& getNormalsArr() { return mesh_.normals; }
-    QVector<QVector2D>& getUVsArr() { return mesh_.uvs; }
-
-    static constexpr int kFacetRowSize = 8;
+    Mesh* Parse(const QString& path);
 
    private:
-    MeshParser() { Clear(); }
+    MeshParser() = default;
     MeshParser(const MeshParser&);
     MeshParser& operator=(MeshParser&) = delete;
 
-    void AddDefaultVertex();
-    void ParseFacets(const QStringList& str_list);
-    void AddFacet(const QString& str);
-
-    Mesh mesh_;
+    void AddDefaultVertex(Mesh* mesh);
+    void ParseFacets(Mesh* mesh, const QStringList& str_list);
+    void AddFacet(Mesh* mesh, const QString& str);
 };
 }  // namespace s21
 

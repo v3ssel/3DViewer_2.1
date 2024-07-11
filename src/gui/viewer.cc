@@ -24,7 +24,6 @@ viewer::viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::viewer) {
 
 viewer::~viewer() {
     // ui->widget->makeCurrent();
-    s21::Controller::GetInstance().clearArrays();
     ui->widget->vbo.destroy();
     ui->widget->ebo.destroy();
     ui->widget->vao.destroy();
@@ -34,22 +33,19 @@ viewer::~viewer() {
 }
 
 void viewer::on_actionOpen_triggered() {
-    QString fname = QFileDialog::getOpenFileName(this, "Choose File", QDir::homePath(), tr("OBJ (*.obj)"));
+    QString filename = QFileDialog::getOpenFileName(this, "Choose File", QDir::homePath(), tr("OBJ (*.obj)"));
 
-    if (fname != "") {
-        filename_ = fname;
-        s21::Controller::GetInstance().clearArrays();
-        s21::Controller::GetInstance().ParseVertex_3D(fname);
-        ui->widget->InitModel(s21::Controller::GetInstance().GetPolygonsArray(),
-                              s21::Controller::GetInstance().GetIndices());
+    if (filename != "") {
+        filename_ = filename;
+        ui->widget->InitModel(filename);
 
         on_pushButton_unload_texture_clicked();
-        if ((ui->widget->has_normals = s21::Controller::GetInstance().NormalsUsage()))
+        if (ui->widget->has_normals)
             ui->actionLight->setDisabled(false);
         else
             ui->actionLight->setDisabled(true), ui->actionLight->setChecked(false);
 
-        if ((ui->widget->has_texture = s21::Controller::GetInstance().TextureUsage()) && !ui->widget->wireframe)
+        if (ui->widget->has_texture && !ui->widget->wireframe)
             ui->pushButton_apply_texture->setDisabled(false);
         else
             ui->pushButton_apply_texture->setDisabled(true);
@@ -59,7 +55,8 @@ void viewer::on_actionOpen_triggered() {
 }
 
 void viewer::on_actionClose_triggered() {
-    s21::Controller::GetInstance().clearArrays();
+    ui->widget->ResetModel();
+
     on_pushButton_unload_texture_clicked();
     ui->pushButton_apply_texture->setDisabled(true);
     ui->widget->has_texture = false;
@@ -69,16 +66,16 @@ void viewer::on_actionClose_triggered() {
 }
 
 void viewer::on_actionInfo_triggered() {
-    // size_t vertices = !s21::Controller::GetInstance().GetVertices().size()
+    // size_t vertices = !s21::Controller::Instance().GetVertices().size()
     //                     ? 0
-    //                     : s21::Controller::GetInstance().GetVertices().size() - 1;
-    size_t vertices = s21::Controller::GetInstance().GetVertices().size();
+    //                     : s21::Controller::Instance().GetVertices().size() - 1;
+    size_t vertices = ui->widget->VertexCount();
     
     QMessageBox::information(
         this, "Information",
         "Filename: " + filename_ +
         "\nVertices: " + QString::number(vertices) +
-        "\nLines: " + QString::number(s21::Controller::GetInstance().GetIndices().size()));
+        "\nLines: " + QString::number(ui->widget->IndexCount()));
 }
 
 void viewer::keyPressEvent(QKeyEvent *event) {

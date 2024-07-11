@@ -16,6 +16,8 @@
 #include <QTimer>
 #include <QWidget>
 
+#include "../controller/controller.h"
+
 class scene : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
 
@@ -24,7 +26,12 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
     ~scene();
 
     void keyPressEvent(QKeyEvent *) override;
-    void InitModel(QVector<GLfloat> vertices, QVector<GLuint> indices);
+    void InitModel(const QString& filename);
+    void ResetModel();
+
+    size_t VertexCount();
+    size_t IndexCount();
+
     void CalculateCamera();
     void RotateModel(float x, float y, float z);
     QList<QLine> GetLines(QPixmap map);
@@ -71,6 +78,8 @@ class scene : public QOpenGLWidget, protected QOpenGLFunctions {
 
     QVector3D camera_target_, camera_pos_, camera_up_;
     QQuaternion rotation_;
+
+    s21::Mesh* mesh_;
 };
 
 #endif  // SCENE_H
