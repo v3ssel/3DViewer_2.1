@@ -117,7 +117,7 @@ void viewer::on_horizontalSlider_lineWidth_sliderPressed() {
 }
 
 void viewer::on_horizontalSlider_versize_sliderMoved(int position) {
-    ui->widget->is_none = false;
+    ui->widget->no_vertices = false;
     ui->widget->vertex_size = position;
     ui->lcdNumber_versize->display(position);
     ui->widget->update();
@@ -139,19 +139,19 @@ void viewer::on_pushButton_line_dashed_clicked() {
 }
 
 void viewer::on_pushButton_ver_circle_clicked() {
-    ui->widget->is_none = false;
+    ui->widget->no_vertices = false;
     ui->widget->circle_square = false;
     ui->widget->update();
 }
 
 void viewer::on_pushButton_ver_square_clicked() {
-    ui->widget->is_none = false;
+    ui->widget->no_vertices = false;
     ui->widget->circle_square = true;
     ui->widget->update();
 }
 
 void viewer::on_pushButton_ver_none_clicked() {
-    ui->widget->is_none = true;
+    ui->widget->no_vertices = true;
     ui->horizontalSlider_versize->setValue(1);
     ui->lcdNumber_versize->display(1);
     ui->widget->update();
@@ -163,6 +163,7 @@ void viewer::on_horizontalSlider_scale_sliderMoved(int position) {
     } else {
         ui->widget->scale_factor = float(1.0f - abs(position) / 100.0f);
     }
+
     ui->lcdNumber_scale->display(position);
     ui->widget->update();
 }
@@ -172,9 +173,9 @@ void viewer::on_horizontalSlider_scale_sliderPressed() {
 }
 
 void viewer::on_doubleSpinBox_x_move_valueChanged() {
-    ui->widget->move_object[0] = ui->doubleSpinBox_x_move->value();
-    ui->widget->move_object[1] = ui->doubleSpinBox_y_move->value();
-    ui->widget->move_object[2] = ui->doubleSpinBox_z_move->value();
+    ui->widget->model_pos[0] = ui->doubleSpinBox_x_move->value();
+    ui->widget->model_pos[1] = ui->doubleSpinBox_y_move->value();
+    ui->widget->model_pos[2] = ui->doubleSpinBox_z_move->value();
     ui->widget->update();
 }
 
@@ -187,17 +188,17 @@ void viewer::on_doubleSpinBox_z_move_valueChanged() {
 }
 
 void viewer::on_spinBox_x_rot_valueChanged(int arg1) {
-    ui->widget->RotateModel(arg1, ui->widget->r_y, ui->widget->r_z);
+    ui->widget->RotateModel(arg1, ui->widget->prev_rotation.y(), ui->widget->prev_rotation.z());
     ui->widget->update();
 }
 
 void viewer::on_spinBox_y_rot_valueChanged(int arg1) {
-    ui->widget->RotateModel(ui->widget->r_x, arg1, ui->widget->r_z);
+    ui->widget->RotateModel(ui->widget->prev_rotation.x(), arg1, ui->widget->prev_rotation.z());
     ui->widget->update();
 }
 
 void viewer::on_spinBox_z_rot_valueChanged(int arg1) {
-    ui->widget->RotateModel(ui->widget->r_x, ui->widget->r_y, arg1);
+    ui->widget->RotateModel(ui->widget->prev_rotation.x(), ui->widget->prev_rotation.y(), arg1);
     ui->widget->update();
 }
 
@@ -310,11 +311,11 @@ void viewer::on_pushButton_apply_texture_clicked() {
 
     if (fname_texture_ != "") {
         texture_image_ = QImage(fname_texture_);
-        if (!ui->widget->texture) delete ui->widget->texture;
-        ui->widget->texture = new QOpenGLTexture(texture_image_);
-        ui->widget->texture->setMinificationFilter(QOpenGLTexture::Nearest);
-        ui->widget->texture->setMagnificationFilter(QOpenGLTexture::Linear);
-        ui->widget->texture->setWrapMode(QOpenGLTexture::Repeat);
+        // if (!ui->widget->texture) delete ui->widget->texture;
+        // ui->widget->texture = new QOpenGLTexture(texture_image_);
+        // ui->widget->texture->setMinificationFilter(QOpenGLTexture::Nearest);
+        // ui->widget->texture->setMagnificationFilter(QOpenGLTexture::Linear);
+        // ui->widget->texture->setWrapMode(QOpenGLTexture::Repeat);
         ui->pushButton_unload_texture->setDisabled(false);
         ui->pushButton_save_uvmap->setDisabled(false);
     }
@@ -322,8 +323,8 @@ void viewer::on_pushButton_apply_texture_clicked() {
 }
 
 void viewer::on_pushButton_unload_texture_clicked() {
-    if (ui->widget->texture) delete ui->widget->texture;
-    ui->widget->texture = nullptr;
+    // if (ui->widget->texture) delete ui->widget->texture;
+    // ui->widget->texture = nullptr;
     ui->pushButton_unload_texture->setDisabled(true);
     ui->pushButton_save_uvmap->setDisabled(true);
     ui->widget->update();

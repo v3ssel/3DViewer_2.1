@@ -6,21 +6,20 @@ Scene::Scene(QWidget* parent) : QOpenGLWidget(parent) {
     settings = new QSettings(QDir::homePath() + "/3DViewerConfig/settings.conf",
                              QSettings::IniFormat);
 
-    move_object = camera_target_ = QVector3D(0.0f, 0.0f, 0.0f);
-    moving_ = false;
+    model_pos = camera_target_ = QVector3D(0.0f, 0.0f, 0.0f);
+    light_pos = light_color = QVector3D(1.0f, 1.0f, 1.0f);
+
+    is_moving_ = false;
     wireframe = true, flat_shading = false;
     projection_type = true, is_light_enabled = false;
-
-    light_pos = QVector3D(1.0f, 1.0f, 1.0f);
-    light_color = QVector3D(1.0f, 1.0f, 1.0f);
 
     texture = nullptr, mesh_ = nullptr;
     scale_factor = 1.0f;
     start_x_ = 0.0f, start_y_ = 0.0f;
     x_rot_ = 1.0f, y_rot_ = 1.0f;
-    r_x = 0.0f, r_y = 0.0f, r_z = 0.0f;
+    prev_rotation = QVector3D(0.0f, 0.0f, 0.0f);
 
-    LoadSettings_();
+    LoadSettings();
 }
 
 Scene::~Scene() {
@@ -37,61 +36,104 @@ Scene::~Scene() {
         delete mesh_;
         mesh_ = nullptr;
     }
+
+    delete settings;
 }
 
-void Scene::SaveSettings_() {
-    settings->beginGroup("coordinate");
-    settings->setValue("dashed_solid", dashed_solid);
-    settings->setValue("projection", projection_type);
-    settings->setValue("circle_square", circle_square);
-    settings->setValue("is_none", is_none);
-    settings->endGroup();
+void Scene::InitModel(const QString& filename) {
+    if (mesh_) {
+        delete mesh_;
+        mesh_ = nullptr;
+    }
 
-    settings->beginGroup("rgb");
-    settings->setValue("background_color", background);
-    settings->setValue("vertices_color", vertices_color);
-    settings->setValue("lines_color", lines_color);
-    settings->endGroup();
+    mesh_ = s21::Controller::Instance().ParseMeshFromFile(filename);
+    has_normals = mesh_->normals.size() > 1;
+    has_texture = mesh_->uvs.size() > 1;
 
-    settings->beginGroup("size");
-    settings->setValue("line_width", line_width);
-    settings->setValue("vertex_size", vertex_size);
-    settings->endGroup();
+    program.bind();
+    vao.bind();
+
+    vbo.bind();
+    vbo.allocate(mesh_->facets.data(), sizeof(mesh_->facets[0]) * mesh_->facets.size());
+
+    ebo.bind();
+    ebo.allocate(mesh_->indices.data(), sizeof(mesh_->indices[0]) * mesh_->indices.size());
 }
 
-void Scene::LoadSettings_() {
-    settings->beginGroup("coordinate");
-    dashed_solid = settings->value("dashed_solid", false).toBool();
-    projection_type = settings->value("projection", true).toBool();
-    circle_square = settings->value("circle_square", false).toBool();
-    is_none = settings->value("is_none", false).toBool();
-    settings->endGroup();
+void Scene::ResetModel() {
+    mesh_->Reset();
+}
 
-    settings->beginGroup("rgb");
-    background = settings->value("background_color", QColor(0.0f, 0.0f, 0.0f, 0.0f)).value<QColor>();
-    vertices_color = settings->value("vertices_color", QColor(0.0f, 0.0f, 0.0f)).value<QColor>();
-    lines_color = settings->value("lines_color", QColor(255.0f, 0.0f, 45.0f)).value<QColor>();
-    settings->endGroup();
+void Scene::RotateModel(float x, float y, float z) {
+    float diff_x = x - prev_rotation.x();
+    float diff_y = y - prev_rotation.y();
+    float diff_z = z - prev_rotation.z();
+    prev_rotation.setX(x);
+    prev_rotation.setY(y);
+    prev_rotation.setZ(z);
 
-    settings->beginGroup("size");
-    line_width = settings->value("line_width", 5).toUInt();
-    vertex_size = settings->value("vertex_size", 1).toUInt();
-    settings->endGroup();
+    double angle = QVector3D(diff_y, diff_x, diff_z).length();
+    QVector3D axis = QVector3D(diff_y, diff_x, diff_z);
+    rotation_ = QQuaternion::fromAxisAndAngle(axis, angle) * rotation_;
+}
+
+
+size_t Scene::VertexCount() { return mesh_->vertices.size(); }
+
+size_t Scene::IndexCount() { return mesh_->indices.size(); }
+
+void Scene::keyPressEvent(QKeyEvent* event) {
+    switch (event->key()) {
+        case Qt::Key_R:
+            camera_pos_ = camera_up_ = model_pos =
+                QVector3D(0.0f, 0.0f, 0.0f);
+            CalculateCamera();
+            rotation_ = QQuaternion();
+            prev_rotation = QVector3D(0.0f, 0.0f, 0.0f);
+            break;
+        case Qt::Key_O:
+            projection_type = false;
+            break;
+        case Qt::Key_P:
+            projection_type = true;
+            break;
+    }
+    update();
+}
+
+QList<QLine> Scene::GetLines(QPixmap map) {
+    QList<QLine> parser_x_y;
+    int count = 0;
+    QVector<GLfloat> tmp_first_elem = {0.0, 0.0};
+
+    for (int i = 3; mesh_->facets.size() > i; i += 8, ++count) {
+        if (count == 0) {
+            tmp_first_elem[0] = mesh_->facets[i];
+            tmp_first_elem[1] = mesh_->facets[i + 1];
+        }
+
+        if (count != 2)
+            parser_x_y.push_back(QLine(
+                mesh_->facets[i] * map.width(), mesh_->facets[i + 1] * map.height(),
+                mesh_->facets[i + 8] * map.width(), mesh_->facets[i + 9] * map.height()));
+        else
+            parser_x_y.push_back(QLine(mesh_->facets[i] * map.width(),
+                                       mesh_->facets[i + 1] * map.height(),
+                                       tmp_first_elem[0] * map.width(),
+                                       tmp_first_elem[1] * map.height()));
+
+        if (count == 2) count = -1;
+    }
+
+    return parser_x_y;
 }
 
 void Scene::initializeGL() {
     initializeOpenGLFunctions();
     glEnable(GL_DEPTH_TEST);
+    LoadShaders();
 
-    program.create();
     program.bind();
-
-    program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/vert.glsl");
-    program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/frag.glsl");
-    if (!program.link()) {
-        QMessageBox::critical(this, "Error", "Shader program error" + program.log());
-    }
-
     vao.create();
     vao.bind();
 
@@ -113,14 +155,69 @@ void Scene::initializeGL() {
     ebo.bind();
     ebo.setUsagePattern(QOpenGLBuffer::StaticDraw);
 
+    InitLight();
+}
+
+void Scene::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
+
+void Scene::paintGL() {
+    glClearColor(background.red() / 255.0f, background.green() / 255.0f,
+                 background.blue() / 255.0f, background.alpha() / 255.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if (!mesh_) return;
+
+    CalculateCamera();
+
+    program.bind();
+    vao.bind();
+
+    SetDisplayType();
+
+    QMatrix4x4 model;
+    program.setUniformValueArray("view", &view, 1);
+    projection.setToIdentity();
+
+    projection_type
+        ? projection.perspective(45.0f, (float)width() / height(), 0.1f, 100.0f)
+        : projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
+
+    view.setToIdentity();
+    view.lookAt(camera_pos_, camera_target_, camera_up_);
+
+    program.setUniformValueArray("projection", &projection, 1);
+
+    model.setToIdentity();
+    model.translate(model_pos);
+    model.rotate(rotation_);
+    model.scale(scale_factor);
+    program.setUniformValueArray("model", &model, 1);
+
+    QMatrix4x4 inversed_transposed_model = model.inverted().transposed();
+    program.setUniformValueArray("it_model", &inversed_transposed_model, 1);
+
+    if (texture) texture->bind();
+
+    DrawModel();
+
+    DrawLight();
+    SaveSettings();
+}
+
+void Scene::LoadShaders() {
+    program.create();
+    program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/vert.glsl");
+    program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/frag.glsl");
+    if (!program.link()) {
+        QMessageBox::critical(this, "Error", "Shader program error" + program.log());
+    }
+
     light.create();
     light.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/light_vert.glsl");
     light.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/light_frag.glsl");
     if (!light.link()) {
         QMessageBox::critical(this, "Error", "Light Shader program error" + light.log());
     }
-
-    InitLight();
 }
 
 void Scene::InitLight() {
@@ -153,84 +250,10 @@ void Scene::InitLight() {
     vbo_light.create();
     vbo_light.bind();
     vbo_light.setUsagePattern(QOpenGLBuffer::StaticDraw);
-    vbo_light.allocate(lamp_vertices, sizeof(GLfloat) * 36 * 3);
+    vbo_light.allocate(lamp_vertices, sizeof(lamp_vertices[0]) * sizeof(lamp_vertices) / sizeof(lamp_vertices[0]));
 
-    light.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, 3 * sizeof(GLfloat));
+    light.setAttributeBuffer("aPos", GL_FLOAT, 0, 3, 3 * sizeof(lamp_vertices[0]));
     light.enableAttributeArray("aPos");
-}
-
-void Scene::resizeGL(int w, int h) { glViewport(0, 0, w, h); }
-
-void Scene::InitModel(const QString& filename) {
-    if (mesh_) {
-        delete mesh_;
-        mesh_ = nullptr;
-    }
-
-    mesh_ = s21::Controller::Instance().ParseMeshFromFile(filename);
-    has_normals = mesh_->normals.size() > 1;
-    has_texture = mesh_->uvs.size() > 1;
-
-    program.bind();
-    vao.bind();
-
-    vbo.bind();
-    vbo.allocate(mesh_->facets.data(), sizeof(mesh_->facets[0]) * mesh_->facets.size());
-
-    ebo.bind();
-    ebo.allocate(mesh_->indices.data(), sizeof(mesh_->indices[0]) * mesh_->indices.size());
-}
-
-void Scene::ResetModel() {
-    mesh_->Reset();
-}
-
-size_t Scene::VertexCount() { return mesh_->vertices.size(); }
-
-size_t Scene::IndexCount() { return mesh_->indices.size(); }
-
-void Scene::paintGL() {
-    glClearColor(background.red() / 255.0f, background.green() / 255.0f,
-                 background.blue() / 255.0f, background.alpha() / 255.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    if (!mesh_) return;
-
-    CalculateCamera();
-
-    program.bind();
-    vao.bind();
-
-    SetDisplayType();
-
-    QMatrix4x4 model;
-    program.setUniformValueArray("view", &view, 1);
-    projection.setToIdentity();
-
-    projection_type
-        ? projection.perspective(45.0f, (float)width() / height(), 0.1f, 100.0f)
-        : projection.ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.1f, 100.0f);
-
-    view.setToIdentity();
-    view.lookAt(camera_pos_, camera_target_, camera_up_);
-
-    program.setUniformValueArray("projection", &projection, 1);
-
-    model.setToIdentity();
-    model.translate(move_object);
-    model.rotate(rotation_);
-    model.scale(scale_factor);
-    program.setUniformValueArray("model", &model, 1);
-
-    QMatrix4x4 inversed_transposed_model = model.inverted().transposed();
-    program.setUniformValueArray("it_model", &inversed_transposed_model, 1);
-
-    if (texture) texture->bind();
-
-    DrawModel();
-
-    DrawLight();
-    SaveSettings_();
 }
 
 void Scene::SetDisplayType() {
@@ -238,7 +261,8 @@ void Scene::SetDisplayType() {
         program.setUniformValue("is_textured", true);
     } else {
         program.setUniformValue("is_textured", false);
-        QVector3D ocol(lines_color.red() / 255.0f, lines_color.green() / 255.0f,
+        QVector3D ocol(lines_color.red() / 255.0f,
+                       lines_color.green() / 255.0f,
                        lines_color.blue() / 255.0f);
         program.setUniformValueArray("objectColor", &ocol, 1);
     }
@@ -265,7 +289,7 @@ void Scene::DrawModel() {
     glDrawElements(GL_TRIANGLES, mesh_->indices.size(), GL_UNSIGNED_INT, nullptr);
     glDisable(GL_LINE_STIPPLE);
 
-    if (!is_none) {
+    if (!no_vertices) {
         if (!circle_square) glEnable(GL_POINT_SMOOTH);
         glPointSize(vertex_size);
         QVector3D v_col(vertices_color.red() / 255.0f,
@@ -311,69 +335,22 @@ void Scene::CalculateCamera() {
                   -cos(x_rot_ * M_PI / 180) * sin(y_rot_ * M_PI / 180));
 }
 
-void Scene::RotateModel(float x, float y, float z) {
-    float diff_x = x - r_x;
-    float diff_y = y - r_y;
-    float diff_z = z - r_z;
-    r_x = x;
-    r_y = y;
-    r_z = z;
-    double angle = QVector3D(diff_y, diff_x, diff_z).length();
-    QVector3D axis = QVector3D(diff_y, diff_x, diff_z);
-    rotation_ = QQuaternion::fromAxisAndAngle(axis, angle) * rotation_;
-}
-
-QList<QLine> Scene::GetLines(QPixmap map) {
-    QList<QLine> parser_x_y;
-    int count = 0;
-    QVector<GLfloat> tmp_first_elem = {0.0, 0.0};
-
-    for (int i = 3; mesh_->facets.size() > i; i += 8, ++count) {
-        if (count == 0) {
-            tmp_first_elem[0] = mesh_->facets[i];
-            tmp_first_elem[1] = mesh_->facets[i + 1];
-        }
-
-        if (count != 2)
-            parser_x_y.push_back(QLine(
-                mesh_->facets[i] * map.width(), mesh_->facets[i + 1] * map.height(),
-                mesh_->facets[i + 8] * map.width(), mesh_->facets[i + 9] * map.height()));
-        else
-            parser_x_y.push_back(QLine(mesh_->facets[i] * map.width(),
-                                       mesh_->facets[i + 1] * map.height(),
-                                       tmp_first_elem[0] * map.width(),
-                                       tmp_first_elem[1] * map.height()));
-
-        if (count == 2) count = -1;
-    }
-
-    return parser_x_y;
-}
-
-void Scene::wheelEvent(QWheelEvent* event) {
-    if (event->angleDelta().y() > 0) {
-        scale_factor *= 1.1f;
-    } else {
-        scale_factor *= 0.9f;
-    }
-    update();
-}
-
 void Scene::mousePressEvent(QMouseEvent* mouse) {
     switch (mouse->button()) {
         case Qt::LeftButton:
-            moving_ = true;
+            is_moving_ = true;
             break;
         default:
-            moving_ = false;
+            is_moving_ = false;
             break;
     }
+
     start_x_ = mouse->pos().x();
     start_y_ = mouse->pos().y();
 }
 
 void Scene::mouseMoveEvent(QMouseEvent* mouse) {
-    if (moving_) {
+    if (is_moving_) {
         float tmpX = mouse->position().x();
         float tmpY = mouse->position().y();
 
@@ -397,24 +374,56 @@ void Scene::mouseMoveEvent(QMouseEvent* mouse) {
     }
     start_x_ = mouse->pos().x();
     start_y_ = mouse->pos().y();
+
     update();
 }
 
-void Scene::keyPressEvent(QKeyEvent* event) {
-    switch (event->key()) {
-        case Qt::Key_R:
-            camera_pos_ = camera_up_ = move_object =
-                QVector3D(0.0f, 0.0f, 0.0f);
-            CalculateCamera();
-            rotation_ = QQuaternion();
-            r_x = 0.0f, r_y = 0.0f, r_z = 0.0f;
-            break;
-        case Qt::Key_O:
-            projection_type = false;
-            break;
-        case Qt::Key_P:
-            projection_type = true;
-            break;
+void Scene::wheelEvent(QWheelEvent* event) {
+    if (event->angleDelta().y() > 0) {
+        scale_factor *= 1.1f;
+    } else {
+        scale_factor *= 0.9f;
     }
+
     update();
+}
+
+void Scene::SaveSettings() {
+    settings->beginGroup("coordinate");
+    settings->setValue("dashed_solid", dashed_solid);
+    settings->setValue("projection", projection_type);
+    settings->setValue("circle_square", circle_square);
+    settings->setValue("no_vertices", no_vertices);
+    settings->endGroup();
+
+    settings->beginGroup("rgb");
+    settings->setValue("background_color", background);
+    settings->setValue("vertices_color", vertices_color);
+    settings->setValue("lines_color", lines_color);
+    settings->endGroup();
+
+    settings->beginGroup("size");
+    settings->setValue("line_width", line_width);
+    settings->setValue("vertex_size", vertex_size);
+    settings->endGroup();
+}
+
+void Scene::LoadSettings() {
+    settings->beginGroup("coordinate");
+    dashed_solid = settings->value("dashed_solid", false).toBool();
+    projection_type = settings->value("projection", true).toBool();
+    circle_square = settings->value("circle_square", false).toBool();
+    no_vertices = settings->value("no_vertices", false).toBool();
+    settings->endGroup();
+
+    settings->beginGroup("rgb");
+    background = settings->value("background_color", QColor(0.0f, 0.0f, 0.0f, 0.0f)).value<QColor>();
+    vertices_color = settings->value("vertices_color", QColor(0.0f, 0.0f, 0.0f)).value<QColor>();
+    lines_color = settings->value("lines_color", QColor(255.0f, 0.0f, 45.0f)).value<QColor>();
+    settings->endGroup();
+
+    settings->beginGroup("size");
+    line_width = settings->value("line_width", 5).toUInt();
+    vertex_size = settings->value("vertex_size", 1).toUInt();
+    settings->endGroup();
 }
