@@ -11,10 +11,8 @@
 #include <QPainter>
 #include <QTimer>
 #include <QVector>
-#include <iostream>
 
-#include "../QGifImage/QGifImage/qgifimage.h"
-#include "../controller/controller.h"
+#include "../core/mesh.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -34,56 +32,54 @@ class Viewer : public QMainWindow {
     void keyPressEvent(QKeyEvent *event) override;
 
    private slots:
-    void on_actionOpen_triggered();
-    void on_actionClose_triggered();
-    void on_actionInfo_triggered();
-    void on_actionOrthographic_Perspective_triggered();
-    void on_actionHide_triggered();
+    void OpenFile();
+    void CloseFile();
+    void FileInfo();
+    void ChangeProjection();
 
-    void on_pushButton_bg_clicked();
-    void on_pushButton_vertex_clicked();
-    void on_pushButton_lines_clicked();
+    void ChangeBackgroundColor();
+    void ChangeVerticesColor();
+    void ChangeLinesColor();
 
-    void on_horizontalSlider_lineWidth_sliderMoved(int position);
-    void on_horizontalSlider_lineWidth_sliderPressed();
-    void on_horizontalSlider_versize_sliderMoved(int position);
-    void on_horizontalSlider_versize_sliderPressed();
-    void on_horizontalSlider_scale_sliderMoved(int position);
-    void on_horizontalSlider_scale_sliderPressed();
+    void LineWidthSliderMoved(int position);
+    void LineWidthSliderPressed();
+    void VertexSizeSliderMoved(int position);
+    void VertexSizeSliderPressed();
+    void ScaleSliderMoved(int position);
+    void ScaleSliderPressed();
 
-    void on_pushButton_line_solid_clicked();
-    void on_pushButton_line_dashed_clicked();
-    void on_pushButton_ver_circle_clicked();
-    void on_pushButton_ver_square_clicked();
-    void on_pushButton_ver_none_clicked();
+    void MakeSolidLines();
+    void MakeDashedLines();
+    void MakeVertexCircle();
+    void MakeVertexSquare();
+    void DisableVertices();
 
-    void on_doubleSpinBox_x_move_valueChanged();
-    void on_doubleSpinBox_y_move_valueChanged();
-    void on_doubleSpinBox_z_move_valueChanged();
+    void MoveObjectInX();
+    void MoveObjectInY();
+    void MoveObjectInZ();
 
-    void on_spinBox_x_rot_valueChanged();
-    void on_spinBox_y_rot_valueChanged();
-    void on_spinBox_z_rot_valueChanged();
+    void RotateObjectInX();
+    void RotateObjectInY();
+    void RotateObjectInZ();
 
-    void on_actionJPEG_triggered();
-    void on_actionBMP_triggered();
-
-    void on_actionGIF_triggered();
+    void SaveJpeg();
+    void SaveBmp();
+    void SaveGif();
 
    private:
-    void SaveImage_(QString format);
-    void Recording_();
-    void SaveGIF_();
+    void SaveImage(QString format);
+    void Recording();
+    void SaveFullGif();
 
     void SetFrameColor();
+    void SetupConnects();
 
     float time_;
-    bool hiden_, is_recording_;
+    bool is_recording_;
+
+    QVector<QImage> gif_images_;
     QString filename_;
-    QImage texture_image_;
-    QString fname_texture_;
     QTimer *record_time_;
-    QVector<QImage> GIF_;
 
     s21::Mesh* mesh_;
 

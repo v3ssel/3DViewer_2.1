@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1128</height>
+    <width>1000</width>
+    <height>700</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Viewer</string>
@@ -17,127 +23,62 @@
    <string notr="true">QMainWindow { background-color: red; }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout_37">
-    <item>
-     <widget class="Scene" name="widget" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1920</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
+   <widget class="Scene" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>15</y>
+      <width>650</width>
+      <height>650</height>
+     </rect>
     </property>
-    <addaction name="actionOpen"/>
-    <addaction name="actionClose"/>
-    <addaction name="actionInfo"/>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
    </widget>
-   <widget class="QMenu" name="menuSettings">
-    <property name="title">
-     <string>Settings</string>
+   <widget class="QWidget" name="dockWidget_main" native="true">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>0</y>
+      <width>350</width>
+      <height>700</height>
+     </rect>
     </property>
-    <addaction name="actionHide"/>
-    <addaction name="actionOrthographic_Perspective"/>
-    <addaction name="actionLight"/>
-   </widget>
-   <widget class="QMenu" name="menuImage">
-    <property name="title">
-     <string>Create</string>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
-    <widget class="QMenu" name="menuImage_2">
-     <property name="title">
-      <string>Image</string>
+    <layout class="QVBoxLayout" name="verticalLayout_20">
+     <property name="spacing">
+      <number>0</number>
      </property>
-     <addaction name="actionJPEG"/>
-     <addaction name="actionBMP"/>
-    </widget>
-    <addaction name="menuImage_2"/>
-    <addaction name="actionGIF"/>
-   </widget>
-   <addaction name="menuFile"/>
-   <addaction name="menuSettings"/>
-   <addaction name="menuImage"/>
-  </widget>
-  <widget class="QDockWidget" name="dockWidget_main">
-   <property name="minimumSize">
-    <size>
-     <width>93</width>
-     <height>115</height>
-    </size>
-   </property>
-   <property name="baseSize">
-    <size>
-     <width>0</width>
-     <height>0</height>
-    </size>
-   </property>
-   <property name="font">
-    <font>
-     <family>Menlo</family>
-     <pointsize>18</pointsize>
-     <italic>false</italic>
-     <bold>true</bold>
-     <strikeout>false</strikeout>
-     <stylestrategy>PreferAntialias</stylestrategy>
-     <kerning>true</kerning>
-    </font>
-   </property>
-   <property name="cursor">
-    <cursorShape>ArrowCursor</cursorShape>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QDockWidget::title {
-     text-align: central;
-     background-color: rgb(63, 63, 63);
- color: dark;
-}
-
-QDockWidget {
-    titlebar-normal-icon: none;
-}
-
-QDockWidget::float-button {
-    icon-size: 0px;
-}</string>
-   </property>
-   <property name="floating">
-    <bool>false</bool>
-   </property>
-   <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
-   </property>
-   <property name="windowTitle">
-    <string>Settings</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_4">
-    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>10</number>
+     </property>
      <item>
       <widget class="QScrollArea" name="scrollArea">
        <property name="styleSheet">
@@ -151,11 +92,26 @@ QDockWidget::float-button {
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>561</width>
-          <height>1048</height>
+          <width>336</width>
+          <height>851</height>
          </rect>
         </property>
-        <layout class="QVBoxLayout" name="verticalLayout_10">
+        <layout class="QVBoxLayout" name="verticalLayout_12">
+         <item>
+          <widget class="QPushButton" name="pushButton_bg">
+           <property name="font">
+            <font>
+             <family>Kannada MN</family>
+            </font>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+           <property name="text">
+            <string>Set Background Color</string>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QPushButton" name="pushButton_lines">
            <property name="minimumSize">
@@ -173,20 +129,15 @@ QDockWidget::float-button {
             <cursorShape>PointingHandCursor</cursorShape>
            </property>
            <property name="styleSheet">
-            <string notr="true">QPushButton{
-	background-color: rgb(103, 104, 105);
-	border: 1px solid; border-radius:5px; border-color: rgb(42, 43, 44);
-}
-
-QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
+            <string notr="true"/>
            </property>
            <property name="text">
-            <string>Set Lines/Object Color</string>
+            <string>Set Lines Color</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_2">
+          <widget class="QGroupBox" name="groupBox_6">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -199,9 +150,15 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
            <property name="title">
             <string/>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <layout class="QVBoxLayout" name="verticalLayout_9">
             <item>
              <widget class="QLineEdit" name="lineEdit_text_lineWidth">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="font">
                <font>
                 <family>Charter</family>
@@ -246,6 +203,12 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
             </item>
             <item>
              <widget class="QSlider" name="horizontalSlider_lineWidth">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimum">
                <number>1</number>
               </property>
@@ -264,7 +227,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
            <item>
             <widget class="QPushButton" name="pushButton_line_solid">
              <property name="font">
@@ -292,7 +255,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
           </layout>
          </item>
          <item>
-          <widget class="Line" name="line_4">
+          <widget class="Line" name="line_5">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -312,12 +275,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">QPushButton{
-	background-color: rgb(103, 104, 105);
-	border: 1px solid; border-radius:5px; border-color: rgb(42, 43, 44);
-}
-
-QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
+            <string notr="true"/>
            </property>
            <property name="text">
             <string>Set Vertex Color</string>
@@ -325,7 +283,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox">
+          <widget class="QGroupBox" name="groupBox_7">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -338,7 +296,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
            <property name="title">
             <string/>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_2">
+           <layout class="QVBoxLayout" name="verticalLayout_13">
             <item>
              <widget class="QLineEdit" name="lineEdit_text_versize">
               <property name="font">
@@ -388,6 +346,12 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
             </item>
             <item>
              <widget class="QSlider" name="horizontalSlider_versize">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="styleSheet">
                <string notr="true"/>
               </property>
@@ -406,7 +370,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <layout class="QHBoxLayout" name="horizontalLayout_10">
            <item>
             <widget class="QPushButton" name="pushButton_ver_none">
              <property name="font">
@@ -446,14 +410,14 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
           </layout>
          </item>
          <item>
-          <widget class="Line" name="line_3">
+          <widget class="Line" name="line_6">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_3">
+          <widget class="QGroupBox" name="groupBox_8">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -466,7 +430,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
            <property name="title">
             <string/>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
+           <layout class="QVBoxLayout" name="verticalLayout_14">
             <item>
              <widget class="QLineEdit" name="lineEdit_text_rotate">
               <property name="font">
@@ -499,16 +463,16 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame_2">
+             <widget class="QFrame" name="frame_3">
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_8">
+              <layout class="QVBoxLayout" name="verticalLayout_15">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <layout class="QHBoxLayout" name="horizontalLayout_11">
                  <item>
                   <widget class="QLineEdit" name="lineEdit_text_x_rot">
                    <property name="font">
@@ -605,7 +569,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
                 </layout>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_7">
+                <layout class="QHBoxLayout" name="horizontalLayout_12">
                  <item>
                   <widget class="QSpinBox" name="spinBox_x_rot">
                    <property name="minimum">
@@ -645,14 +609,14 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
           </widget>
          </item>
          <item>
-          <widget class="Line" name="line_2">
+          <widget class="Line" name="line_7">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_4">
+          <widget class="QGroupBox" name="groupBox_9">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -665,7 +629,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
            <property name="title">
             <string/>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_6">
+           <layout class="QVBoxLayout" name="verticalLayout_16">
             <item>
              <widget class="QLineEdit" name="lineEdit_text_move">
               <property name="font">
@@ -698,16 +662,16 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
              </widget>
             </item>
             <item>
-             <widget class="QFrame" name="frame">
+             <widget class="QFrame" name="frame_4">
               <property name="frameShape">
                <enum>QFrame::StyledPanel</enum>
               </property>
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <layout class="QVBoxLayout" name="verticalLayout_5">
+              <layout class="QVBoxLayout" name="verticalLayout_17">
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <layout class="QHBoxLayout" name="horizontalLayout_13">
                  <item>
                   <widget class="QLineEdit" name="lineEdit_text_x_move">
                    <property name="font">
@@ -804,7 +768,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
                 </layout>
                </item>
                <item>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <layout class="QHBoxLayout" name="horizontalLayout_14">
                  <item>
                   <widget class="QDoubleSpinBox" name="doubleSpinBox_x_move">
                    <property name="decimals">
@@ -862,7 +826,7 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
           </widget>
          </item>
          <item>
-          <widget class="Line" name="line">
+          <widget class="Line" name="line_8">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -900,18 +864,18 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
           </widget>
          </item>
          <item>
-          <widget class="QGroupBox" name="groupBox_5">
+          <widget class="QGroupBox" name="groupBox_10">
            <property name="styleSheet">
             <string notr="true">QGroupBox {border: 0px;}</string>
            </property>
            <property name="title">
             <string/>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_7">
+           <layout class="QVBoxLayout" name="verticalLayout_18">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <layout class="QHBoxLayout" name="horizontalLayout_15">
               <item>
-               <layout class="QVBoxLayout" name="verticalLayout_11">
+               <layout class="QVBoxLayout" name="verticalLayout_19">
                 <item>
                  <widget class="QLCDNumber" name="lcdNumber_scale">
                   <property name="minimumSize">
@@ -966,18 +930,6 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
            </layout>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_bg">
-           <property name="font">
-            <font>
-             <family>Kannada MN</family>
-            </font>
-           </property>
-           <property name="text">
-            <string>Set Background Color</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </widget>
       </widget>
@@ -985,708 +937,46 @@ QPushButton:hover { background-color: rgb(84, 85, 86); }</string>
     </layout>
    </widget>
   </widget>
-  <widget class="QDockWidget" name="dockWidget_3">
-   <property name="minimumSize">
-    <size>
-     <width>93</width>
-     <height>115</height>
-    </size>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1000</width>
+     <height>21</height>
+    </rect>
    </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QDockWidget::title {
-     text-align: central;
-     background-color: rgb(63, 63, 63);
- color: dark;
-}
-
-QDockWidget {
-    titlebar-normal-icon: none;
-}
-
-QDockWidget::float-button {
-    icon-size: 0px;
-}</string>
-   </property>
-   <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::BottomDockWidgetArea|Qt::TopDockWidgetArea</set>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>8</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents_10">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QScrollArea" name="scrollArea_3">
-       <property name="styleSheet">
-        <string notr="true">QScrollArea {border: 0px;}</string>
-       </property>
-       <property name="widgetResizable">
-        <bool>true</bool>
-       </property>
-       <widget class="QWidget" name="scrollAreaWidgetContents_3">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>1896</width>
-          <height>238</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_32">
-         <item>
-          <widget class="QGroupBox" name="groupBox_17">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">QGroupBox {border: 0px;}</string>
-           </property>
-           <property name="title">
-            <string/>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_39">
-            <item>
-             <widget class="QLineEdit" name="lineEdit_text_move_12">
-              <property name="font">
-               <font>
-                <family>Charter</family>
-                <pointsize>22</pointsize>
-               </font>
-              </property>
-              <property name="cursor">
-               <cursorShape>ArrowCursor</cursorShape>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-              </property>
-              <property name="text">
-               <string>Lighting</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignCenter</set>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-              <property name="cursorMoveStyle">
-               <enum>Qt::VisualMoveStyle</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="Line" name="line_13">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QGridLayout" name="gridLayout_4">
-              <item row="1" column="0">
-               <widget class="QFrame" name="frame_17">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_40">
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_33">
-                   <item>
-                    <widget class="QLineEdit" name="lineEdit_text_x_move_9">
-                     <property name="font">
-                      <font>
-                       <family>Charter</family>
-                       <pointsize>22</pointsize>
-                      </font>
-                     </property>
-                     <property name="cursor">
-                      <cursorShape>ArrowCursor</cursorShape>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-                     </property>
-                     <property name="text">
-                      <string>X</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                     <property name="readOnly">
-                      <bool>true</bool>
-                     </property>
-                     <property name="cursorMoveStyle">
-                      <enum>Qt::VisualMoveStyle</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="lineEdit_text_y_move_9">
-                     <property name="font">
-                      <font>
-                       <family>Charter</family>
-                       <pointsize>22</pointsize>
-                      </font>
-                     </property>
-                     <property name="cursor">
-                      <cursorShape>ArrowCursor</cursorShape>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-                     </property>
-                     <property name="text">
-                      <string>Y</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                     <property name="readOnly">
-                      <bool>true</bool>
-                     </property>
-                     <property name="cursorMoveStyle">
-                      <enum>Qt::VisualMoveStyle</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="lineEdit_text_z_move_9">
-                     <property name="font">
-                      <font>
-                       <family>Charter</family>
-                       <pointsize>22</pointsize>
-                      </font>
-                     </property>
-                     <property name="cursor">
-                      <cursorShape>ArrowCursor</cursorShape>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-                     </property>
-                     <property name="text">
-                      <string>Z</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                     <property name="readOnly">
-                      <bool>true</bool>
-                     </property>
-                     <property name="cursorMoveStyle">
-                      <enum>Qt::VisualMoveStyle</enum>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_34">
-                   <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_x_light_pos">
-                     <property name="decimals">
-                      <number>2</number>
-                     </property>
-                     <property name="minimum">
-                      <double>-1500.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>1500.000000000000000</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>0.100000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>1.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_y_light_pos">
-                     <property name="decimals">
-                      <number>2</number>
-                     </property>
-                     <property name="minimum">
-                      <double>-1500.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>1500.000000000000000</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>0.100000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>1.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_z_light_pos">
-                     <property name="decimals">
-                      <number>2</number>
-                     </property>
-                     <property name="minimum">
-                      <double>-1500.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>1500.000000000000000</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>0.100000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>1.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLineEdit" name="lineEdit_text_move_13">
-                <property name="font">
-                 <font>
-                  <family>Charter</family>
-                  <pointsize>22</pointsize>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>ArrowCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-                </property>
-                <property name="text">
-                 <string>Position</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="cursorMoveStyle">
-                 <enum>Qt::VisualMoveStyle</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="lineEdit_text_move_14">
-                <property name="font">
-                 <font>
-                  <family>Charter</family>
-                  <pointsize>22</pointsize>
-                 </font>
-                </property>
-                <property name="cursor">
-                 <cursorShape>ArrowCursor</cursorShape>
-                </property>
-                <property name="styleSheet">
-                 <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-                </property>
-                <property name="text">
-                 <string> Intensity</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-                <property name="cursorMoveStyle">
-                 <enum>Qt::VisualMoveStyle</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QFrame" name="frame_18">
-                <property name="frameShape">
-                 <enum>QFrame::StyledPanel</enum>
-                </property>
-                <property name="frameShadow">
-                 <enum>QFrame::Raised</enum>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout_41">
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_35">
-                   <item>
-                    <widget class="QLineEdit" name="lineEdit_text_x_move_2">
-                     <property name="font">
-                      <font>
-                       <family>Charter</family>
-                       <pointsize>22</pointsize>
-                      </font>
-                     </property>
-                     <property name="cursor">
-                      <cursorShape>ArrowCursor</cursorShape>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-                     </property>
-                     <property name="text">
-                      <string>R</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                     <property name="readOnly">
-                      <bool>true</bool>
-                     </property>
-                     <property name="cursorMoveStyle">
-                      <enum>Qt::VisualMoveStyle</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="lineEdit_text_y_move_2">
-                     <property name="font">
-                      <font>
-                       <family>Charter</family>
-                       <pointsize>22</pointsize>
-                      </font>
-                     </property>
-                     <property name="cursor">
-                      <cursorShape>ArrowCursor</cursorShape>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-                     </property>
-                     <property name="text">
-                      <string>G</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                     <property name="readOnly">
-                      <bool>true</bool>
-                     </property>
-                     <property name="cursorMoveStyle">
-                      <enum>Qt::VisualMoveStyle</enum>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QLineEdit" name="lineEdit_text_z_move_2">
-                     <property name="font">
-                      <font>
-                       <family>Charter</family>
-                       <pointsize>22</pointsize>
-                      </font>
-                     </property>
-                     <property name="cursor">
-                      <cursorShape>ArrowCursor</cursorShape>
-                     </property>
-                     <property name="styleSheet">
-                      <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-                     </property>
-                     <property name="text">
-                      <string>B</string>
-                     </property>
-                     <property name="alignment">
-                      <set>Qt::AlignCenter</set>
-                     </property>
-                     <property name="readOnly">
-                      <bool>true</bool>
-                     </property>
-                     <property name="cursorMoveStyle">
-                      <enum>Qt::VisualMoveStyle</enum>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_36">
-                   <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_r_light_intens">
-                     <property name="decimals">
-                      <number>2</number>
-                     </property>
-                     <property name="minimum">
-                      <double>0.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>1.000000000000000</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>0.010000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>1.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_g_light_intens">
-                     <property name="decimals">
-                      <number>2</number>
-                     </property>
-                     <property name="minimum">
-                      <double>0.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>1.000000000000000</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>0.010000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>1.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QDoubleSpinBox" name="doubleSpinBox_b_light_intens">
-                     <property name="decimals">
-                      <number>2</number>
-                     </property>
-                     <property name="minimum">
-                      <double>0.000000000000000</double>
-                     </property>
-                     <property name="maximum">
-                      <double>1.000000000000000</double>
-                     </property>
-                     <property name="singleStep">
-                      <double>0.010000000000000</double>
-                     </property>
-                     <property name="value">
-                      <double>1.000000000000000</double>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="Line" name="line_11">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_12">
-           <item row="1" column="0">
-            <widget class="QFrame" name="frame_19">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_42">
-              <item>
-               <widget class="QPushButton" name="pushButton_flat_shading">
-                <property name="font">
-                 <font>
-                  <family>Charter</family>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Flat Shading</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_smooth_shading">
-                <property name="font">
-                 <font>
-                  <family>Charter</family>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Smooth Shading</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_wireframe">
-                <property name="font">
-                 <font>
-                  <family>Charter</family>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Wireframe Model</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLineEdit" name="lineEdit_text_rotate_9">
-             <property name="font">
-              <font>
-               <family>Charter</family>
-               <pointsize>22</pointsize>
-              </font>
-             </property>
-             <property name="cursor">
-              <cursorShape>ArrowCursor</cursorShape>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-             </property>
-             <property name="text">
-              <string>Display Type</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="cursorMoveStyle">
-              <enum>Qt::VisualMoveStyle</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="Line" name="line_12">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QGridLayout" name="gridLayout_13">
-           <item row="1" column="0">
-            <widget class="QFrame" name="frame_21">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_45">
-              <item>
-               <widget class="QPushButton" name="pushButton_apply_texture">
-                <property name="font">
-                 <font>
-                  <family>Charter</family>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Apply Texture</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_unload_texture">
-                <property name="font">
-                 <font>
-                  <family>Charter</family>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Unload texture</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_save_uvmap">
-                <property name="font">
-                 <font>
-                  <family>Charter</family>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Save UV-map</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLineEdit" name="lineEdit_text_rotate_10">
-             <property name="font">
-              <font>
-               <family>Charter</family>
-               <pointsize>22</pointsize>
-              </font>
-             </property>
-             <property name="cursor">
-              <cursorShape>ArrowCursor</cursorShape>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QLineEdit{
-	border: 0px solid;
-	background-color: rgba(0, 0, 0, 0);
-}</string>
-             </property>
-             <property name="text">
-              <string>Texture</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="cursorMoveStyle">
-              <enum>Qt::VisualMoveStyle</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-     </item>
-    </layout>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen"/>
+    <addaction name="actionClose"/>
+    <addaction name="actionInfo"/>
    </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="actionProjection"/>
+   </widget>
+   <widget class="QMenu" name="menuImage">
+    <property name="title">
+     <string>Create</string>
+    </property>
+    <widget class="QMenu" name="menuImage_2">
+     <property name="title">
+      <string>Image</string>
+     </property>
+     <addaction name="actionJPEG"/>
+     <addaction name="actionBMP"/>
+    </widget>
+    <addaction name="menuImage_2"/>
+    <addaction name="actionGIF"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuSettings"/>
+   <addaction name="menuImage"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -1707,14 +997,6 @@ QDockWidget::float-button {
     <string>Ctrl+2</string>
    </property>
   </action>
-  <action name="actionHide">
-   <property name="text">
-    <string>Hide/Show</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+3</string>
-   </property>
-  </action>
   <action name="actionInfo">
    <property name="text">
     <string>Info</string>
@@ -1723,7 +1005,7 @@ QDockWidget::float-button {
     <string>I</string>
    </property>
   </action>
-  <action name="actionOrthographic_Perspective">
+  <action name="actionProjection">
    <property name="text">
     <string>Orthographic/Perspective</string>
    </property>
@@ -1746,25 +1028,12 @@ QDockWidget::float-button {
     <string>BMP</string>
    </property>
   </action>
-  <action name="actionLight">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Light</string>
-   </property>
-   <property name="shortcut">
-    <string>L</string>
-   </property>
-  </action>
-  <zorder>dockWidget_main</zorder>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>scene</class>
+   <class>Scene</class>
    <extends>QWidget</extends>
    <header>scene.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

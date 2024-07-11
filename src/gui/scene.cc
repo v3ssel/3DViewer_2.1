@@ -52,6 +52,7 @@ void Scene::MoveModel(float x, float y, float z) {
     model_pos.setX(x);
     model_pos.setY(y);
     model_pos.setZ(z);
+    update();
 }
 
 void Scene::RotateModel(float x, float y, float z) {
@@ -64,6 +65,7 @@ void Scene::RotateModel(float x, float y, float z) {
 
     QVector3D axis = QVector3D(diff_y, diff_x, diff_z);
     rotation = QQuaternion::fromAxisAndAngle(axis, axis.length()) * rotation;
+    update();
 }
 
 void Scene::ScaleModel(float scale) {
@@ -79,11 +81,12 @@ void Scene::ResetScene() {
 
 void Scene::ChangeProjectionType() {
     projection_type = !projection_type;
+    update();
 }
 
-size_t Scene::VertexCount() { return mesh_->vertices.size(); }
+size_t Scene::VertexCount() { return mesh_ ? mesh_->vertices.size() : 0; }
 
-size_t Scene::IndexCount() { return mesh_->indices.size(); }
+size_t Scene::IndexCount() { return mesh_ ? mesh_->indices.size() : 0; }
 
 void Scene::initializeGL() {
     initializeOpenGLFunctions();
