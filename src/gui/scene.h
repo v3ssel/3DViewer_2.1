@@ -34,9 +34,6 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
 
     void keyPressEvent(QKeyEvent *) override;
 
-    QList<QLine> GetLines(QPixmap map);
-
-    QVector3D light_pos, light_color;
     QVector3D model_pos, prev_rotation;
     QColor background, vertices_color, lines_color;
 
@@ -44,8 +41,7 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     float scale_factor;
 
     bool circle_square, dashed_solid, no_vertices;
-    bool projection_type, wireframe, flat_shading;
-    bool has_texture, has_normals, is_light_enabled;
+    bool projection_type;
 
     QSettings *settings;
 
@@ -58,18 +54,14 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     void mouseMoveEvent(QMouseEvent *) override;
     void wheelEvent(QWheelEvent *) override;
 
-    QOpenGLShaderProgram program, light;
-    QOpenGLVertexArrayObject vao, vao_light;
-    QOpenGLBuffer vbo, ebo, vbo_light;
-    QOpenGLTexture *texture;
+    QOpenGLShaderProgram program;
+    QOpenGLVertexArrayObject vao;
+    QOpenGLBuffer vbo, ebo;
     QMatrix4x4 view, projection;
 
    private:
     void LoadShaders();
-    void InitLight();
-    void SetDisplayType();
     void DrawModel();
-    void DrawLight();
 
     void CalculateCamera();
 

@@ -39,7 +39,6 @@ class Viewer : public QMainWindow {
     void on_actionInfo_triggered();
     void on_actionOrthographic_Perspective_triggered();
     void on_actionHide_triggered();
-    void on_actionLight_triggered();
 
     void on_pushButton_bg_clicked();
     void on_pushButton_vertex_clicked();
@@ -57,7 +56,6 @@ class Viewer : public QMainWindow {
     void on_pushButton_ver_circle_clicked();
     void on_pushButton_ver_square_clicked();
     void on_pushButton_ver_none_clicked();
-    void on_pushButton_wireframe_clicked();
 
     void on_doubleSpinBox_x_move_valueChanged();
     void on_doubleSpinBox_y_move_valueChanged();
@@ -72,27 +70,12 @@ class Viewer : public QMainWindow {
 
     void on_actionGIF_triggered();
 
-    void on_pushButton_apply_texture_clicked();
-    void on_pushButton_unload_texture_clicked();
-    void on_pushButton_save_uvmap_clicked();
-
-    void on_pushButton_flat_shading_clicked();
-    void on_pushButton_smooth_shading_clicked();
-
-    void on_doubleSpinBox_x_light_pos_valueChanged(double arg1);
-    void on_doubleSpinBox_y_light_pos_valueChanged(double arg1);
-    void on_doubleSpinBox_z_light_pos_valueChanged(double arg1);
-
-    void on_doubleSpinBox_r_light_intens_valueChanged(double arg1);
-    void on_doubleSpinBox_g_light_intens_valueChanged(double arg1);
-    void on_doubleSpinBox_b_light_intens_valueChanged(double arg1);
-
    private:
     void SaveImage_(QString format);
     void Recording_();
     void SaveGIF_();
 
-    void SetFrameColor_();
+    void SetFrameColor();
 
     float time_;
     bool hiden_, is_recording_;

@@ -15,7 +15,7 @@ Viewer::Viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::Viewer) {
     ui->pushButton_unload_texture->setDisabled(true);
     ui->pushButton_save_uvmap->setDisabled(true);
 
-    SetFrameColor_();
+    SetFrameColor();
 
     hiden_ = false, is_recording_ = false;
     time_ = 0.0;
@@ -24,7 +24,6 @@ Viewer::Viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::Viewer) {
 }
 
 Viewer::~Viewer() {
-    on_pushButton_unload_texture_clicked();
     delete ui;
 }
 
@@ -34,29 +33,12 @@ void Viewer::on_actionOpen_triggered() {
     if (filename != "") {
         filename_ = filename;
         ui->widget->InitModel(filename);
-
-        on_pushButton_unload_texture_clicked();
-        if (ui->widget->has_normals)
-            ui->actionLight->setDisabled(false);
-        else
-            ui->actionLight->setDisabled(true), ui->actionLight->setChecked(false);
-
-        if (ui->widget->has_texture && !ui->widget->wireframe)
-            ui->pushButton_apply_texture->setDisabled(false);
-        else
-            ui->pushButton_apply_texture->setDisabled(true);
-
         ui->widget->update();
     }
 }
 
 void Viewer::on_actionClose_triggered() {
     ui->widget->ResetModel();
-
-    on_pushButton_unload_texture_clicked();
-    ui->pushButton_apply_texture->setDisabled(true);
-    ui->widget->has_texture = false;
-    ui->widget->has_normals = false;
     ui->widget->update();
     filename_ = "";
 }
@@ -77,16 +59,19 @@ void Viewer::on_actionInfo_triggered() {
 void Viewer::keyPressEvent(QKeyEvent *event) {
     switch (event->key()) {
         case Qt::Key_R:
-            ui->spinBox_x_rot->setValue(0), ui->spinBox_y_rot->setValue(0),
-                ui->spinBox_z_rot->setValue(0);
+            ui->spinBox_x_rot->setValue(0),
+            ui->spinBox_y_rot->setValue(0),
+            ui->spinBox_z_rot->setValue(0);
+            
             ui->doubleSpinBox_x_move->setValue(0.0f),
-                ui->doubleSpinBox_y_move->setValue(0.0f),
-                ui->doubleSpinBox_z_move->setValue(0.0f);
+            ui->doubleSpinBox_y_move->setValue(0.0f),
+            ui->doubleSpinBox_z_move->setValue(0.0f);
     }
+
     ui->widget->keyPressEvent(event);
 }
 
-void Viewer::SetFrameColor_() {
+void Viewer::SetFrameColor() {
     this->setStyleSheet("QMainWindow{ background-color: rgb(" +
                         QString::number(ui->widget->background.red()) + ", " +
                         QString::number(ui->widget->background.green()) + ", " +
@@ -95,7 +80,7 @@ void Viewer::SetFrameColor_() {
 
 void Viewer::on_pushButton_bg_clicked() {
     ui->widget->background = QColorDialog::getColor();
-    SetFrameColor_();
+    SetFrameColor();
 }
 
 void Viewer::on_pushButton_vertex_clicked() {
@@ -223,14 +208,6 @@ void Viewer::on_actionHide_triggered() {
     }
 }
 
-void Viewer::on_actionLight_triggered() {
-    if (ui->actionLight->isChecked())
-        ui->widget->is_light_enabled = true;
-    else
-        ui->widget->is_light_enabled = false;
-    ui->widget->update();
-}
-
 void Viewer::SaveImage_(QString format) {
     QString str = QFileDialog::getSaveFileName(this, "Save file as",
                                                QDir::homePath(), format);
@@ -279,97 +256,5 @@ void Viewer::SaveGIF_() {
     time_ = 0.0;
     is_recording_ = false;
 
-    SetFrameColor_();
-}
-
-void Viewer::on_pushButton_wireframe_clicked() {
-    if (!ui->widget->wireframe) ui->widget->wireframe = true;
-    ui->pushButton_apply_texture->setDisabled(true);
-    on_pushButton_unload_texture_clicked();
-    ui->widget->update();
-}
-
-void Viewer::on_pushButton_flat_shading_clicked() {
-    if (ui->widget->wireframe) ui->widget->wireframe = false;
-    if (ui->widget->has_texture)
-        ui->pushButton_apply_texture->setDisabled(false);
-    ui->widget->flat_shading = true;
-    ui->widget->update();
-}
-
-void Viewer::on_pushButton_smooth_shading_clicked() {
-    if (ui->widget->wireframe) ui->widget->wireframe = false;
-    if (ui->widget->has_texture)
-        ui->pushButton_apply_texture->setDisabled(false);
-    ui->widget->flat_shading = false;
-    ui->widget->update();
-}
-
-void Viewer::on_pushButton_apply_texture_clicked() {
-    ui->widget->wireframe = false;
-    fname_texture_ = QFileDialog::getOpenFileName(
-        this, "Choose File", QDir::homePath(), tr("BMP (*.bmp)"));
-
-    if (fname_texture_ != "") {
-        texture_image_ = QImage(fname_texture_);
-        // if (!ui->widget->texture) delete ui->widget->texture;
-        // ui->widget->texture = new QOpenGLTexture(texture_image_);
-        // ui->widget->texture->setMinificationFilter(QOpenGLTexture::Nearest);
-        // ui->widget->texture->setMagnificationFilter(QOpenGLTexture::Linear);
-        // ui->widget->texture->setWrapMode(QOpenGLTexture::Repeat);
-        ui->pushButton_unload_texture->setDisabled(false);
-        ui->pushButton_save_uvmap->setDisabled(false);
-    }
-    ui->widget->update();
-}
-
-void Viewer::on_pushButton_unload_texture_clicked() {
-    // if (ui->widget->texture) delete ui->widget->texture;
-    // ui->widget->texture = nullptr;
-    ui->pushButton_unload_texture->setDisabled(true);
-    ui->pushButton_save_uvmap->setDisabled(true);
-    ui->widget->update();
-}
-
-void Viewer::on_doubleSpinBox_x_light_pos_valueChanged(double arg1) {
-    ui->widget->light_pos[0] = arg1;
-    ui->widget->update();
-}
-
-void Viewer::on_doubleSpinBox_y_light_pos_valueChanged(double arg1) {
-    ui->widget->light_pos[1] = arg1;
-    ui->widget->update();
-}
-
-void Viewer::on_doubleSpinBox_z_light_pos_valueChanged(double arg1) {
-    ui->widget->light_pos[2] = arg1;
-    ui->widget->update();
-}
-
-void Viewer::on_pushButton_save_uvmap_clicked() {
-    QPixmap map(fname_texture_);
-    QPainter painter(&map);
-
-    QList<QLine> parser_x_y = ui->widget->GetLines(map);
-    painter.setPen(QColorDialog::getColor());
-    painter.drawLines(parser_x_y);
-
-    QString str = QFileDialog::getSaveFileName(
-        this, tr("Save GIF"), QDir::homePath(), tr("BMP (*.bmp)"));
-    map.save(str);
-}
-
-void Viewer::on_doubleSpinBox_r_light_intens_valueChanged(double arg1) {
-    ui->widget->light_color[0] = arg1;
-    ui->widget->update();
-}
-
-void Viewer::on_doubleSpinBox_g_light_intens_valueChanged(double arg1) {
-    ui->widget->light_color[1] = arg1;
-    ui->widget->update();
-}
-
-void Viewer::on_doubleSpinBox_b_light_intens_valueChanged(double arg1) {
-    ui->widget->light_color[2] = arg1;
-    ui->widget->update();
+    SetFrameColor();
 }

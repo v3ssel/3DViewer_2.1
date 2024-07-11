@@ -106,48 +106,4 @@ void MeshParser::AddFacet(Mesh* mesh, const QString &str) {
     mesh->facets.emplace_back(mesh->normals[indices[2]].y());
     mesh->facets.emplace_back(mesh->normals[indices[2]].z());
 }
-
-// void MeshParser::CheckFlags(QString path_to_file) {
-    // QFile file(path_to_file);
-
-    // if (file.open(QFile::ReadOnly)) {
-    //     throw std::invalid_argument(std::string("File  not found.").insert(4, path_to_file.toStdString()));
-    // }
-
-    // QString str;
-    // while (!file.atEnd()) {
-    //     str = file.readLine();
-    //     str = str.simplified();
-
-    //     if (str.isEmpty()) {
-    //         continue;
-    //     }
-
-    //     if (str.at(0) == 'v') {
-    //         if (str.at(1) == 'n') {
-    //             vn_used = true;
-    //         } else if (str[1] == 't') {
-    //             vt_used = true;
-    //         }
-    //     }
-
-    //     if (str[0] == 'f') {
-    //         int flag_slash = 0;
-    //         for (int i = 2; str[i] != ' '; ++i) {
-    //             if (str[i] == '/') flag_slash += 1;
-    //         }
-
-    //         if (str.contains("//")) {
-    //             vt_used = false;
-    //             break;
-    //         }
-            
-    //         if (flag_slash == 1) {
-    //             vn_used = false;
-    //             break;
-    //         }
-    //     }
-    // }
-// }
-
 }  // namespace s21
