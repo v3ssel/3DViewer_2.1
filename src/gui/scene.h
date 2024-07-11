@@ -12,11 +12,10 @@
 #include <QOpenGLShader>
 #include <QOpenGLTexture>
 #include <QOpenGLVertexArrayObject>
-#include <QSettings>
 #include <QTimer>
 #include <QWidget>
 
-#include "../controller/controller.h"
+#include "../core/mesh.h"
 
 class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
@@ -34,6 +33,7 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
 
     virtual void ResetScene();
     virtual void ChangeProjectionType();
+    bool projection_type;
 
     size_t VertexCount();
     size_t IndexCount();
@@ -56,8 +56,6 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     QOpenGLBuffer vbo, ebo;
     QMatrix4x4 view, projection;
 
-    bool projection_type;
-
     QVector3D model_pos;
     QQuaternion rotation;
     float scale_factor;
@@ -68,16 +66,12 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
 
     void SetCamera();
 
-    void SaveSettings();
-    void LoadSettings();
-
     float x_rot_, y_rot_, start_y_, start_x_;
     bool is_moving_;
 
 
     QVector3D prev_rotation_;
     QVector3D camera_target_, camera_pos_, camera_up_;
-    QSettings *settings_;
 
     s21::Mesh* mesh_;
 };

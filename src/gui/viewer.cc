@@ -1,3 +1,7 @@
+#include <QColorDialog>
+#include <QFileDialog>
+#include <QMessageBox>
+
 #include "viewer.h"
 #include "ui_viewer.h"
 
@@ -8,6 +12,10 @@ Viewer::Viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::Viewer) {
     ui->setupUi(this);
     this->setWindowTitle("3DViewer 2.0");
     this->setFixedSize(width(), height());
+
+    settings_ = new QSettings(QDir::homePath() + "/3DViewerConfig/settings.conf",
+                             QSettings::IniFormat);
+    LoadSettings();
     SetFrameColor();
 
     ui->horizontalSlider_lineWidth->setValue(ui->widget->line_width);
@@ -24,8 +32,10 @@ Viewer::Viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::Viewer) {
 }
 
 Viewer::~Viewer() {
+    SaveSettings();
     if (mesh_) delete mesh_;
 
+    delete settings_;
     delete record_time_;
     delete ui;
 }
@@ -258,6 +268,46 @@ void Viewer::SaveFullGif() {
     is_recording_ = false;
 
     SetFrameColor();
+}
+
+void Viewer::SaveSettings() {
+    settings_->beginGroup("coordinate");
+    settings_->setValue("dashed_line", ui->widget->dashed_line);
+    settings_->setValue("projection", ui->widget->projection_type);
+    settings_->setValue("circle_vertex", ui->widget->circle_vertex);
+    settings_->setValue("no_vertices", ui->widget->no_vertices);
+    settings_->endGroup();
+
+    settings_->beginGroup("rgb");
+    settings_->setValue("background_color", ui->widget->background);
+    settings_->setValue("vertices_color", ui->widget->vertices_color);
+    settings_->setValue("lines_color", ui->widget->lines_color);
+    settings_->endGroup();
+
+    settings_->beginGroup("size");
+    settings_->setValue("line_width", ui->widget->line_width);
+    settings_->setValue("vertex_size", ui->widget->vertex_size);
+    settings_->endGroup();
+}
+
+void Viewer::LoadSettings() {
+    settings_->beginGroup("coordinate");
+    ui->widget->dashed_line = settings_->value("dashed_line", false).toBool();
+    ui->widget->projection_type = settings_->value("projection", true).toBool();
+    ui->widget->circle_vertex = settings_->value("circle_vertex", false).toBool();
+    ui->widget->no_vertices = settings_->value("no_vertices", false).toBool();
+    settings_->endGroup();
+
+    settings_->beginGroup("rgb");
+    ui->widget->background = settings_->value("background_color", QColor(0.0f, 0.0f, 0.0f, 0.0f)).value<QColor>();
+    ui->widget->vertices_color = settings_->value("vertices_color", QColor(0.0f, 0.0f, 0.0f)).value<QColor>();
+    ui->widget->lines_color = settings_->value("lines_color", QColor(255.0f, 0.0f, 45.0f)).value<QColor>();
+    settings_->endGroup();
+
+    settings_->beginGroup("size");
+    ui->widget->line_width = settings_->value("line_width", 5).toUInt();
+    ui->widget->vertex_size = settings_->value("vertex_size", 1).toUInt();
+    settings_->endGroup();
 }
 
 void Viewer::SetFrameColor() {

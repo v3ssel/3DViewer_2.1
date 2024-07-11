@@ -1,11 +1,8 @@
+#include <QMessageBox>
+
 #include "scene.h"
 
-#include "viewer.h"
-
 Scene::Scene(QWidget* parent) : QOpenGLWidget(parent) {
-    settings_ = new QSettings(QDir::homePath() + "/3DViewerConfig/settings.conf",
-                             QSettings::IniFormat);
-
     model_pos = camera_target_ = QVector3D(0.0f, 0.0f, 0.0f);
 
     is_moving_ = false;
@@ -16,19 +13,14 @@ Scene::Scene(QWidget* parent) : QOpenGLWidget(parent) {
     x_rot_ = 1.0f, y_rot_ = 1.0f;
     prev_rotation_ = QVector3D(0.0f, 0.0f, 0.0f);
 
-    ResetModel();
-    LoadSettings();
+    mesh_ = nullptr;
 }
 
 Scene::~Scene() {
-    SaveSettings();
-
     program.bind();
     vao.destroy();
     vbo.destroy();
     ebo.destroy();
-    
-    delete settings_;
 }
 
 void Scene::InitModel(s21::Mesh* mesh) {
@@ -250,44 +242,4 @@ void Scene::wheelEvent(QWheelEvent* event) {
     }
 
     update();
-}
-
-void Scene::SaveSettings() {
-    settings_->beginGroup("coordinate");
-    settings_->setValue("dashed_line", dashed_line);
-    settings_->setValue("projection", projection_type);
-    settings_->setValue("circle_vertex", circle_vertex);
-    settings_->setValue("no_vertices", no_vertices);
-    settings_->endGroup();
-
-    settings_->beginGroup("rgb");
-    settings_->setValue("background_color", background);
-    settings_->setValue("vertices_color", vertices_color);
-    settings_->setValue("lines_color", lines_color);
-    settings_->endGroup();
-
-    settings_->beginGroup("size");
-    settings_->setValue("line_width", line_width);
-    settings_->setValue("vertex_size", vertex_size);
-    settings_->endGroup();
-}
-
-void Scene::LoadSettings() {
-    settings_->beginGroup("coordinate");
-    dashed_line = settings_->value("dashed_line", false).toBool();
-    projection_type = settings_->value("projection", true).toBool();
-    circle_vertex = settings_->value("circle_vertex", false).toBool();
-    no_vertices = settings_->value("no_vertices", false).toBool();
-    settings_->endGroup();
-
-    settings_->beginGroup("rgb");
-    background = settings_->value("background_color", QColor(0.0f, 0.0f, 0.0f, 0.0f)).value<QColor>();
-    vertices_color = settings_->value("vertices_color", QColor(0.0f, 0.0f, 0.0f)).value<QColor>();
-    lines_color = settings_->value("lines_color", QColor(255.0f, 0.0f, 45.0f)).value<QColor>();
-    settings_->endGroup();
-
-    settings_->beginGroup("size");
-    line_width = settings_->value("line_width", 5).toUInt();
-    vertex_size = settings_->value("vertex_size", 1).toUInt();
-    settings_->endGroup();
 }

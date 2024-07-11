@@ -1,16 +1,12 @@
 #ifndef VIEWER_H
 #define VIEWER_H
 
-#include <QColorDialog>
-#include <QFileDialog>
+#include <QMainWindow>
 #include <QImage>
 #include <QKeyEvent>
-#include <QMainWindow>
-#include <QMessageBox>
-#include <QOpenGLTexture>
-#include <QPainter>
 #include <QTimer>
 #include <QVector>
+#include <QSettings>
 
 #include "../core/mesh.h"
 
@@ -71,6 +67,9 @@ class Viewer : public QMainWindow {
     void Recording();
     void SaveFullGif();
 
+    void SaveSettings();
+    void LoadSettings();
+
     void SetFrameColor();
     void SetupConnects();
 
@@ -80,6 +79,7 @@ class Viewer : public QMainWindow {
     QVector<QImage> gif_images_;
     QString filename_;
     QTimer *record_time_;
+    QSettings *settings_;
 
     s21::Mesh* mesh_;
 
