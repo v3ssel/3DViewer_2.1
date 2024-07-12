@@ -25,6 +25,8 @@ Scene::~Scene() {
 }
 
 void Scene::InitModel(Mesh* mesh) {
+    if (!mesh) return;
+    
     mesh_ = mesh;
 
     program.bind();
