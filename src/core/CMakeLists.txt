@@ -5,13 +5,14 @@ find_package(OpenGL REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets OpenGL OpenGLWidgets)
 add_definitions(-DQT_BUILD_GIFIMAGE_LIB)
 
-add_library(${PROJECT_NAME} SHARED
+add_library(${PROJECT_NAME} STATIC
     scene.h
     scene.cc
 
     scene_builder.h
     scene_builder.cc
 
+    mesh.h
     mesh_parser.h
     mesh_parser.cc
 )

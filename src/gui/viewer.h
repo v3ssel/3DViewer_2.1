@@ -23,7 +23,7 @@ class Viewer : public QMainWindow {
 
    public:
     Viewer(QWidget *parent = nullptr);
-    ~Viewer();
+    virtual ~Viewer();
 
    protected:
     void keyPressEvent(QKeyEvent *event) override;

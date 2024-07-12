@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(OpenGL REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Core)
 
 set(PROJECT_SOURCES
     main.cc
@@ -37,7 +37,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
     Qt6::Widgets
     Qt6::Core
-    Qt6::Gui
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

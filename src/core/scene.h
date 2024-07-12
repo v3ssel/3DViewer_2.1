@@ -19,11 +19,9 @@
 
 namespace s21 {
 class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
-    Q_OBJECT
-
    public:
     Scene(QWidget *parent = nullptr);
-    ~Scene();
+    virtual ~Scene();
 
     virtual void InitModel(Mesh* mesh);
     virtual void ResetModel();

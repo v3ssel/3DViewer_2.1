@@ -62,7 +62,11 @@ void Scene::RotateModel(float x, float y, float z) {
 }
 
 void Scene::ScaleModel(float scale) {
-    scale_factor = scale;
+    if (scale > 0) {
+        scale_factor = scale;
+    } else {
+        scale_factor = 1.0f - std::abs(scale) / 100.0f;
+    }
 }
 
 void Scene::ResetScene() {
@@ -70,6 +74,8 @@ void Scene::ResetScene() {
     SetCamera();
     rotation = QQuaternion();
     prev_rotation_ = QVector3D(0.0f, 0.0f, 0.0f);
+    scale_factor = 1;
+    update();
 }
 
 void Scene::ChangeProjectionType() {
@@ -77,7 +83,9 @@ void Scene::ChangeProjectionType() {
     update();
 }
 
-size_t Scene::VertexCount() { return mesh_ ? mesh_->vertices.size() : 0; }
+size_t Scene::VertexCount() {
+    return mesh_ && !mesh_->vertices.size() ? mesh_->vertices.size() - 1 : 0;
+}
 
 size_t Scene::IndexCount() { return mesh_ ? mesh_->indices.size() : 0; }
 

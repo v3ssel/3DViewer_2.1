@@ -54,6 +54,9 @@ void Viewer::keyPressEvent(QKeyEvent *event) {
             ui->doubleSpinBox_x_move->setValue(0.0f),
             ui->doubleSpinBox_y_move->setValue(0.0f),
             ui->doubleSpinBox_z_move->setValue(0.0f);
+
+            ui->horizontalSlider_scale->setValue(1.0f);
+            ui->lcdNumber_scale->display(1.0f);
             scene->ResetScene();
             break;
 
@@ -73,7 +76,7 @@ void Viewer::OpenFile() {
     s21::Mesh* tmp_mesh = mesh_;
 
     try {
-        mesh_ = s21::Controller::Instance().ParseMeshFromFile(filename);
+        mesh_ = Controller::Instance().ParseMeshFromFile(filename);
         if (tmp_mesh) {
             delete tmp_mesh;
         }
@@ -99,14 +102,11 @@ void Viewer::CloseFile() {
 }
 
 void Viewer::FileInfo() {
-    size_t vertices =
-            scene->VertexCount() == 0 ? 0 : scene->VertexCount() - 1;
-    
     QMessageBox::information(
         this, "Information",
         "Filename: " + filename_ +
-        "\nVertices: " + QString::number(vertices) +
-        "\nLines: " + QString::number(scene->IndexCount()));
+        "\nVertices: " + QString::number(scene->VertexCount()) +
+        "\nLines: " + QString::number(scene->IndexCount() / 2));
 }
 
 void Viewer::ChangeProjection() {
@@ -148,12 +148,7 @@ void Viewer::VertexSizeSliderPressed() {
 }
 
 void Viewer::ScaleSliderMoved(int position) {
-    if (position > 0) {
-        scene->ScaleModel(position);
-    } else {
-        scene->ScaleModel(1.0f - std::abs(position) / 100.0f);
-    }
-
+    scene->ScaleModel(position);
     ui->lcdNumber_scale->display(position);
     scene->update();
 }
@@ -229,8 +224,8 @@ void Viewer::SaveBmp() { SaveImage("*.bmp"); }
 
 void Viewer::SaveGif() {
     if (!is_recording_) {
-        is_recording_ = true;
         this->setStyleSheet("QMainWindow{ background-color: red; }");
+        is_recording_ = true;
         record_time_->start(100);
     }
 }
@@ -252,26 +247,28 @@ void Viewer::Recording() {
 }
 
 void Viewer::SaveFullGif() {
-    QString str = QFileDialog::getSaveFileName(
-        this, tr("Save GIF"), QDir::homePath(), tr("GIF (*.gif)"));
-    if (str != "") {
-        QGifImage gif(QSize(640, 480));
-
-        gif.setDefaultTransparentColor(Qt::black);
-        gif.setDefaultDelay(100);
-
-        for (QVector<QImage>::Iterator frame = gif_images_.begin();
-             frame != gif_images_.end(); frame++) {
-            gif.addFrame(*frame);
-        }
-
-        gif.save(str);
-        gif_images_.clear();
-    }
     time_ = 0.0;
     is_recording_ = false;
-
     SetFrameColor();
+
+    QString str = QFileDialog::getSaveFileName(
+        this, tr("Save GIF"), QDir::homePath(), tr("GIF (*.gif)"));
+    
+    if (str.isEmpty()) {
+        return;
+    }
+    
+    QGifImage gif(QSize(640, 480));
+
+    gif.setDefaultTransparentColor(Qt::black);
+    gif.setDefaultDelay(100);
+
+    for (auto& frame : gif_images_) {
+        gif.addFrame(frame);
+    }
+
+    gif.save(str);
+    gif_images_.clear();
 }
 
 void Viewer::SaveSettings() {
