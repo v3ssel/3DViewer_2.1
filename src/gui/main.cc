@@ -1,11 +1,10 @@
 #include <QApplication>
 
-#include "scene.h"
 #include "viewer.h"
 
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
-    Viewer w;
+    s21::Viewer w;
     w.show();
     return a.exec();
 }

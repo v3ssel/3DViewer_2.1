@@ -15,8 +15,9 @@
 #include <QTimer>
 #include <QWidget>
 
-#include "../core/mesh.h"
+#include "mesh.h"
 
+namespace s21 {
 class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     Q_OBJECT
 
@@ -24,7 +25,7 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     Scene(QWidget *parent = nullptr);
     ~Scene();
 
-    virtual void InitModel(s21::Mesh* mesh);
+    virtual void InitModel(Mesh* mesh);
     virtual void ResetModel();
 
     virtual void MoveModel(float x, float y, float z);
@@ -73,7 +74,8 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     QVector3D prev_rotation_;
     QVector3D camera_target_, camera_pos_, camera_up_;
 
-    s21::Mesh* mesh_;
+    Mesh* mesh_;
 };
+}
 
 #endif  // SCENE_H

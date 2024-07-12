@@ -8,27 +8,30 @@
 #include "../QGifImage/QGifImage/qgifimage.h"
 #include "../controller/controller.h"
 
+namespace s21 {
 Viewer::Viewer(QWidget *parent) : QMainWindow(parent), ui(new Ui::Viewer) {
     ui->setupUi(this);
     this->setWindowTitle("3DViewer 2.0");
     this->setFixedSize(width(), height());
+
+    scene = Controller::Instance().GetScene(ui->centralwidget, QRect(0, 15, 650, 650));
 
     settings_ = new QSettings(QDir::homePath() + "/3DViewerConfig/settings.conf",
                              QSettings::IniFormat);
     LoadSettings();
     SetFrameColor();
 
-    ui->horizontalSlider_lineWidth->setValue(ui->widget->line_width);
-    ui->lcdNumber_lineWidth->display((int)ui->widget->line_width);
-    ui->horizontalSlider_versize->setValue(ui->widget->vertex_size);
-    ui->lcdNumber_versize->display((int)ui->widget->vertex_size);
+    ui->horizontalSlider_lineWidth->setValue(scene->line_width);
+    ui->lcdNumber_lineWidth->display((int)scene->line_width);
+    ui->horizontalSlider_versize->setValue(scene->vertex_size);
+    ui->lcdNumber_versize->display((int)scene->vertex_size);
 
     mesh_ = nullptr;
     is_recording_ = false;
     time_ = 0.0;
 
     record_time_ = new QTimer(this);
-    SetupConnects();
+    SetupConnections();
 }
 
 Viewer::~Viewer() {
@@ -37,6 +40,7 @@ Viewer::~Viewer() {
 
     delete settings_;
     delete record_time_;
+    delete scene;
     delete ui;
 }
 
@@ -50,11 +54,11 @@ void Viewer::keyPressEvent(QKeyEvent *event) {
             ui->doubleSpinBox_x_move->setValue(0.0f),
             ui->doubleSpinBox_y_move->setValue(0.0f),
             ui->doubleSpinBox_z_move->setValue(0.0f);
-            ui->widget->ResetScene();
+            scene->ResetScene();
             break;
 
         case Qt::Key_P:
-            ui->widget->ChangeProjectionType();
+            scene->ChangeProjectionType();
             break;
     }
 }
@@ -74,8 +78,8 @@ void Viewer::OpenFile() {
             delete tmp_mesh;
         }
 
-        ui->widget->InitModel(mesh_);
-        ui->widget->update();
+        scene->InitModel(mesh_);
+        scene->update();
     } catch (const std::exception& ex) {
         QMessageBox::critical(this, "Error", "An error occured during model loading."
                                     "\nPlease ensure file correctness or try other file");
@@ -89,43 +93,43 @@ void Viewer::CloseFile() {
         mesh_ = nullptr;
     }
 
-    ui->widget->ResetModel();
-    ui->widget->update();
+    scene->ResetModel();
+    scene->update();
     filename_ = "";
 }
 
 void Viewer::FileInfo() {
     size_t vertices =
-            ui->widget->VertexCount() == 0 ? 0 : ui->widget->VertexCount() - 1;
+            scene->VertexCount() == 0 ? 0 : scene->VertexCount() - 1;
     
     QMessageBox::information(
         this, "Information",
         "Filename: " + filename_ +
         "\nVertices: " + QString::number(vertices) +
-        "\nLines: " + QString::number(ui->widget->IndexCount()));
+        "\nLines: " + QString::number(scene->IndexCount()));
 }
 
 void Viewer::ChangeProjection() {
-    ui->widget->ChangeProjectionType();
+    scene->ChangeProjectionType();
 }
 
 void Viewer::ChangeBackgroundColor() {
-    ui->widget->background = QColorDialog::getColor();
+    scene->background = QColorDialog::getColor();
     SetFrameColor();
 }
 
 void Viewer::ChangeVerticesColor() {
-    ui->widget->vertices_color = QColorDialog::getColor();
+    scene->vertices_color = QColorDialog::getColor();
 }
 
 void Viewer::ChangeLinesColor() {
-    ui->widget->lines_color = QColorDialog::getColor();
+    scene->lines_color = QColorDialog::getColor();
 }
 
 void Viewer::LineWidthSliderMoved(int width) {
-    ui->widget->line_width = width;
+    scene->line_width = width;
     ui->lcdNumber_lineWidth->display(width);
-    ui->widget->update();
+    scene->update();
 }
 
 void Viewer::LineWidthSliderPressed() {
@@ -133,10 +137,10 @@ void Viewer::LineWidthSliderPressed() {
 }
 
 void Viewer::VertexSizeSliderMoved(int position) {
-    ui->widget->no_vertices = false;
-    ui->widget->vertex_size = position;
+    scene->no_vertices = false;
+    scene->vertex_size = position;
     ui->lcdNumber_versize->display(position);
-    ui->widget->update();
+    scene->update();
 }
 
 void Viewer::VertexSizeSliderPressed() {
@@ -145,13 +149,13 @@ void Viewer::VertexSizeSliderPressed() {
 
 void Viewer::ScaleSliderMoved(int position) {
     if (position > 0) {
-        ui->widget->ScaleModel(position);
+        scene->ScaleModel(position);
     } else {
-        ui->widget->ScaleModel(1.0f - std::abs(position) / 100.0f);
+        scene->ScaleModel(1.0f - std::abs(position) / 100.0f);
     }
 
     ui->lcdNumber_scale->display(position);
-    ui->widget->update();
+    scene->update();
 }
 
 void Viewer::ScaleSliderPressed() {
@@ -159,40 +163,40 @@ void Viewer::ScaleSliderPressed() {
 }
 
 void Viewer::MakeSolidLines() {
-    ui->widget->dashed_line = false;
-    ui->widget->update();
+    scene->dashed_line = false;
+    scene->update();
 }
 
 void Viewer::MakeDashedLines() {
-    ui->widget->dashed_line = true;
-    ui->widget->update();
+    scene->dashed_line = true;
+    scene->update();
 }
 
 void Viewer::MakeVertexCircle() {
-    ui->widget->no_vertices = false;
-    ui->widget->circle_vertex = false;
-    ui->horizontalSlider_versize->setValue(ui->widget->vertex_size);
-    ui->lcdNumber_versize->display((int)ui->widget->vertex_size);
-    ui->widget->update();
+    scene->no_vertices = false;
+    scene->circle_vertex = false;
+    ui->horizontalSlider_versize->setValue(scene->vertex_size);
+    ui->lcdNumber_versize->display((int)scene->vertex_size);
+    scene->update();
 }
 
 void Viewer::MakeVertexSquare() {
-    ui->widget->no_vertices = false;
-    ui->widget->circle_vertex = true;
-    ui->horizontalSlider_versize->setValue(ui->widget->vertex_size);
-    ui->lcdNumber_versize->display((int)ui->widget->vertex_size);
-    ui->widget->update();
+    scene->no_vertices = false;
+    scene->circle_vertex = true;
+    ui->horizontalSlider_versize->setValue(scene->vertex_size);
+    ui->lcdNumber_versize->display((int)scene->vertex_size);
+    scene->update();
 }
 
 void Viewer::DisableVertices() {
-    ui->widget->no_vertices = true;
+    scene->no_vertices = true;
     ui->horizontalSlider_versize->setValue(1);
     ui->lcdNumber_versize->display(1);
-    ui->widget->update();
+    scene->update();
 }
 
 void Viewer::MoveObjectInX() {
-    ui->widget->MoveModel(ui->doubleSpinBox_x_move->value(),
+    scene->MoveModel(ui->doubleSpinBox_x_move->value(),
                           ui->doubleSpinBox_y_move->value(),
                           ui->doubleSpinBox_z_move->value());
 }
@@ -206,7 +210,7 @@ void Viewer::MoveObjectInZ() {
 }
 
 void Viewer::RotateObjectInX() {
-    ui->widget->RotateModel(ui->spinBox_x_rot->value(),
+    scene->RotateModel(ui->spinBox_x_rot->value(),
                             ui->spinBox_y_rot->value(),
                             ui->spinBox_z_rot->value());
 }
@@ -234,12 +238,12 @@ void Viewer::SaveGif() {
 void Viewer::SaveImage(QString format) {
     QString str = QFileDialog::getSaveFileName(this, "Save file as",
                                                QDir::homePath(), format);
-    if (str != "") ui->widget->grabFramebuffer().save(str);
+    if (str != "") scene->grabFramebuffer().save(str);
 }
 
 void Viewer::Recording() {
     if (is_recording_ && time_ <= 5.0) {
-        gif_images_.push_back(ui->widget->grab().toImage());
+        gif_images_.push_back(scene->grab().toImage());
         time_ += 0.1;
     } else {
         record_time_->stop();
@@ -272,52 +276,52 @@ void Viewer::SaveFullGif() {
 
 void Viewer::SaveSettings() {
     settings_->beginGroup("coordinate");
-    settings_->setValue("dashed_line", ui->widget->dashed_line);
-    settings_->setValue("projection", ui->widget->projection_type);
-    settings_->setValue("circle_vertex", ui->widget->circle_vertex);
-    settings_->setValue("no_vertices", ui->widget->no_vertices);
+    settings_->setValue("dashed_line", scene->dashed_line);
+    settings_->setValue("projection", scene->projection_type);
+    settings_->setValue("circle_vertex", scene->circle_vertex);
+    settings_->setValue("no_vertices", scene->no_vertices);
     settings_->endGroup();
 
     settings_->beginGroup("rgb");
-    settings_->setValue("background_color", ui->widget->background);
-    settings_->setValue("vertices_color", ui->widget->vertices_color);
-    settings_->setValue("lines_color", ui->widget->lines_color);
+    settings_->setValue("background_color", scene->background);
+    settings_->setValue("vertices_color", scene->vertices_color);
+    settings_->setValue("lines_color", scene->lines_color);
     settings_->endGroup();
 
     settings_->beginGroup("size");
-    settings_->setValue("line_width", ui->widget->line_width);
-    settings_->setValue("vertex_size", ui->widget->vertex_size);
+    settings_->setValue("line_width", scene->line_width);
+    settings_->setValue("vertex_size", scene->vertex_size);
     settings_->endGroup();
 }
 
 void Viewer::LoadSettings() {
     settings_->beginGroup("coordinate");
-    ui->widget->dashed_line = settings_->value("dashed_line", false).toBool();
-    ui->widget->projection_type = settings_->value("projection", true).toBool();
-    ui->widget->circle_vertex = settings_->value("circle_vertex", false).toBool();
-    ui->widget->no_vertices = settings_->value("no_vertices", false).toBool();
+    scene->dashed_line = settings_->value("dashed_line", false).toBool();
+    scene->projection_type = settings_->value("projection", true).toBool();
+    scene->circle_vertex = settings_->value("circle_vertex", false).toBool();
+    scene->no_vertices = settings_->value("no_vertices", false).toBool();
     settings_->endGroup();
 
     settings_->beginGroup("rgb");
-    ui->widget->background = settings_->value("background_color", QColor(0.0f, 0.0f, 0.0f, 0.0f)).value<QColor>();
-    ui->widget->vertices_color = settings_->value("vertices_color", QColor(0.0f, 0.0f, 0.0f)).value<QColor>();
-    ui->widget->lines_color = settings_->value("lines_color", QColor(255.0f, 0.0f, 45.0f)).value<QColor>();
+    scene->background = settings_->value("background_color", QColor(0.0f, 0.0f, 0.0f, 0.0f)).value<QColor>();
+    scene->vertices_color = settings_->value("vertices_color", QColor(0.0f, 0.0f, 0.0f)).value<QColor>();
+    scene->lines_color = settings_->value("lines_color", QColor(255.0f, 0.0f, 45.0f)).value<QColor>();
     settings_->endGroup();
 
     settings_->beginGroup("size");
-    ui->widget->line_width = settings_->value("line_width", 5).toUInt();
-    ui->widget->vertex_size = settings_->value("vertex_size", 1).toUInt();
+    scene->line_width = settings_->value("line_width", 5).toUInt();
+    scene->vertex_size = settings_->value("vertex_size", 1).toUInt();
     settings_->endGroup();
 }
 
 void Viewer::SetFrameColor() {
     this->setStyleSheet("QMainWindow{ background-color: rgb(" +
-                        QString::number(ui->widget->background.red()) + ", " +
-                        QString::number(ui->widget->background.green()) + ", " +
-                        QString::number(ui->widget->background.blue()) + ");}");
+                        QString::number(scene->background.red()) + ", " +
+                        QString::number(scene->background.green()) + ", " +
+                        QString::number(scene->background.blue()) + ");}");
 }
 
-void Viewer::SetupConnects() {
+void Viewer::SetupConnections() {
     connect(ui->actionOpen, &QAction::triggered, this, &Viewer::OpenFile);
     connect(ui->actionClose, &QAction::triggered, this, &Viewer::CloseFile);
     connect(ui->actionInfo, &QAction::triggered, this, &Viewer::FileInfo);
@@ -351,4 +355,5 @@ void Viewer::SetupConnects() {
     connect(ui->spinBox_y_rot, &QSpinBox::valueChanged, this, &Viewer::RotateObjectInY);
     connect(ui->spinBox_z_rot, &QSpinBox::valueChanged, this, &Viewer::RotateObjectInZ);
     connect(record_time_, &QTimer::timeout, this, &Viewer::Recording);
+}
 }

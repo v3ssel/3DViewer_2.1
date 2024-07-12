@@ -8,7 +8,7 @@
 #include <QVector>
 #include <QSettings>
 
-#include "../core/mesh.h"
+#include "../controller/controller.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -17,6 +17,7 @@ class Viewer;
 QT_END_NAMESPACE
 
 //  Observer
+namespace s21 {
 class Viewer : public QMainWindow {
     Q_OBJECT
 
@@ -71,7 +72,7 @@ class Viewer : public QMainWindow {
     void LoadSettings();
 
     void SetFrameColor();
-    void SetupConnects();
+    void SetupConnections();
 
     float time_;
     bool is_recording_;
@@ -81,9 +82,11 @@ class Viewer : public QMainWindow {
     QTimer *record_time_;
     QSettings *settings_;
 
-    s21::Mesh* mesh_;
+    Mesh* mesh_;
+    Scene* scene;
 
     Ui::Viewer *ui;
 };
+}
 
 #endif  // VIEWER_H

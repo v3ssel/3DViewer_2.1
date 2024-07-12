@@ -2,6 +2,7 @@
 
 #include "scene.h"
 
+namespace s21 {
 Scene::Scene(QWidget* parent) : QOpenGLWidget(parent) {
     model_pos = camera_target_ = QVector3D(0.0f, 0.0f, 0.0f);
 
@@ -23,7 +24,7 @@ Scene::~Scene() {
     ebo.destroy();
 }
 
-void Scene::InitModel(s21::Mesh* mesh) {
+void Scene::InitModel(Mesh* mesh) {
     mesh_ = mesh;
 
     program.bind();
@@ -242,4 +243,5 @@ void Scene::wheelEvent(QWheelEvent* event) {
     }
 
     update();
+}
 }

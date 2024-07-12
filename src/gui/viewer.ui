@@ -23,31 +23,6 @@
    <string notr="true">QMainWindow { background-color: red; }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="Scene" name="widget" native="true">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>15</y>
-      <width>650</width>
-      <height>650</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>0</width>
-      <height>0</height>
-     </size>
-    </property>
-    <property name="autoFillBackground">
-     <bool>false</bool>
-    </property>
-   </widget>
    <widget class="QWidget" name="dockWidget_main" native="true">
     <property name="geometry">
      <rect>
@@ -1029,13 +1004,6 @@
    </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>Scene</class>
-   <extends>QWidget</extends>
-   <header>scene.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -2,6 +2,7 @@
 #define CONTROLLER_H
 
 #include "../core/mesh_parser.h"
+#include "../core/scene.h"
 
 //  Facade
 namespace s21 {
@@ -12,7 +13,8 @@ class Controller {
         return controller_;
     }
 
-    Mesh* ParseMeshFromFile(QString path);
+    Mesh* ParseMeshFromFile(const QString& path);
+    Scene* GetScene(QWidget* parent, const QRect& sizes);
 
    private:
     Controller() = default;
