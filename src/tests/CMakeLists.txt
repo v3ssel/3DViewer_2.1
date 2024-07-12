@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(Tests LANGUAGES CXX)
+project(ViewerTests LANGUAGES CXX)
 
 enable_testing()
 
@@ -10,8 +10,6 @@ add_definitions(-DGTEST_LANGUAGE_CXX17)
 find_package(Qt6 REQUIRED COMPONENTS Widgets Core)
 find_package(GTest REQUIRED)
 
-# set(CMAKE_CXX_COMPILER "/usr/local/bin/g++")
-
 set(PROJECT_SOURCES
         main.cc 
         mesh_parser_tests.cc
@@ -21,9 +19,9 @@ set(PROJECT_SOURCES
         ../controller/controller.cc
 )
 
-add_executable(Tests ${PROJECT_SOURCES})
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
-target_link_libraries(Tests PRIVATE
+target_link_libraries(${PROJECT_NAME} PRIVATE
     ViewerCore
     gtest
 

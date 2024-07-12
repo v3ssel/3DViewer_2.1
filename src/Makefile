@@ -1,6 +1,10 @@
 ARCHIVE = archive-3dviewer
 BUILD = build
 
+ifeq ($(shell uname), Darwin)
+	MACCOMPILER = -DCMAKE_CXX_COMPILER="/usr/local/bin/g++"
+endif
+
 .PHONY: tests
 all: install
 
@@ -8,20 +12,20 @@ install:
 	mkdir -p ${BUILD}
 	cd ${BUILD} && \
 	cmake -G "Unix Makefiles" .. && \
-	cmake --build . --target 3DViewer --config=Debug
+	cmake --build . --target 3DViewer --config=Release
 
 
 uninstall: clean
-	rm -rf 3DViewer libQGifImage.*
+	rm -rf 3DViewer ViewerTests *.dll *.so
 
 
 clean:
 	rm -rf ${BUILD}
 
 
-dist:
+dist: uninstall
 	mkdir -p ${ARCHIVE}
-	cp -R 3DViewer/ ${ARCHIVE}/
+	cp -R . ${ARCHIVE}/
 	tar -cf ${ARCHIVE}.tar ${ARCHIVE}
 	gzip -9f ${ARCHIVE}.tar
 	rm -rf ${ARCHIVE}
@@ -30,19 +34,10 @@ dist:
 tests:
 	mkdir -p ${BUILD}
 	cd ${BUILD} && \
-	cmake -G "Unix Makefiles" .. && \
-	cmake --build . --target Tests --config=Debug
-	./Tests.exe
+	cmake $(MACCOMPILER) -G "Unix Makefiles" .. && \
+	cmake --build . --target ViewerTests --config=RelWithDebInfo
+	./ViewerTests
 
-
-gcov_report: clean
-	cd 3DViewer/Unit-tests && mkdir -p build && cd build && \
-	cmake -DCMAKE_BUILD_TYPE=Coverage .. && cmake --build . --target all && \
-	mv Tests ../ && cd .. && chmod +x Tests && ./Tests && \
-	lcov -t "Tests" -o gcov_test.info --include */src/* -c -d . && \
-	genhtml -o report/ gcov_test.info && \
-	open ./report/index.html && \
-	rm -rf ./*.gcno ./*.gcda ./gcov* build/
 
 check:
 	clang-format -n \
