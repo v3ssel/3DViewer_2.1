@@ -8,6 +8,7 @@
 
 #include "mesh.h"
 
+// Singleton
 namespace s21 {
 class MeshParser {
    public:

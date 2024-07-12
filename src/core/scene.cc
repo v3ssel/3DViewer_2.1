@@ -5,6 +5,7 @@
 namespace s21 {
 Scene::Scene(QWidget* parent) : QOpenGLWidget(parent) {
     model_pos = camera_target_ = QVector3D(0.0f, 0.0f, 0.0f);
+    prev_rotation_ = QVector3D(0.0f, 0.0f, 0.0f);
 
     is_moving_ = false;
     projection_type = true;
@@ -12,7 +13,6 @@ Scene::Scene(QWidget* parent) : QOpenGLWidget(parent) {
     scale_factor = 1.0f;
     start_x_ = 0.0f, start_y_ = 0.0f;
     x_rot_ = 1.0f, y_rot_ = 1.0f;
-    prev_rotation_ = QVector3D(0.0f, 0.0f, 0.0f);
 
     mesh_ = nullptr;
 }
@@ -63,7 +63,7 @@ void Scene::RotateModel(float x, float y, float z) {
 
 void Scene::ScaleModel(float scale) {
     if (scale > 0) {
-        scale_factor = scale;
+        scale_factor = 1.0f + scale / 100.0f;
     } else {
         scale_factor = 1.0f - std::abs(scale) / 100.0f;
     }
@@ -71,20 +71,15 @@ void Scene::ScaleModel(float scale) {
 
 void Scene::ResetScene() {
     camera_pos_ = camera_up_ = model_pos = QVector3D(0.0f, 0.0f, 0.0f);
-    SetCamera();
+    model_pos = prev_rotation_ = QVector3D(0.0f, 0.0f, 0.0f);
     rotation = QQuaternion();
-    prev_rotation_ = QVector3D(0.0f, 0.0f, 0.0f);
     scale_factor = 1;
-    update();
-}
-
-void Scene::ChangeProjectionType() {
-    projection_type = !projection_type;
+    SetCamera();
     update();
 }
 
 size_t Scene::VertexCount() {
-    return mesh_ && !mesh_->vertices.size() ? mesh_->vertices.size() - 1 : 0;
+    return mesh_ && mesh_->vertices.size() > 0 ? mesh_->vertices.size() - 1 : 0;
 }
 
 size_t Scene::IndexCount() { return mesh_ ? mesh_->indices.size() : 0; }
@@ -157,7 +152,7 @@ void Scene::LoadShaders() {
     program.addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/vertex.glsl");
     program.addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/fragment.glsl");
     if (!program.link()) {
-        QMessageBox::critical(this, "Error", "Shader program error" + program.log());
+        QMessageBox::critical(this, "Error", "Shaders program error.\n" + program.log());
     }
 }
 

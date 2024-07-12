@@ -4,7 +4,7 @@
 #include "../core/mesh_parser.h"
 #include "../core/scene.h"
 
-//  Facade
+// Singleton + Facade
 namespace s21 {
 class Controller {
    public:

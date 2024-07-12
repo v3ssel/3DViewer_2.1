@@ -3,6 +3,7 @@
 
 #include "scene.h"
 
+// Builder
 namespace s21 {
     class SceneBuilder {
        public:

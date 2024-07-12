@@ -61,7 +61,7 @@ void Viewer::keyPressEvent(QKeyEvent *event) {
             break;
 
         case Qt::Key_P:
-            scene->ChangeProjectionType();
+            ChangeProjection();
             break;
     }
 }
@@ -110,7 +110,8 @@ void Viewer::FileInfo() {
 }
 
 void Viewer::ChangeProjection() {
-    scene->ChangeProjectionType();
+    scene->projection_type = !scene->projection_type;
+    scene->update();
 }
 
 void Viewer::ChangeBackgroundColor() {

@@ -31,12 +31,11 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     virtual void ScaleModel(float scale);
 
     virtual void ResetScene();
-    virtual void ChangeProjectionType();
-    bool projection_type;
 
     size_t VertexCount();
     size_t IndexCount();
 
+    bool projection_type;
     QColor background, vertices_color, lines_color;
     unsigned line_width, vertex_size;
     bool circle_vertex, dashed_line, no_vertices;
@@ -50,6 +49,9 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     virtual void mouseMoveEvent(QMouseEvent *) override;
     virtual void wheelEvent(QWheelEvent *) override;
 
+    virtual void LoadShaders();
+    virtual void DrawModel();
+
     QOpenGLShaderProgram program;
     QOpenGLVertexArrayObject vao;
     QOpenGLBuffer vbo, ebo;
@@ -60,14 +62,10 @@ class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
     float scale_factor;
 
    private:
-    void LoadShaders();
-    void DrawModel();
-
     void SetCamera();
 
     float x_rot_, y_rot_, start_y_, start_x_;
     bool is_moving_;
-
 
     QVector3D prev_rotation_;
     QVector3D camera_target_, camera_pos_, camera_up_;

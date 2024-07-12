@@ -16,7 +16,6 @@ class Viewer;
 }
 QT_END_NAMESPACE
 
-//  Observer
 namespace s21 {
 class Viewer : public QMainWindow {
     Q_OBJECT
