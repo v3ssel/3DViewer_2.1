@@ -78,11 +78,11 @@ void MeshParser::ParseFacets(Mesh* mesh, const QStringList& str_list) {
 }
 
 void MeshParser::AddFacet(Mesh* mesh, const QString &str) {
-    std::vector<uint> indices = { 0, 0, 0 };
+    std::vector<int> indices = { 0, 0, 0 };
     
     uint index = 0;
     size_t last_slash = 0;
-    for (size_t i = 0; i <= str.length(); i++) {
+    for (qsizetype i = 0; i <= str.length(); i++) {
         if (i == str.length() || str[i] == '/') {
             indices[index] = str.mid(last_slash, i - last_slash).toUInt();
             last_slash = i + 1;

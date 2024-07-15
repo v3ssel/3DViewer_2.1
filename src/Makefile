@@ -3,10 +3,11 @@ BUILD = build
 
 ifeq ($(shell uname), Darwin)
 	MACCOMPILER = -DCMAKE_CXX_COMPILER="/usr/local/bin/g++"
+	OPEN = open
 endif
 
 .PHONY: tests
-all: install
+all: dist install tests check dvi
 
 install:
 	mkdir -p ${BUILD}
@@ -16,7 +17,7 @@ install:
 
 
 uninstall: clean
-	rm -rf 3DViewer ViewerTests *.dll *.so
+	rm -rf 3DViewer ViewerTests *.dll *.so $(ARCHIVE).tar.gz
 
 
 clean:
@@ -25,10 +26,22 @@ clean:
 
 dist: uninstall
 	mkdir -p ${ARCHIVE}
-	cp -R . ${ARCHIVE}/
+	cp -R core/ \
+		  controller/ \
+		  gui/ \
+		  QGifImage/ \
+		  tests/ \
+		  CMakeLists.txt \
+		  Makefile \
+		  README.md \
+		  ${ARCHIVE}/
 	tar -cf ${ARCHIVE}.tar ${ARCHIVE}
 	gzip -9f ${ARCHIVE}.tar
 	rm -rf ${ARCHIVE}
+
+
+dvi:
+	$(OPEN)	./README.md
 
 
 tests:
