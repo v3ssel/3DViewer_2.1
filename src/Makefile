@@ -1,5 +1,6 @@
 ARCHIVE = archive-3dviewer
 BUILD = build
+LINTER = ../materials/linters/.clang-format
 
 ifeq ($(shell uname), Darwin)
 	MACCOMPILER = -DCMAKE_CXX_COMPILER="/usr/local/bin/g++"
@@ -53,7 +54,8 @@ tests:
 
 
 check:
+	cp $(LINTER) .
 	clang-format -n \
-		core/*.cc \
-		core/*/*.cc \
-		core/*/*.h \
+		*/*.cc */*.h \
+		QGifImage/*/*.c QGifImage/*/*.cpp QGifImage/*/*.h
+	rm -f $(notdir $(LINTER))

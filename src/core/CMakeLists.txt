@@ -4,7 +4,6 @@ project(ViewerCore LANGUAGES CXX)
 find_package(OpenGL REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets OpenGL OpenGLWidgets)
 add_definitions(-DQT_BUILD_GIFIMAGE_LIB)
-add_compile_options(-Wall -Werror -Wextra)
 
 add_library(${PROJECT_NAME} STATIC
     scene.h

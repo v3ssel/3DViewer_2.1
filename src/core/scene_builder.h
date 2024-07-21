@@ -5,18 +5,17 @@
 
 // Builder
 namespace s21 {
-    class SceneBuilder {
-       public:
-        Scene* Build();
+class SceneBuilder {
+ public:
+  Scene* Build();
 
-        SceneBuilder* SetParent(QWidget* parent = nullptr);
-        SceneBuilder* SetSceneSize(const QRect& rect);
-    
-       private:
-        QWidget* parent_;
-        QRect size_;
-    };
-} // namespace s21
+  SceneBuilder* SetParent(QWidget* parent = nullptr);
+  SceneBuilder* SetSceneSize(const QRect& rect);
 
+ private:
+  QWidget* parent_;
+  QRect size_;
+};
+}  // namespace s21
 
 #endif  // _SCENE_BUILDER_H_
