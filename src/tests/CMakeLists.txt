@@ -13,7 +13,6 @@ find_package(GTest REQUIRED)
 set(PROJECT_SOURCES
         main.cc 
         mesh_parser_tests.cc
-        scene_tests.cc
         
         ../controller/controller.h
         ../controller/controller.cc

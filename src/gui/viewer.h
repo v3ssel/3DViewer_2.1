@@ -1,14 +1,15 @@
 #ifndef VIEWER_H
 #define VIEWER_H
 
-#include "../controller/controller.h"
-
 #include <QImage>
 #include <QKeyEvent>
 #include <QMainWindow>
 #include <QSettings>
 #include <QTimer>
 #include <QVector>
+
+#include "../controller/controller.h"
+#include "../scene/scene.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -82,7 +83,7 @@ class Viewer : public QMainWindow {
   QSettings *settings_;
 
   Mesh *mesh_;
-  Scene *scene;
+  Scene *scene_;
 
   Ui::Viewer *ui;
 };

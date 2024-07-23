@@ -3,17 +3,16 @@
 
 #define GL_SILENCE_DEPRECATION
 
-#include <QOpenGLWidget>
-#include <QtOpenGL>
-
 #include <QMatrix4x4>
 #include <QMouseEvent>
+#include <QOpenGLWidget>
 #include <QTimer>
 #include <QWidget>
-
-#include "mesh.h"
+#include <QtOpenGL>
 
 namespace s21 {
+struct Mesh;
+
 class Scene : public QOpenGLWidget, protected QOpenGLFunctions {
  public:
   Scene(QWidget *parent = nullptr);

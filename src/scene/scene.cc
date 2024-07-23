@@ -2,6 +2,8 @@
 
 #include <QMessageBox>
 
+#include "../core/mesh.h"
+
 namespace s21 {
 Scene::Scene(QWidget* parent) : QOpenGLWidget(parent) {
   model_pos = camera_target_ = QVector3D(0.0f, 0.0f, 0.0f);

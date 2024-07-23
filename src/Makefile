@@ -22,7 +22,7 @@ uninstall: clean
 
 
 clean:
-	rm -rf ${BUILD}
+	rm -rf ${BUILD}*
 
 
 dist: uninstall
@@ -46,8 +46,8 @@ dvi:
 
 
 tests:
-	mkdir -p ${BUILD}
-	cd ${BUILD} && \
+	mkdir -p ${BUILD}-tests
+	cd ${BUILD}-tests && \
 	cmake $(MACCOMPILER) -G "Unix Makefiles" .. && \
 	cmake --build . --target ViewerTests --config=RelWithDebInfo
 	./ViewerTests
